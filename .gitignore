@@ -1,0 +1,6 @@
+# local backups from editing passes
+*.greenbak
+*.textbak
+*.predesign
+# local dev server log
+/tmp/nock-server.log
