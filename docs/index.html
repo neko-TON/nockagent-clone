@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="en" class="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__variable">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Documentation — None AI</title>
+<meta name="description" content="Technical documentation for None: routing engine, agent API over x402, contracts and safety model on Robinhood Chain."/>
+<link rel="icon" href="/icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="/_next/static/chunks/3ksqjcf432ghy.css"/>
+<link rel="stylesheet" href="/nk-page.css"/>
+</head>
+<body class="nk-doc">
+
+<div class="nk-topbar">CA: <span class="mono accent">0x76d72880015374c89a87bc1a5b5333f0dacaa8b2</span></div>
+
+<header class="nk-hdr">
+  <nav class="nk-nav">
+    <a class="nk-brand" href="/"><span class="nk-logo">N</span> None</a>
+    <div class="nk-links">
+      <a href="/#what">What it is</a>
+      <a href="/#how">How it works</a>
+      <a href="/#markets">Markets</a>
+      <a href="/docs" class="on">Docs</a>
+      <a href="/#faq">FAQ</a>
+    </div>
+    <div class="nk-actions">
+      <a class="nk-cta" href="/app">Launch app</a>
+      <button class="nk-burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="nk-mobile" hidden>
+    <a href="/#what">What it is</a><a href="/#how">How it works</a><a href="/#markets">Markets</a>
+    <a href="/docs">Docs</a><a href="/#faq">FAQ</a><a class="nk-cta w" href="/app">Launch app</a>
+  </div>
+</header>
+
+<div class="nk-shell">
+  <aside class="nk-side">
+    <div class="nk-side-t">Documentation</div>
+    <a href="#intro">Introduction</a>
+    <a href="#quickstart">Quickstart</a>
+    <a href="#intents">Intent language</a>
+    <a href="#routing">Routing engine</a>
+    <a href="#guards">Execution guards</a>
+    <a href="#api">Agent API · x402</a>
+    <a href="#endpoints">Endpoints</a>
+    <a href="#errors">Errors</a>
+    <a href="#contracts">Contracts</a>
+    <a href="#safety">Safety model</a>
+    <a href="#glossary">Glossary</a>
+  </aside>
+
+  <main class="nk-main">
+    <div class="nk-note">
+      <b>Preview build.</b> This documentation describes a demonstration clone. Endpoints, addresses and figures on this page are illustrative and do not point at a live production service.
+    </div>
+
+    <section id="intro">
+      <div class="eyebrow">Introduction</div>
+      <h1>None documentation</h1>
+      <p class="lead">None turns a sentence into a settled trade. You describe an outcome in plain language; the engine quotes every venue on Robinhood Chain, picks the path with the best net output, and hands your wallet a single transaction to sign.</p>
+      <p>Three properties hold throughout the system, and the rest of this document is mostly consequences of them:</p>
+      <ul>
+        <li><b>Non-custodial.</b> Funds never leave your wallet. There is no deposit step and no omnibus account.</li>
+        <li><b>Quoted from chain state.</b> Every number shown comes from the on-chain quoter at a specific block, not from a cache or an estimate.</li>
+        <li><b>Fails closed.</b> Every trade carries a minimum-out and a deadline. Adverse movement reverts rather than fills badly.</li>
+      </ul>
+      <div class="grid2">
+        <div class="card"><h4>Chain</h4><p>Robinhood Chain — an Arbitrum L2, EVM-equivalent. Block time ~250ms, sub-second finality.</p></div>
+        <div class="card"><h4>Venues</h4><p>Uniswap v2, v3 (0.01% / 0.05% / 0.30% / 1.00%) and v4 pools, quoted in parallel.</p></div>
+        <div class="card"><h4>Base assets</h4><p>USDG and WETH carry the deepest liquidity and act as intermediate hops.</p></div>
+        <div class="card"><h4>Assets</h4><p>Tokenized equities (24/5) alongside crypto (24/7), routed by the same engine.</p></div>
+      </div>
+    </section>
+
+    <section id="quickstart">
+      <div class="eyebrow">Quickstart</div>
+      <h2>From zero to a signed trade</h2>
+      <ol class="steps">
+        <li><b>Connect a wallet.</b> Any standard EVM wallet that can sign on Robinhood Chain. One click, no account, no email.</li>
+        <li><b>State the outcome.</b> Type what you want — <code>Buy $5,000 of NVDA</code>. No pool selector, no fee tier, no calldata.</li>
+        <li><b>Read the plan.</b> None shows the route, the expected rate, price impact and the minimum you will receive.</li>
+        <li><b>Sign once.</b> The optimized swap settles in a single transaction from your own wallet.</li>
+      </ol>
+      <p class="muted small">Try it without funds in the <a href="/app">interactive simulator</a> — it runs the same intent parser and quoting model against simulated liquidity.</p>
+    </section>
+
+    <section id="intents">
+      <div class="eyebrow">Intent language</div>
+      <h2>What you can type</h2>
+      <p>The parser resolves four things: the <em>side</em>, the <em>amount</em>, the <em>input asset</em> and the <em>output asset</em>. Anything that pins those down is valid input — you do not need a fixed syntax.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>You type</th><th>Parsed as</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Buy $5,000 of NVDA</td><td>spend 5,000 USDG → receive NVDA</td></tr>
+          <tr><td class="mono">Swap 2 ETH into COIN</td><td>spend 2 WETH → receive COIN</td></tr>
+          <tr><td class="mono">Get me $3,000 of AMZN</td><td>spend 3,000 USDG → receive AMZN</td></tr>
+          <tr><td class="mono">Sell my AAPL</td><td>spend full AAPL balance → receive USDG</td></tr>
+          <tr><td class="mono">Swap half my USDG into TSLA</td><td>spend 50% of USDG balance → receive TSLA</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout">
+        <b>Ambiguity is surfaced, not guessed.</b> If an instruction resolves to more than one plausible trade, None asks rather than picking for you. It will not invent a size you did not state.
+      </div>
+    </section>
+
+    <section id="routing">
+      <div class="eyebrow">Routing engine</div>
+      <h2>How a route is chosen</h2>
+      <p>Quoting runs as a fan-out, not a sequence. Each candidate path is priced against live chain state, then scored on <b>net output</b> — gross output minus pool fees minus gas.</p>
+      <pre><code><span class="c"># candidate set for: buy NVDA with 5,000 USDG</span>
+USDG → NVDA            <span class="c">// v3 0.05%   direct</span>
+USDG → NVDA            <span class="c">// v3 0.30%   direct</span>
+USDG → WETH → NVDA     <span class="c">// v3 + v3    2 hops</span>
+USDG → WETH → NVDA     <span class="c">// v2 + v3    2 hops</span>
+USDG → USDC → NVDA     <span class="c">// v3 0.01%   2 hops</span>
+
+<span class="k">winner</span>  USDG → WETH → NVDA   net out <span class="n">12.63 NVDA</span>
+<span class="k">naive</span>   USDG → NVDA          net out <span class="n">12.41 NVDA</span>
+<span class="k">delta</span>   <span class="g">+0.22 NVDA (+1.77%)</span></code></pre>
+      <ul>
+        <li><b>Depth:</b> up to three hops. Deeper paths rarely survive gas scoring on an L2 this cheap, but they are evaluated.</li>
+        <li><b>Refresh:</b> quotes re-run on every keystroke and every block (~250ms), so the displayed rate tracks the market.</li>
+        <li><b>Honesty:</b> if no path exists or a pool is dry, the engine returns nothing and says so. It never synthesizes a price.</li>
+      </ul>
+    </section>
+
+    <section id="guards">
+      <div class="eyebrow">Execution guards</div>
+      <h2>What protects the fill</h2>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Guard</th><th>Default</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Minimum out</td><td class="mono">quote − slippage tolerance</td><td>Transaction reverts if output would fall below it.</td></tr>
+          <tr><td>Slippage tolerance</td><td class="mono">0.50%</td><td>User-adjustable per trade; tightened automatically on deep liquidity.</td></tr>
+          <tr><td>Deadline</td><td class="mono">120s</td><td>A pending transaction cannot execute at a stale price later.</td></tr>
+          <tr><td>Pre-flight simulation</td><td class="mono">always</td><td>The winning path is simulated before a signature is requested.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout warn"><b>Reverts are a feature.</b> A reverted trade costs gas and returns your funds. A filled-at-any-price trade costs the spread. None is built to prefer the first.</div>
+    </section>
+
+    <section id="api">
+      <div class="eyebrow">Agent API · x402</div>
+      <h2>Machine callers pay per request</h2>
+      <p>The best-route engine is exposed as an HTTP endpoint priced with <b>HTTP 402 Payment Required</b>. A calling agent requests a quote, receives a payment challenge, signs a stablecoin authorization, and repeats the call with the payment header. No account, no API key handshake, no card.</p>
+      <pre><code><span class="c">$</span> curl -i https://none.app/api/agent?from=WETH&to=USDG&amount=1
+
+<span class="k">HTTP/1.1 402 Payment Required</span>
+{
+  "accepts": [
+    { "scheme": "exact", "asset": "USDG", "price": "0.01", "network": "robinhood" }
+  ],
+  "expires": 1785312000
+}
+
+<span class="c">$</span> curl -s -X POST https://none.app/api/agent \
+    -H <span class="s">"X-PAYMENT: &lt;signed-authorization&gt;"</span> \
+    -d <span class="s">'{"from":"WETH","to":"USDG","amount":"1"}'</span>
+
+<span class="k">HTTP/1.1 200 OK</span>   <span class="g">· paid ✓</span>
+{
+  "rate":  "1 ETH ≈ 1,831 USDG",
+  "route": ["WETH","USDG"],
+  "venue": "uniswap-v3",
+  "fee":   "0.05%",
+  "netOut":"1831.42",
+  "block": 48210233
+}</code></pre>
+      <p class="muted small">Payment settles in USDG on Robinhood Chain. Pricing is per successful call; 402 challenges are free.</p>
+    </section>
+
+    <section id="endpoints">
+      <div class="eyebrow">Endpoints</div>
+      <h2>Reference</h2>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Price</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill">GET</span></td><td class="mono">/api/agent</td><td class="mono">$0.01</td><td>Best route and rate for a pair and size.</td></tr>
+          <tr><td><span class="pill">POST</span></td><td class="mono">/api/agent</td><td class="mono">$0.01</td><td>Same, with a signed payment header.</td></tr>
+          <tr><td><span class="pill">GET</span></td><td class="mono">/api/quote</td><td class="mono">free</td><td>Indicative mid price, no route detail, rate-limited.</td></tr>
+          <tr><td><span class="pill">GET</span></td><td class="mono">/api/markets</td><td class="mono">free</td><td>Supported assets, base pairs and session hours.</td></tr>
+          <tr><td><span class="pill">GET</span></td><td class="mono">/api/health</td><td class="mono">free</td><td>Chain height, quoter status, venue availability.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="errors">
+      <div class="eyebrow">Errors</div>
+      <h2>What can come back</h2>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Code</th><th>Meaning</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">402</td><td>Payment required</td><td>Sign the authorization in <code>accepts</code> and retry with <code>X-PAYMENT</code>.</td></tr>
+          <tr><td class="mono">404</td><td>No route</td><td>No path exists for the pair at that size. Do not retry with the same size.</td></tr>
+          <tr><td class="mono">409</td><td>Market closed</td><td>Tokenized equity outside session hours. Retry when the market opens.</td></tr>
+          <tr><td class="mono">422</td><td>Unparseable intent</td><td>Side, size or asset could not be resolved. Restate the instruction.</td></tr>
+          <tr><td class="mono">429</td><td>Rate limited</td><td>Back off, or move to the paid endpoint which is not throttled.</td></tr>
+          <tr><td class="mono">503</td><td>Quoter degraded</td><td>Chain or venue unavailable. None returns nothing rather than a stale price.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="contracts">
+      <div class="eyebrow">Contracts</div>
+      <h2>What you actually sign</h2>
+      <p>Settlement runs through canonical, verified Uniswap routers. None deploys no vault, no upgradeable proxy and no contract that can hold user balances.</p>
+      <div class="tblwrap"><table>
+        <thead><tr><th>Contract</th><th>Address</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td>None token</td><td class="mono small">0x76d72880015374c89a87bc1a5b5333f0dacaa8b2</td><td>Brand asset</td></tr>
+          <tr><td>Universal Router</td><td class="mono small">canonical Uniswap deployment</td><td>Executes the swap path</td></tr>
+          <tr><td>Quoter V2</td><td class="mono small">canonical Uniswap deployment</td><td>Prices candidate routes</td></tr>
+          <tr><td>Permit2</td><td class="mono small">canonical Uniswap deployment</td><td>Scoped, expiring approvals</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><b>Verify before you trust.</b> Every address should be checked on a block explorer against the canonical deployment list. Addresses shown in this preview build are illustrative.</div>
+    </section>
+
+    <section id="safety">
+      <div class="eyebrow">Safety model</div>
+      <h2>Why custody is not a promise here</h2>
+      <ul>
+        <li><b>No deposits.</b> There is no address to send funds to, so there is no balance for anyone to lose or freeze.</li>
+        <li><b>Scoped approvals.</b> Permit2 allowances are bounded by amount and expiry rather than unlimited and permanent.</li>
+        <li><b>No privileged role.</b> There is no admin key that can move user funds, because user funds are never held by the protocol.</li>
+        <li><b>Deterministic failure.</b> Minimum-out plus deadline means the worst case is a reverted transaction and a gas cost.</li>
+      </ul>
+      <div class="callout warn"><b>What None cannot protect you from:</b> signing a malicious transaction in another tab, a compromised wallet or device, or a decision to trade an asset you have not researched. Custody of keys means custody of consequences.</div>
+    </section>
+
+    <section id="glossary">
+      <div class="eyebrow">Glossary</div>
+      <h2>Terms used here</h2>
+      <dl class="gloss">
+        <dt>Best execution</dt><dd>The path producing the largest output <em>after</em> pool fees and gas — not the one with the headline rate.</dd>
+        <dt>Minimum out</dt><dd>The floor on what you receive. The transaction reverts below it.</dd>
+        <dt>Multi-hop</dt><dd>A route through one or more intermediate assets, usually WETH or USDG, when it beats the direct pair.</dd>
+        <dt>Naive swap</dt><dd>The direct single-pool trade a user would most likely click by hand — the baseline None compares against.</dd>
+        <dt>Price impact</dt><dd>How much your own size moves the pool price. Large relative to depth means a worse fill.</dd>
+        <dt>Slippage tolerance</dt><dd>How far the price may move against you before the transaction reverts.</dd>
+        <dt>x402</dt><dd>An HTTP payment flow using status 402, letting machines pay per request in stablecoin without an account.</dd>
+        <dt>Tokenized equity</dt><dd>An on-chain instrument tracking a listed stock, trading against crypto liquidity during market hours.</dd>
+      </dl>
+    </section>
+
+    <div class="nk-foot">
+      <a class="nk-cta" href="/app">Open the simulator →</a>
+      <a class="nk-ghost" href="/">Back to home</a>
+    </div>
+  </main>
+</div>
+
+<script src="/nk-page.js" defer></script>
+</body></html>

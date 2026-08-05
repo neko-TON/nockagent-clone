@@ -1,0 +1,459 @@
+<!DOCTYPE html><html lang="en" class="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__variable">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Simulator — None AI</title>
+<meta name="description" content="Interactive simulation of the None routing engine. No wallet connection, no real funds, no blockchain transactions."/>
+<link rel="icon" href="/icon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="/_next/static/chunks/3ksqjcf432ghy.css"/>
+<link rel="stylesheet" href="/nk-page.css"/>
+<style>
+.wrap{max-width:72rem;margin:0 auto;padding:1.6rem 1rem 5rem}
+.sim-banner{
+  display:flex;gap:.7rem;align-items:flex-start;border:1px solid rgba(224,179,77,.4);
+  background:rgba(224,179,77,.09);border-radius:14px;padding:.85rem 1.1rem;margin-bottom:1.4rem;
+}
+.sim-banner .tag{
+  flex:0 0 auto;font-family:var(--font-geist-mono),monospace;font-size:10px;letter-spacing:.16em;
+  border:1px solid rgba(224,179,77,.55);color:#e6c67a;border-radius:6px;padding:.2rem .45rem;margin-top:.1rem;
+}
+.sim-banner p{margin:0;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.sim-banner b{color:#e6c67a}
+.cols{display:grid;grid-template-columns:1fr 330px;gap:1.2rem;align-items:start}
+@media (max-width:960px){.cols{grid-template-columns:1fr}}
+.panel{border:1px solid var(--border);border-radius:18px;background:rgba(13,15,26,.62);backdrop-filter:blur(8px);overflow:hidden}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);font-family:var(--font-geist-mono),monospace;font-size:12px;color:var(--muted)}
+.dots{display:flex;gap:.4rem}.dots i{width:10px;height:10px;border-radius:50%;display:block}
+.dots i:nth-child(1){background:#ff6b6b8c}.dots i:nth-child(2){background:#3b6dff}.dots i:nth-child(3){background:#4a5568}
+.blk{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:bp 1.6s ease-out infinite;margin-right:.35rem}
+@keyframes bp{0%{box-shadow:0 0 0 0 rgba(55,214,122,.6)}70%{box-shadow:0 0 0 7px rgba(55,214,122,0)}100%{box-shadow:0 0 0 0 rgba(55,214,122,0)}}
+.pad{padding:1.2rem}
+.ask{text-align:center;color:var(--muted);font-family:var(--font-geist-mono),monospace;font-size:13.5px;margin:.4rem 0 1rem}
+.inputrow{display:flex;align-items:center;gap:.6rem;border:1px solid var(--border);border-radius:14px;background:rgba(4,6,14,.6);padding:.75rem .9rem;transition:border-color .3s,box-shadow .3s}
+.inputrow:focus-within{border-color:rgba(59,109,255,.6);box-shadow:0 0 0 3px rgba(59,109,255,.13)}
+.inputrow .gt{color:var(--accent);font-family:var(--font-geist-mono),monospace;font-weight:700}
+#intent{flex:1;background:none;border:0;outline:none;color:var(--fg);font-family:var(--font-geist-mono),monospace;font-size:15px;min-width:0}
+#intent::placeholder{color:#4d5665}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem}
+.chip{
+  border:1px solid var(--border);background:rgba(20,24,38,.6);color:var(--muted);border-radius:999px;
+  padding:.42rem .8rem;font-family:var(--font-geist-mono),monospace;font-size:11.5px;cursor:pointer;
+  transition:border-color .25s,color .25s,transform .25s;
+}
+.chip:hover{border-color:rgba(59,109,255,.5);color:var(--fg);transform:translateY(-1px)}
+.btn{
+  width:100%;margin-top:1rem;border:0;border-radius:14px;cursor:pointer;font-size:16px;font-weight:700;color:#07101f;
+  padding:.95rem 1.2rem;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,#5a83ff,#3b6dff 46%,#2a55e6);
+  box-shadow:0 8px 26px -8px rgba(59,109,255,.8),inset 0 1px 0 rgba(255,255,255,.3);
+  transition:transform .22s,filter .22s,opacity .22s;font-family:inherit;
+}
+.btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.06)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn .ar{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.22);display:grid;place-items:center;font-size:14px}
+.quote{margin-top:1.1rem;border:1px solid var(--border);border-radius:14px;background:rgba(4,6,14,.5);overflow:hidden}
+.quote.hidden,.hidden{display:none}
+.qh{display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem;border-bottom:1px solid var(--border);font-family:var(--font-geist-mono),monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.qh .ok{color:var(--green)}
+.qrow{display:flex;justify-content:space-between;gap:1rem;padding:.62rem 1rem;font-size:13.5px}
+.qrow+.qrow{border-top:1px solid rgba(34,37,46,.55)}
+.qrow span:first-child{color:var(--muted)}
+.qrow span:last-child{font-family:var(--font-geist-mono),monospace;color:#c7cfda;text-align:right}
+.qrow.win span:last-child{color:var(--fg);font-weight:700}
+.qrow.delta span:last-child{color:var(--accent-soft);font-weight:700}
+.routeviz{padding:.4rem 0 .2rem;background:rgba(59,109,255,.04);border-top:1px solid rgba(34,37,46,.55)}
+.routeviz svg{display:block;width:100%;height:auto}
+.err{border:1px solid rgba(255,107,107,.4);background:rgba(255,107,107,.08);color:#ffb3b3;border-radius:12px;padding:.8rem 1rem;font-size:13.5px;margin-top:1rem;line-height:1.55}
+/* wallet card */
+.wcard{padding:1.1rem}
+.wtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem}
+.wtop b{font-size:14px}
+.addr{font-family:var(--font-geist-mono),monospace;font-size:11.5px;color:var(--accent-soft);background:rgba(59,109,255,.12);border:1px solid rgba(59,109,255,.25);padding:.2rem .5rem;border-radius:7px}
+.bal{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;font-size:13.5px;border-top:1px solid rgba(34,37,46,.6)}
+.bal:first-of-type{border-top:0}
+.bal .s{display:flex;align-items:center;gap:.55rem}
+.sym{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-geist-mono),monospace;font-size:9px;font-weight:700;background:rgba(59,109,255,.14);border:1px solid rgba(59,109,255,.3);color:var(--accent-soft)}
+.bal .v{font-family:var(--font-geist-mono),monospace;text-align:right;color:#c7cfda}
+.bal .v small{display:block;color:var(--muted);font-size:11px}
+.px{font-family:var(--font-geist-mono),monospace;font-size:11px;transition:color .4s}
+.px.up{color:var(--green)}.px.dn{color:var(--red)}
+.hist{max-height:250px;overflow:auto}
+.hitem{padding:.65rem 1.1rem;border-top:1px solid rgba(34,37,46,.6);font-size:12.5px;color:var(--muted);animation:nkDrop .3s ease}
+.hitem b{color:var(--fg);font-weight:600}
+.hitem .h{font-family:var(--font-geist-mono),monospace;font-size:10.5px;color:#5b6472;display:block;margin-top:.2rem}
+.empty{padding:1.4rem 1.1rem;color:#5b6472;font-size:12.5px;text-align:center}
+/* execution overlay */
+.exec{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(4,6,14,.82);backdrop-filter:blur(6px);animation:nkDrop .3s ease}
+.exec-box{width:min(92vw,420px);border:1px solid rgba(59,109,255,.4);border-radius:18px;background:rgba(13,15,26,.97);padding:1.5rem;box-shadow:0 30px 80px -30px rgba(0,0,0,.9)}
+.exec-box h3{margin:0 0 1.1rem;font-size:17px}
+.estep{display:flex;align-items:center;gap:.7rem;padding:.5rem 0;font-size:13.5px;color:#5b6472;transition:color .3s}
+.estep.on{color:#c7cfda}.estep.done{color:var(--fg)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(59,109,255,.25);border-top-color:var(--accent);flex:0 0 auto}
+.estep.on .spin{animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.estep.done .spin{border-color:var(--green);border-top-color:var(--green);position:relative}
+.estep.done .spin::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:2px solid var(--green);border-top:0;border-left:0;transform:rotate(45deg)}
+.receipt{margin-top:1.1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:13px}
+.receipt .r{display:flex;justify-content:space-between;gap:1rem;padding:.28rem 0;color:var(--muted)}
+.receipt .r span:last-child{font-family:var(--font-geist-mono),monospace;color:#c7cfda;word-break:break-all;text-align:right}
+.receipt .g{color:var(--green);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="nk-topbar">CA: <span class="mono accent">0x76d72880015374c89a87bc1a5b5333f0dacaa8b2</span></div>
+
+<header class="nk-hdr">
+  <nav class="nk-nav">
+    <a class="nk-brand" href="/"><span class="nk-logo">N</span> None</a>
+    <div class="nk-links">
+      <a href="/#what">What it is</a><a href="/#how">How it works</a>
+      <a href="/#markets">Markets</a><a href="/docs">Docs</a><a href="/#faq">FAQ</a>
+    </div>
+    <div class="nk-actions">
+      <a class="nk-ghost" href="/">Home</a>
+      <button class="nk-burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="nk-mobile" hidden>
+    <a href="/#what">What it is</a><a href="/#how">How it works</a><a href="/#markets">Markets</a>
+    <a href="/docs">Docs</a><a href="/#faq">FAQ</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="sim-banner">
+    <span class="tag">SIMULATION</span>
+    <p><b>This is a demonstration, not a trading application.</b> No wallet is connected, no blockchain is touched and no funds — real or test — are ever moved. Balances and prices below are generated locally in your browser. None will never ask you for a seed phrase or a private key.</p>
+  </div>
+
+  <div class="cols">
+    <div>
+      <div class="panel">
+        <div class="panel-h">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <span>none · best-execution</span>
+          <span><span class="blk"></span><span id="blk">48,210,233</span></span>
+        </div>
+        <div class="pad">
+          <p class="ask">What do you want to do?</p>
+          <div class="inputrow">
+            <span class="gt">&gt;</span>
+            <input id="intent" autocomplete="off" spellcheck="false" placeholder="Buy $5,000 of NVDA"/>
+          </div>
+          <div class="chips" id="chips"></div>
+          <button class="btn" id="exec" disabled>Execute <span class="ar">↗</span></button>
+          <div id="err" class="err hidden"></div>
+
+          <div class="quote hidden" id="quote">
+            <div class="qh"><span>Route plan</span><span class="ok" id="qblock">quoted at block —</span></div>
+            <div class="qrow"><span>Naive swap</span><span id="qnaive">—</span></div>
+            <div class="qrow win"><span>None route</span><span id="qroute">—</span></div>
+            <div class="qrow delta"><span>Extra received</span><span id="qdelta">—</span></div>
+            <div class="qrow"><span>Rate</span><span id="qrate">—</span></div>
+            <div class="qrow"><span>Price impact</span><span id="qimpact">—</span></div>
+            <div class="qrow"><span>Minimum out (0.50% slippage)</span><span id="qmin">—</span></div>
+            <div class="qrow"><span>Network fee</span><span id="qgas">—</span></div>
+            <div class="routeviz" id="viz"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:1.2rem">
+        <div class="panel-h"><span>Activity</span><span id="hcount">0 simulated</span></div>
+        <div class="hist" id="hist"><div class="empty">No simulated trades yet.</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="wcard">
+          <div class="wtop"><b>Demo wallet</b><span class="addr" id="waddr">0x0000…0000</span></div>
+          <div id="bals"></div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:1.2rem">
+        <div class="panel-h"><span>Markets</span><span>simulated</span></div>
+        <div class="wcard" id="mkts"></div>
+      </div>
+      <p class="muted small" style="margin-top:1rem;line-height:1.6">
+        Prices drift randomly for demonstration and do not reflect any real market.
+        Read the <a href="/docs" style="color:var(--accent-soft)">documentation</a> for how the real engine quotes and settles.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="/nk-page.js" defer></script>
+<script>
+(function(){
+  /* ---------- simulated market ---------- */
+  var A = {
+    USDG:{name:'Stablecoin', px:1,        cls:'base'},
+    ETH :{name:'Ether',      px:1831.42,  cls:'crypto'},
+    NVDA:{name:'NVIDIA',     px:121.94,   cls:'equity'},
+    AAPL:{name:'Apple',      px:214.80,   cls:'equity'},
+    TSLA:{name:'Tesla',      px:248.63,   cls:'equity'},
+    COIN:{name:'Coinbase',   px:251.30,   cls:'equity'},
+    AMZN:{name:'Amazon',     px:178.24,   cls:'equity'},
+    MSFT:{name:'Microsoft',  px:449.10,   cls:'equity'},
+    GOOGL:{name:'Alphabet',  px:176.90,   cls:'equity'},
+    META:{name:'Meta',       px:512.70,   cls:'equity'}
+  };
+  var bal = { USDG:25000, ETH:4.2, NVDA:0, AAPL:12, TSLA:0, COIN:0, AMZN:0, MSFT:0, GOOGL:0, META:0 };
+  var block = 48210233, hist = [];
+
+  var $ = function(id){ return document.getElementById(id); };
+  function fmt(v,d){ d = d==null?2:d; return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function short(v){ return v>=1000? fmt(v,0) : fmt(v,2); }
+
+  /* demo address — deliberately obvious, not a real account */
+  var addr = '0xDEM0' + Math.random().toString(16).slice(2,6).toUpperCase() + '…' + Math.random().toString(16).slice(2,6).toUpperCase();
+  $('waddr').textContent = addr;
+
+  /* ---------- render ---------- */
+  function renderBals(){
+    var h = '';
+    Object.keys(bal).forEach(function(s){
+      if (bal[s] <= 0.000001 && s!=='USDG') return;
+      var usd = bal[s]*A[s].px;
+      h += '<div class="bal"><div class="s"><span class="sym">'+s.slice(0,3)+'</span><div><div>'+s+'</div></div></div>'+
+           '<div class="v">'+fmt(bal[s], s==='USDG'?2:4)+'<small>$'+short(usd)+'</small></div></div>';
+    });
+    $('bals').innerHTML = h;
+  }
+  function renderMkts(){
+    var h = '';
+    ['NVDA','AAPL','TSLA','COIN','ETH'].forEach(function(s){
+      h += '<div class="bal"><div class="s"><span class="sym">'+s.slice(0,3)+'</span><div>'+s+'</div></div>'+
+           '<div class="v"><span class="px" data-px="'+s+'">$'+fmt(A[s].px,2)+'</span></div></div>';
+    });
+    $('mkts').innerHTML = h;
+  }
+  renderBals(); renderMkts();
+
+  /* price drift + block ticker */
+  setInterval(function(){
+    Object.keys(A).forEach(function(s){
+      if (s==='USDG') return;
+      var chg = (Math.random()*2-1)*0.004;
+      A[s].px *= (1+chg); A[s].dir = chg>=0?1:-1;
+    });
+    document.querySelectorAll('[data-px]').forEach(function(el){
+      var s = el.getAttribute('data-px');
+      el.textContent = '$'+fmt(A[s].px,2);
+      el.classList.remove('up','dn'); void el.offsetWidth;
+      el.classList.add(A[s].dir>0?'up':'dn');
+    });
+    renderBals();
+    if (!$('quote').classList.contains('hidden')) quote(lastIntent, true);
+  }, 2200);
+  setInterval(function(){ block += Math.floor(Math.random()*4)+1; $('blk').textContent = block.toLocaleString('en-US'); }, 900);
+
+  /* ---------- intent parser ---------- */
+  var SYMS = Object.keys(A);
+  function findSym(txt, skip){
+    var best=null, bi=1e9;
+    SYMS.forEach(function(s){
+      if (skip && s===skip) return;
+      var re = new RegExp('\\b'+s+'\\b','i'), m = txt.match(re);
+      if (m && m.index<bi){ bi=m.index; best=s; }
+    });
+    return best;
+  }
+  function parse(raw){
+    var t = (raw||'').trim();
+    if (!t) return {err:'Type what you want to do — for example "Buy $5,000 of NVDA".'};
+    var low = t.toLowerCase();
+
+    // sell / dump the whole position
+    if (/\b(sell|dump)\b/.test(low)){
+      var s1 = findSym(t);
+      if (!s1) return {err:'Which asset do you want to sell? Try "Sell my AAPL".'};
+      if (s1==='USDG') return {err:'USDG is the base asset here — sell an equity or ETH into it instead.'};
+      var amt = bal[s1];
+      if (/\bhalf\b/.test(low)) amt = bal[s1]/2;
+      if (amt<=0) return {err:'Your demo wallet holds no '+s1+'. Buy some first, then sell it.'};
+      return {inA:s1, outA:'USDG', amtIn:amt};
+    }
+
+    // explicit token amount: "swap 2 ETH into COIN"
+    var mTok = t.match(/([\d,]+(?:\.\d+)?)\s*([A-Za-z]{2,5})\b/);
+    // dollar amount: "buy $5,000 of NVDA"
+    var mUsd = t.match(/\$\s*([\d,]+(?:\.\d+)?)\s*(k|m)?/i);
+
+    var outA = null, inA = null, amtIn = null;
+
+    if (mUsd){
+      var v = parseFloat(mUsd[1].replace(/,/g,''));
+      if (/k/i.test(mUsd[2]||'')) v *= 1000;
+      if (/m/i.test(mUsd[2]||'')) v *= 1e6;
+      inA = 'USDG'; amtIn = v;
+      outA = findSym(t,'USDG');
+      if (!outA) return {err:'Which asset should I buy? Try "Buy $5,000 of NVDA".'};
+    } else if (mTok && A[mTok[2].toUpperCase()]){
+      inA = mTok[2].toUpperCase();
+      amtIn = parseFloat(mTok[1].replace(/,/g,''));
+      var rest = t.slice((mTok.index||0)+mTok[0].length);
+      outA = findSym(rest, inA) || findSym(t, inA);
+      if (!outA) return {err:'What should I swap that into? Try "Swap 2 ETH into COIN".'};
+    } else if (/\bhalf\b/.test(low)){
+      inA = findSym(t) || 'USDG';
+      amtIn = bal[inA]/2;
+      outA = findSym(t, inA);
+      if (!outA) return {err:'What should I swap into? Try "Swap half my USDG into TSLA".'};
+    } else {
+      outA = findSym(t);
+      if (outA) return {err:'How much '+outA+' do you want? Add a size, like "$3,000 of '+outA+'".'};
+      return {err:'I could not read a trade from that. Try "Buy $5,000 of NVDA".'};
+    }
+
+    if (inA===outA) return {err:'Input and output are the same asset.'};
+    if (!(amtIn>0)) return {err:'That size does not parse as a positive amount.'};
+    if (amtIn > bal[inA]+1e-9) return {err:'Insufficient demo balance: you hold '+fmt(bal[inA],4)+' '+inA+'.'};
+    return {inA:inA, outA:outA, amtIn:amtIn};
+  }
+
+  /* ---------- routing model (simulated) ---------- */
+  function route(p){
+    var vIn = p.amtIn * A[p.inA].px;
+    var direct = (p.inA==='USDG'||p.outA==='USDG'||p.inA==='ETH'||p.outA==='ETH');
+    var hops = direct ? [p.inA, p.outA] : [p.inA, 'ETH', p.outA];
+    // naive: single direct pool, wider fee tier + more impact
+    var naiveFee = 0.0030, naiveImpact = Math.min(0.012, vIn/2.2e6);
+    var naiveOut = vIn*(1-naiveFee-naiveImpact)/A[p.outA].px;
+    // routed: better tier, split impact across hops
+    var rFee = direct ? 0.0005 : 0.0010, rImpact = Math.min(0.005, vIn/6.5e6);
+    var routedOut = vIn*(1-rFee-rImpact)/A[p.outA].px;
+    if (routedOut <= naiveOut) routedOut = naiveOut*1.0008;
+    return {
+      hops:hops, naiveOut:naiveOut, routedOut:routedOut,
+      delta:routedOut-naiveOut, deltaPct:(routedOut/naiveOut-1)*100,
+      rate:A[p.inA].px/A[p.outA].px, impact:rImpact*100,
+      min:routedOut*0.995, gas:0.0021, tier:direct?'0.05%':'0.05% + 0.05%', vIn:vIn
+    };
+  }
+
+  function vizSvg(hops, delta, outA){
+    var W=520, H=hops.length>2?128:104, y=hops.length>2?74:56;
+    var xs = hops.length>2 ? [62,260,458] : [80,440];
+    var top = hops.length>2 ? 34 : y;
+    var path = hops.length>2
+      ? 'M62 '+y+' Q150 '+top+' 260 '+top+' Q370 '+top+' 458 '+y
+      : 'M80 '+y+' Q260 '+(y-26)+' 440 '+y;
+    var nodes = hops.map(function(s,i){
+      var cx = xs[i], cy = (hops.length>2 && i===1) ? top : y;
+      return '<circle cx="'+cx+'" cy="'+cy+'" r="21" fill="#0d0f1a" stroke="#3b6dff" stroke-width="1.5"/>'+
+        '<circle cx="'+cx+'" cy="'+cy+'" r="21" fill="none" stroke="#3b6dff" stroke-width="1.5" opacity=".5">'+
+        '<animate attributeName="r" values="21;27;21" dur="2.6s" repeatCount="indefinite"/>'+
+        '<animate attributeName="opacity" values=".5;0;.5" dur="2.6s" repeatCount="indefinite"/></circle>'+
+        '<text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-weight="700" font-size="11" fill="#dfe8ff">'+s+'</text>';
+    }).join('');
+    return '<svg viewBox="0 0 '+W+' '+H+'" fill="none" xmlns="http://www.w3.org/2000/svg">'+
+      '<defs><radialGradient id="pg"><stop offset="0" stop-color="#eaf1ff"/><stop offset="1" stop-color="#3b6dff" stop-opacity="0"/></radialGradient></defs>'+
+      '<path d="'+path+'" stroke="#3b6dff" stroke-width="8" opacity=".14" fill="none"/>'+
+      '<path id="rp" d="'+path+'" stroke="#3b6dff" stroke-width="2.5" fill="none" stroke-dasharray="9 11" opacity=".9">'+
+        '<animate attributeName="stroke-dashoffset" from="0" to="-40" dur="1.1s" repeatCount="indefinite"/></path>'+
+      '<circle r="8" fill="url(#pg)"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#rp"/></animateMotion></circle>'+
+      '<circle r="3.5" fill="#eaf1ff"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#rp"/></animateMotion></circle>'+
+      nodes+
+      '<text x="'+(W/2)+'" y="'+(H-8)+'" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-size="10" fill="#8fa8ff">+'+fmt(delta,4)+' '+outA+' vs naive</text>'+
+      '</svg>';
+  }
+
+  /* ---------- quote ---------- */
+  var lastIntent='', lastPlan=null;
+  function quote(raw, silent){
+    lastIntent = raw;
+    var p = parse(raw);
+    if (p.err){
+      lastPlan=null; $('exec').disabled=true; $('quote').classList.add('hidden');
+      if (!silent && raw.trim()){ $('err').textContent = p.err; $('err').classList.remove('hidden'); }
+      else $('err').classList.add('hidden');
+      return;
+    }
+    $('err').classList.add('hidden');
+    var r = route(p); lastPlan = {p:p, r:r};
+    $('qblock').textContent = 'quoted at block '+block.toLocaleString('en-US');
+    $('qnaive').textContent = fmt(r.naiveOut,4)+' '+p.outA;
+    $('qroute').textContent = fmt(r.routedOut,4)+' '+p.outA;
+    $('qdelta').textContent = '+'+fmt(r.delta,4)+' '+p.outA+'  (+'+r.deltaPct.toFixed(2)+'%)';
+    $('qrate').textContent = '1 '+p.inA+' ≈ '+fmt(r.rate, r.rate<1?6:4)+' '+p.outA;
+    $('qimpact').textContent = r.impact.toFixed(3)+'%  ·  fee '+r.tier;
+    $('qmin').textContent = fmt(r.min,4)+' '+p.outA;
+    $('qgas').textContent = '~$'+r.gas.toFixed(4);
+    $('viz').innerHTML = vizSvg(r.hops, r.delta, p.outA);
+    $('quote').classList.remove('hidden');
+    $('exec').disabled = false;
+  }
+
+  var ti;
+  $('intent').addEventListener('input', function(){ clearTimeout(ti); ti=setTimeout(function(){ quote($('intent').value); },220); });
+  $('intent').addEventListener('keydown', function(e){ if(e.key==='Enter' && !$('exec').disabled) run(); });
+
+  var EX = ['Buy $5,000 of NVDA','Swap 2 ETH into COIN','Get me $3,000 of AMZN','Sell my AAPL','Swap half my USDG into TSLA'];
+  $('chips').innerHTML = EX.map(function(e){ return '<button class="chip">'+e+'</button>'; }).join('');
+  $('chips').addEventListener('click', function(e){
+    if (!e.target.classList.contains('chip')) return;
+    $('intent').value = e.target.textContent; quote(e.target.textContent);
+  });
+
+  /* ---------- simulated execution ---------- */
+  function run(){
+    if (!lastPlan) return;
+    var p = lastPlan.p, r = lastPlan.r;
+    var steps = ['Re-quoting at head block','Simulating route','Awaiting signature (simulated)','Settling on Robinhood Chain'];
+    var ov = document.createElement('div'); ov.className='exec';
+    ov.innerHTML = '<div class="exec-box"><h3>Simulating trade</h3><div id="esteps">'+
+      steps.map(function(s,i){ return '<div class="estep" data-i="'+i+'"><span class="spin"></span><span>'+s+'</span></div>'; }).join('')+
+      '</div><div id="rc"></div></div>';
+    document.body.appendChild(ov);
+    var i=0;
+    function next(){
+      var els = ov.querySelectorAll('.estep');
+      if (i>0) { els[i-1].classList.remove('on'); els[i-1].classList.add('done'); }
+      if (i>=steps.length) return done();
+      els[i].classList.add('on'); i++;
+      setTimeout(next, 620);
+    }
+    function done(){
+      // apply the simulated fill
+      bal[p.inA] -= p.amtIn;
+      bal[p.outA] = (bal[p.outA]||0) + r.routedOut;
+      renderBals();
+      var hash = '0x' + Array.from({length:16},function(){return Math.floor(Math.random()*16).toString(16);}).join('') + '…simulated';
+      $('rc') && ($('rc').innerHTML =
+        '<div class="receipt">'+
+        '<div class="r"><span>Status</span><span class="g">Filled (simulated)</span></div>'+
+        '<div class="r"><span>Sent</span><span>'+fmt(p.amtIn,4)+' '+p.inA+'</span></div>'+
+        '<div class="r"><span>Received</span><span>'+fmt(r.routedOut,4)+' '+p.outA+'</span></div>'+
+        '<div class="r"><span>Route</span><span>'+r.hops.join(' → ')+'</span></div>'+
+        '<div class="r"><span>Better than naive</span><span class="g">+'+fmt(r.delta,4)+' '+p.outA+'</span></div>'+
+        '<div class="r"><span>Block</span><span>'+block.toLocaleString('en-US')+'</span></div>'+
+        '<div class="r"><span>Tx</span><span>'+hash+'</span></div>'+
+        '</div><button class="btn" id="cl" style="margin-top:1.1rem">Close <span class="ar">✕</span></button>');
+      var c = document.getElementById('cl');
+      if (c) c.onclick = function(){ ov.remove(); };
+      hist.unshift({p:p,r:r,hash:hash,block:block});
+      renderHist();
+      quote(lastIntent, true);
+    }
+    next();
+  }
+  $('exec').addEventListener('click', run);
+
+  function renderHist(){
+    $('hcount').textContent = hist.length+' simulated';
+    if (!hist.length){ $('hist').innerHTML = '<div class="empty">No simulated trades yet.</div>'; return; }
+    $('hist').innerHTML = hist.map(function(h){
+      return '<div class="hitem"><b>'+fmt(h.p.amtIn,4)+' '+h.p.inA+'</b> → <b>'+fmt(h.r.routedOut,4)+' '+h.p.outA+'</b>'+
+        '  ·  <span style="color:var(--green)">+'+fmt(h.r.delta,4)+'</span> vs naive'+
+        '<span class="h">'+h.r.hops.join(' → ')+'  ·  block '+h.block.toLocaleString('en-US')+'  ·  '+h.hash+'</span></div>';
+    }).join('');
+  }
+
+  // seed the first quote
+  $('intent').value = EX[0]; quote(EX[0]);
+})();
+</script>
+</body></html>

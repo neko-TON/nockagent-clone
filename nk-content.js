@@ -452,7 +452,90 @@
     if (history.replaceState) history.replaceState(null, '', '#' + id);
   });
 
-  function boot() { T(mount); T(bindFAQ); T(observeRise); T(addNav); }
+  /* ---------------- mobile burger menu ---------------- */
+  function addBurger() {
+    var nav = document.querySelector('nav');
+    if (!nav || document.getElementById('nk-burger')) return;
+    var links = [].slice.call(nav.querySelectorAll('a[href^="/#"], a[href="/docs"], a[href="/app"]'));
+    if (!links.length) return;
+
+    var st = document.getElementById('nk-burger-css');
+    if (!st) {
+      st = document.createElement('style'); st.id = 'nk-burger-css';
+      st.textContent = [
+        '#nk-burger{display:none;position:fixed;top:1.42rem;right:1.55rem;z-index:75;width:38px;height:34px;',
+          'border:1px solid var(--border);border-radius:10px;background:rgba(13,15,26,.9);backdrop-filter:blur(8px);cursor:pointer;padding:8px 9px}',
+        '#nk-burger span{display:block;height:2px;background:var(--foreground);border-radius:2px;transition:transform .3s cubic-bezier(.16,1,.3,1),opacity .2s}',
+        '#nk-burger span+span{margin-top:4px}',
+        '#nk-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}',
+        '#nk-burger[aria-expanded="true"] span:nth-child(2){opacity:0}',
+        '#nk-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}',
+        '#nk-mobile{position:fixed;left:.75rem;right:.75rem;top:5.4rem;z-index:70;display:flex;flex-direction:column;gap:.15rem;',
+          'border:1px solid var(--border);border-radius:18px;padding:.6rem;background:rgba(13,15,26,.97);backdrop-filter:blur(14px);',
+          'box-shadow:0 30px 70px -30px rgba(0,0,0,.95);animation:nkDrop .28s cubic-bezier(.16,1,.3,1)}',
+        '@keyframes nkDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}',
+        '#nk-mobile a{text-decoration:none;color:var(--foreground);padding:.75rem .9rem;border-radius:12px;font-size:15px}',
+        '#nk-mobile a:hover{background:rgba(255,255,255,.06)}',
+        '#nk-mobile a.cta{margin-top:.3rem;text-align:center;font-weight:700;color:#07101f;background:linear-gradient(135deg,#5a83ff,#3b6dff 46%,#2a55e6)}',
+        '@media (max-width:880px){#nk-burger{display:block}nav a[href^="/#"]{display:none}}'
+      ].join('\n');
+      document.head.appendChild(st);
+    }
+
+    // Mounted on <body>, not inside the React-managed <nav>: the nav subtree
+    // swallows click propagation and gets re-rendered, which strips listeners.
+    var b = document.createElement('button');
+    b.id = 'nk-burger'; b.setAttribute('aria-label', 'Menu'); b.setAttribute('aria-expanded', 'false');
+    b.innerHTML = '<span></span><span></span><span></span>';
+    document.body.appendChild(b);
+
+    // state lives in the DOM, so a duplicate binding can never desync it
+    function close() {
+      b.setAttribute('aria-expanded', 'false');
+      var p = document.getElementById('nk-mobile');
+      if (p) p.remove();
+    }
+    function open() {
+      if (document.getElementById('nk-mobile')) return;
+      b.setAttribute('aria-expanded', 'true');
+      var panel = document.createElement('div');
+      panel.id = 'nk-mobile';
+      var html = '';
+      links.forEach(function (a) {
+        var h = a.getAttribute('href'), t = (a.textContent || '').trim();
+        if (!t) return;
+        html += '<a href="' + h + '"' + (h === '/app' ? ' class="cta"' : '') + '>' + t + '</a>';
+      });
+      if (!/href="\/app"/.test(html)) html += '<a href="/app" class="cta">Launch app</a>';
+      panel.innerHTML = html;
+      document.body.appendChild(panel);
+      panel.addEventListener('click', function (ev) { if (ev.target.tagName === 'A') close(); });
+    }
+    // Direct binding — safe now that the button lives on <body>, and it works
+    // even if something upstream stops click propagation before <document>.
+    b.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      if (document.getElementById('nk-mobile')) close(); else open();
+    });
+
+    // Delegated on document as a backstop for re-created nodes.
+    if (!document.__nkBurgerDoc) {
+      document.__nkBurgerDoc = 1;
+      document.addEventListener('click', function (e) {
+        var hitBurger = e.target.closest && e.target.closest('#nk-burger');
+        if (hitBurger) {
+          e.preventDefault(); e.stopPropagation();
+          if (document.getElementById('nk-mobile')) close(); else open();
+          return;
+        }
+        var p = document.getElementById('nk-mobile');
+        if (p && !p.contains(e.target)) close();
+      });
+      addEventListener('resize', function () { if (innerWidth > 880) close(); });
+    }
+  }
+
+  function boot() { T(mount); T(bindFAQ); T(observeRise); T(addNav); T(addBurger); }
   if (document.readyState !== 'loading') boot();
   else document.addEventListener('DOMContentLoaded', boot);
   [900, 2000, 3600].forEach(function (d) { setTimeout(boot, d); });
