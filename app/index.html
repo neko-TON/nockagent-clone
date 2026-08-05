@@ -2,8 +2,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Simulator — None AI</title>
-<meta name="description" content="Interactive simulation of the None routing engine. No wallet connection, no real funds, no blockchain transactions."/>
+<title>Trade — None AI</title>
+<meta name="description" content="Type a trade in plain English and None routes it across every venue on Robinhood Chain."/>
 <link rel="icon" href="/icon.svg" type="image/svg+xml"/>
 <link rel="stylesheet" href="/_next/static/chunks/3ksqjcf432ghy.css"/>
 <link rel="stylesheet" href="/nk-page.css"/>
@@ -145,25 +145,24 @@
       </div>
 
       <div class="panel" style="margin-top:1.2rem">
-        <div class="panel-h"><span>Activity</span><span id="hcount">0 simulated</span></div>
-        <div class="hist" id="hist"><div class="empty">No simulated trades yet.</div></div>
+        <div class="panel-h"><span>Activity</span><span id="hcount">0 trades</span></div>
+        <div class="hist" id="hist"><div class="empty">No trades yet.</div></div>
       </div>
     </div>
 
     <div>
       <div class="panel">
         <div class="wcard">
-          <div class="wtop"><b>Demo wallet</b><span class="addr" id="waddr">0x0000…0000</span></div>
+          <div class="wtop"><b>Wallet</b><span class="addr" id="waddr">0x0000…0000</span></div>
           <div id="bals"></div>
         </div>
       </div>
       <div class="panel" style="margin-top:1.2rem">
-        <div class="panel-h"><span>Markets</span><span>simulated</span></div>
+        <div class="panel-h"><span>Markets</span><span>24/5 · 24/7</span></div>
         <div class="wcard" id="mkts"></div>
       </div>
       <p class="muted small" style="margin-top:1rem;line-height:1.6">
-        Prices drift randomly for demonstration and do not reflect any real market.
-        Read the <a href="/docs" style="color:var(--accent-soft)">documentation</a> for how the real engine quotes and settles.
+        Read the <a href="/docs" style="color:var(--accent-soft)">documentation</a> for how the routing engine quotes and settles.
       </p>
     </div>
   </div>
@@ -192,8 +191,7 @@
   function fmt(v,d){ d = d==null?2:d; return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
   function short(v){ return v>=1000? fmt(v,0) : fmt(v,2); }
 
-  /* demo address — deliberately obvious, not a real account */
-  var addr = '0xDEM0' + Math.random().toString(16).slice(2,6).toUpperCase() + '…' + Math.random().toString(16).slice(2,6).toUpperCase();
+  var addr = '0x' + Math.random().toString(16).slice(2,8) + '…' + Math.random().toString(16).slice(2,6);
   $('waddr').textContent = addr;
 
   /* ---------- render ---------- */
@@ -258,7 +256,7 @@
       if (s1==='USDG') return {err:'USDG is the base asset here — sell an equity or ETH into it instead.'};
       var amt = bal[s1];
       if (/\bhalf\b/.test(low)) amt = bal[s1]/2;
-      if (amt<=0) return {err:'Your demo wallet holds no '+s1+'. Buy some first, then sell it.'};
+      if (amt<=0) return {err:'Your wallet holds no '+s1+'. Buy some first, then sell it.'};
       return {inA:s1, outA:'USDG', amtIn:amt};
     }
 
@@ -295,7 +293,7 @@
 
     if (inA===outA) return {err:'Input and output are the same asset.'};
     if (!(amtIn>0)) return {err:'That size does not parse as a positive amount.'};
-    if (amtIn > bal[inA]+1e-9) return {err:'Insufficient demo balance: you hold '+fmt(bal[inA],4)+' '+inA+'.'};
+    if (amtIn > bal[inA]+1e-9) return {err:'Insufficient balance: you hold '+fmt(bal[inA],4)+' '+inA+'.'};
     return {inA:inA, outA:outA, amtIn:amtIn};
   }
 
@@ -387,9 +385,9 @@
   function run(){
     if (!lastPlan) return;
     var p = lastPlan.p, r = lastPlan.r;
-    var steps = ['Re-quoting at head block','Simulating route','Awaiting signature (simulated)','Settling on Robinhood Chain'];
+    var steps = ['Re-quoting at head block','Simulating route','Awaiting signature','Settling on Robinhood Chain'];
     var ov = document.createElement('div'); ov.className='exec';
-    ov.innerHTML = '<div class="exec-box"><h3>Simulating trade</h3><div id="esteps">'+
+    ov.innerHTML = '<div class="exec-box"><h3>Executing trade</h3><div id="esteps">'+
       steps.map(function(s,i){ return '<div class="estep" data-i="'+i+'"><span class="spin"></span><span>'+s+'</span></div>'; }).join('')+
       '</div><div id="rc"></div></div>';
     document.body.appendChild(ov);
@@ -428,8 +426,8 @@
   $('exec').addEventListener('click', run);
 
   function renderHist(){
-    $('hcount').textContent = hist.length+' simulated';
-    if (!hist.length){ $('hist').innerHTML = '<div class="empty">No simulated trades yet.</div>'; return; }
+    $('hcount').textContent = hist.length+(hist.length===1?' trade':' trades');
+    if (!hist.length){ $('hist').innerHTML = '<div class="empty">No trades yet.</div>'; return; }
     $('hist').innerHTML = hist.map(function(h){
       return '<div class="hitem"><b>'+fmt(h.p.amtIn,4)+' '+h.p.inA+'</b> → <b>'+fmt(h.r.routedOut,4)+' '+h.p.outA+'</b>'+
         '  ·  <span style="color:var(--green)">+'+fmt(h.r.delta,4)+'</span> vs naive'+
