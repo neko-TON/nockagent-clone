@@ -38,11 +38,121 @@
     '#nk-route{margin:1.1rem 0 .2rem;border:1px solid var(--border);border-radius:12px;background:color-mix(in oklab,#060713 55%,transparent);padding:.6rem .4rem .3rem;overflow:hidden}',
     '#nk-route .cap{font-family:var(--font-geist-mono),monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#8a97a0;padding:0 .6rem .1rem}',
     '#nk-route svg{display:block;width:100%;height:auto}',
+    /* live price ticker */
+    '#nk-ticker{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:55;display:flex;align-items:center;overflow:hidden;',
+      'background:color-mix(in oklab,#060713 88%,transparent);border-top:1px solid color-mix(in oklab,#3b6dff 30%,transparent);backdrop-filter:blur(8px);',
+      '-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}',
+    '.nk-ticker-track{display:inline-flex;white-space:nowrap;animation:nk-tape 55s linear infinite;will-change:transform}',
+    '#nk-ticker:hover .nk-ticker-track{animation-play-state:paused}',
+    '@keyframes nk-tape{to{transform:translateX(-50%)}}',
+    '.nk-set{display:inline-flex}',
+    '.nk-tk{display:inline-flex;align-items:center;gap:.4rem;padding:0 1.1rem;font-family:var(--font-geist-mono),monospace;font-size:12px;color:#c7cfda;border-right:1px solid color-mix(in oklab,#22252e 60%,transparent)}',
+    '.nk-tk b{color:#eaf3f4;font-weight:700}',
+    '.nk-tk i{font-style:normal;color:#aab4c2;transition:color .35s;font-variant-numeric:tabular-nums}',
+    '.nk-tk u{text-decoration:none;font-size:11px;color:#6b7482;transition:color .35s}',
+    '.nk-tk.nk-up i,.nk-tk.nk-up u{color:#37d67a}',
+    '.nk-tk.nk-dn i,.nk-tk.nk-dn u{color:#ff6b6b}',
+    /* intro boot loader */
+    '#nk-intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(62% 62% at 50% 42%,#0b1326,#050713 78%);transition:opacity .55s ease}',
+    '#nk-intro.nk-out{opacity:0;pointer-events:none}',
+    '.nk-intro-inner{width:min(90vw,440px);text-align:center}',
+    '.nk-wm{font-family:Geist,ui-sans-serif,system-ui,sans-serif;font-weight:800;font-size:64px;letter-spacing:-2px;color:#eaf3f4;text-shadow:0 0 34px rgba(59,109,255,.6);animation:nk-wm 1.8s ease infinite alternate}',
+    '@keyframes nk-wm{to{text-shadow:0 0 56px rgba(59,109,255,.95)}}',
+    '.nk-sub{margin-top:-4px;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#3b6dff;font-family:var(--font-geist-mono),monospace}',
+    '.nk-boot{margin:24px auto 14px;text-align:left;min-height:104px;max-width:360px;font-family:var(--font-geist-mono),monospace;font-size:12.5px;line-height:2;color:#8a97a0}',
+    '.nk-line{opacity:0;transform:translateY(4px);animation:nk-lineIn .25s ease forwards}',
+    '@keyframes nk-lineIn{to{opacity:1;transform:none}}',
+    '.nk-line .nk-gt{color:#3b6dff;margin-right:.4rem}',
+    '.nk-line .nk-dots{color:#33477a}',
+    '.nk-line .nk-ok{color:#37d67a;opacity:0;margin-left:.35rem;font-weight:700}',
+    '.nk-line .nk-ok.on{opacity:1}',
+    '.nk-bar{height:3px;border-radius:3px;max-width:360px;margin:0 auto;background:color-mix(in oklab,#3b6dff 18%,transparent);overflow:hidden}',
+    '.nk-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3b6dff,#8fa8ff);animation:nk-fill 2.4s cubic-bezier(.4,0,.2,1) forwards;box-shadow:0 0 12px rgba(59,109,255,.7)}',
+    '@keyframes nk-fill{to{width:100%}}',
+    '.nk-online{margin-top:18px;font-family:var(--font-geist-mono),monospace;font-size:13px;letter-spacing:.24em;color:#37d67a;opacity:0;transition:opacity .4s}',
+    '.nk-online.on{opacity:1;animation:nk-blink 1s steps(1) infinite}',
+    '@keyframes nk-blink{50%{opacity:.35}}',
+    'body{padding-bottom:34px}',
     REDUCE ? '*{scroll-behavior:auto}' : ''
   ].join('\n');
   document.head.appendChild(css);
 
   function T(fn){ try { fn(); } catch (e) {} }
+
+  // show the intro immediately (before hydration paints), covers content while booting
+  T(function(){ intro(); });
+
+  /* ---------- A. intro boot loader ---------- */
+  function intro(){
+    if (document.getElementById('nk-intro')) return;
+    var ov = document.createElement('div');
+    ov.id = 'nk-intro';
+    ov.innerHTML = '<div class="nk-intro-inner">' +
+      '<div class="nk-wm">NONE</div>' +
+      '<div class="nk-sub">best-execution engine</div>' +
+      '<div class="nk-boot"></div>' +
+      '<div class="nk-bar"><i></i></div>' +
+      '<div class="nk-online">● AI ONLINE</div>' +
+      '</div>';
+    (document.documentElement || document.body).appendChild(ov);
+    function kill(){ ov.classList.add('nk-out'); setTimeout(function(){ if (ov.parentNode) ov.parentNode.removeChild(ov); }, 600); }
+    if (REDUCE) { setTimeout(kill, 500); return; }
+    var lines = ['initializing None core', 'connecting Robinhood Chain', 'loading Uniswap v2 · v3 · v4', 'arming best-route engine'];
+    var boot = ov.querySelector('.nk-boot'), i = 0;
+    function nextLine(){
+      if (i >= lines.length) { finish(); return; }
+      var l = document.createElement('div'); l.className = 'nk-line';
+      l.innerHTML = '<span class="nk-gt">&gt;</span>' + lines[i] + ' <span class="nk-dots"></span><span class="nk-ok">ok</span>';
+      boot.appendChild(l);
+      setTimeout(function(){ l.querySelector('.nk-dots').textContent = ' ............'; }, 70);
+      setTimeout(function(){ l.querySelector('.nk-ok').classList.add('on'); i++; nextLine(); }, 380);
+    }
+    function finish(){ ov.querySelector('.nk-online').classList.add('on'); setTimeout(kill, 620); }
+    setTimeout(nextLine, 300);
+    ov.addEventListener('click', kill);
+    setTimeout(function(){ if (ov.parentNode) kill(); }, 6000); // safety
+  }
+
+  /* ---------- B. live price ticker ---------- */
+  function mountTicker(){
+    if (document.getElementById('nk-ticker')) return;
+    var tokens = [['NVDA', 122.4], ['AAPL', 214.8], ['TSLA', 248.6], ['COIN', 251.3], ['ETH', 1831], ['AMZN', 178.2], ['GOOGL', 176.9], ['MSFT', 449.1], ['META', 512.7], ['BTC', 63120], ['USDG', 1.0]];
+    function fmt(p){ return p >= 1000 ? Math.round(p).toLocaleString('en-US') : p.toFixed(2); }
+    function buildSet(){
+      var set = document.createElement('span'); set.className = 'nk-set';
+      tokens.forEach(function (t) {
+        var s = document.createElement('span'); s.className = 'nk-tk';
+        s.innerHTML = '<b>' + t[0] + '</b> <i>' + fmt(t[1]) + '</i> <u></u>';
+        set.appendChild(s);
+      });
+      return set;
+    }
+    var bar = document.createElement('div'); bar.id = 'nk-ticker';
+    var track = document.createElement('div'); track.className = 'nk-ticker-track';
+    track.appendChild(buildSet()); track.appendChild(buildSet());
+    bar.appendChild(track);
+    document.body.appendChild(bar);
+    var state = {}; tokens.forEach(function (t) { state[t[0]] = { price: t[1], dir: 1 }; });
+    var items = [].slice.call(bar.querySelectorAll('.nk-tk'));
+    function tick(){
+      tokens.forEach(function (t) {
+        var sym = t[0], st = state[sym];
+        if (sym === 'USDG') { st.price = 1 + (Math.random() * 0.002 - 0.001); st.dir = 0; st.pct = 0; }
+        else { var chg = (Math.random() * 2 - 1) * 0.006; st.price *= (1 + chg); st.dir = chg >= 0 ? 1 : -1; st.pct = chg * 100; }
+        items.forEach(function (el) {
+          if (el.querySelector('b').textContent !== sym) return;
+          el.querySelector('i').textContent = fmt(st.price);
+          var u = el.querySelector('u');
+          u.textContent = sym === 'USDG' ? '0.00%' : (st.dir > 0 ? '▲' : '▼') + Math.abs(st.pct).toFixed(2) + '%';
+          el.classList.remove('nk-up', 'nk-dn');
+          void el.offsetWidth;
+          if (sym !== 'USDG') el.classList.add(st.dir > 0 ? 'nk-up' : 'nk-dn');
+        });
+      });
+    }
+    tick();
+    if (!REDUCE) setInterval(tick, 1700);
+  }
 
   /* ---------- 1. scroll progress ---------- */
   var progUpd = null;
@@ -291,10 +401,10 @@
 
   /* ---------- init ---------- */
   function init(){
-    T(revealFix); T(mountProgress); T(bindCards); T(bindRobot); T(mountAgent); T(mountRoute); T(bindMagnetic); T(setupObservers);
+    T(revealFix); T(mountProgress); T(mountTicker); T(bindCards); T(bindRobot); T(mountAgent); T(mountRoute); T(bindMagnetic); T(setupObservers);
   }
   if (document.readyState !== 'loading') init();
   else document.addEventListener('DOMContentLoaded', init);
   // re-run after hydration settles (React may reconcile away pre-hydration nodes / re-hide reveals)
-  [700, 1600, 3200].forEach(function (d) { setTimeout(function () { T(revealFix); T(mountProgress); T(bindCards); T(bindRobot); T(mountAgent); T(mountRoute); T(bindMagnetic); }, d); });
+  [700, 1600, 3200].forEach(function (d) { setTimeout(function () { T(revealFix); T(mountProgress); T(mountTicker); T(bindCards); T(bindRobot); T(mountAgent); T(mountRoute); T(bindMagnetic); }, d); });
 })();
