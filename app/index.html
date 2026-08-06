@@ -60,7 +60,8 @@
 .bal{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;font-size:13.5px;border-top:1px solid rgba(30,42,34,.6)}
 .bal:first-of-type{border-top:0}
 .bal .s{display:flex;align-items:center;gap:.55rem}
-.sym{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-geist-mono),monospace;font-size:9px;font-weight:700;background:rgba(35,199,111,.14);border:1px solid rgba(35,199,111,.3);color:var(--accent-soft)}
+.sym{position:relative;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;overflow:hidden;font-family:var(--font-geist-mono),monospace;font-size:9px;font-weight:700;background:rgba(35,199,111,.14);border:1px solid rgba(35,199,111,.3);color:var(--accent-soft);flex:0 0 auto}
+.sym img{position:absolute;inset:0;width:100%;height:100%;display:block}
 .bal .v{font-family:var(--font-geist-mono),monospace;text-align:right;color:#c2d6c9}
 .bal .v small{display:block;color:var(--muted);font-size:11px}
 .px{font-family:var(--font-geist-mono),monospace;font-size:11px;transition:color .4s}
@@ -187,6 +188,11 @@
 
   var $ = function(id){ return document.getElementById(id); };
   function fmt(v,d){ d = d==null?2:d; return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function icon(s){
+    // abbreviation sits under the mark, so a missing logo degrades to text
+    return '<span class="sym">'+s.slice(0,3)+
+           '<img src="/logos/'+s+'.svg" alt="" loading="lazy" onerror="this.remove()"/></span>';
+  }
   function short(v){ return v>=1000? fmt(v,0) : fmt(v,2); }
 
   var addr = '0x' + Math.random().toString(16).slice(2,8) + '…' + Math.random().toString(16).slice(2,6);
@@ -198,7 +204,7 @@
     Object.keys(bal).forEach(function(s){
       if (bal[s] <= 0.000001 && s!=='USDG') return;
       var usd = bal[s]*A[s].px;
-      h += '<div class="bal"><div class="s"><span class="sym">'+s.slice(0,3)+'</span><div><div>'+s+'</div></div></div>'+
+      h += '<div class="bal"><div class="s">'+icon(s)+'<div><div>'+s+'</div></div></div>'+
            '<div class="v">'+fmt(bal[s], s==='USDG'?2:4)+'<small>$'+short(usd)+'</small></div></div>';
     });
     $('bals').innerHTML = h;
@@ -206,7 +212,7 @@
   function renderMkts(){
     var h = '';
     ['NVDA','AAPL','TSLA','COIN','ETH'].forEach(function(s){
-      h += '<div class="bal"><div class="s"><span class="sym">'+s.slice(0,3)+'</span><div>'+s+'</div></div>'+
+      h += '<div class="bal"><div class="s">'+icon(s)+'<div>'+s+'</div></div>'+
            '<div class="v"><span class="px" data-px="'+s+'">$'+fmt(A[s].px,2)+'</span></div></div>';
     });
     $('mkts').innerHTML = h;

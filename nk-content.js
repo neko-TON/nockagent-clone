@@ -32,6 +32,8 @@
     '.nk-tbl td{padding:.85rem .9rem;border-top:1px solid var(--border);color:#c2d6c9;vertical-align:middle;line-height:1.6}',
     '.nk-tbl .mono{font-family:var(--font-geist-mono),monospace;font-variant-numeric:tabular-nums}',
     '.nk-scroll{overflow-x:auto}',
+    '.nk-ico{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;overflow:hidden;vertical-align:-6px;margin-right:.55rem}',
+    '.nk-ico img{width:100%;height:100%;display:block}',
     '.nk-pill{display:inline-block;padding:.12rem .5rem;border-radius:5px;font-size:11px;font-family:var(--font-geist-mono),monospace;border:1px solid var(--border);color:#8a9a90}',
     '.nk-pill.g{border-color:rgba(35,199,111,.35);color:#86d8a8}',
     '.nk-pill.m{border-color:var(--border);color:#8a9a90}',
@@ -134,7 +136,9 @@
       ['USDG', 'Stablecoin', 'Base asset', '—', '24/7']
     ].map(function (r) {
       var hours = r[4] === '24/7' ? '<span class="nk-pill g">24/7</span>' : '<span class="nk-pill">24/5</span>';
-      return '<tr><td class="mono font-semibold text-foreground">' + r[0] + '</td><td>' + r[1] + '</td>' +
+      return '<tr><td class="mono font-semibold text-foreground">' +
+        '<span class="nk-ico"><img src="/logos/' + r[0] + '.svg" alt="" loading="lazy" ' +
+        'onerror="this.parentNode.remove()"/></span>' + r[0] + '</td><td>' + r[1] + '</td>' +
         '<td><span class="nk-pill m">' + r[2] + '</span></td><td class="mono text-muted">' + r[3] + '</td><td>' + hours + '</td></tr>';
     }).join('');
     return section({
