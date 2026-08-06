@@ -47,7 +47,7 @@
       if (!svg || svg.nodeName.toLowerCase() !== 'svg') { img.__nkSwapping = 0; return; }
       svg.setAttribute('data-nk-mascot', '1');
       svg.setAttribute('class', cls);
-      svg.style.aspectRatio = '306 / 462';
+      svg.style.aspectRatio = '384 / 462';
       svg.style.width = 'auto';
       img.replaceWith(svg);
       // the site's reveal wrapper can leave the hero hidden
