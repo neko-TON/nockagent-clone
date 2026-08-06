@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 580" fill="none" role="img" aria-label="Floating high-tech AI robot holding a Nock coin">
   <defs>
     <radialGradient id="aura" cx="50%" cy="40%" r="62%">
-      <stop offset="0%" stop-color="#22e07a" stop-opacity="0.55"/>
+      <stop offset="0%" stop-color="#23c76f" stop-opacity="0.30"/>
       <stop offset="45%" stop-color="#149657" stop-opacity="0.20"/>
-      <stop offset="100%" stop-color="#22e07a" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#23c76f" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#2c6349"/>
@@ -27,38 +27,22 @@
     <radialGradient id="core" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#e9fdf1"/>
       <stop offset="38%" stop-color="#5fe6a0"/>
-      <stop offset="100%" stop-color="#22e07a" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#23c76f" stop-opacity="0"/>
     </radialGradient>
     <filter id="blurG" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="7"/></filter>
     <filter id="blurS" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2"/></filter>
   </defs>
 
   <style>
-    @keyframes nkPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.18)}}
-    @keyframes nkBreathe{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.14)}}
-    @keyframes nkBlink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
-    @keyframes nkTwinkle{0%,100%{opacity:.35}50%{opacity:.95}}
-    @keyframes nkDrift{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
-    @keyframes nkSpin{to{transform:rotate(360deg)}}
-    @keyframes nkFloorPulse{0%,100%{opacity:.22;transform:scaleX(1)}50%{opacity:.4;transform:scaleX(1.12)}}
-    #eyes{transform-box:fill-box;transform-origin:center;animation:nkBlink 5.2s ease-in-out infinite}
-    .eyeGlow{transform-box:fill-box;transform-origin:center;animation:nkPulse 2.6s ease-in-out infinite}
-    #coreGlow{transform-box:fill-box;transform-origin:center;animation:nkBreathe 3s ease-in-out infinite}
-    #coreDot{transform-box:fill-box;transform-origin:center;animation:nkBreathe 3s ease-in-out infinite}
-    #antTip{transform-box:fill-box;transform-origin:center;animation:nkPulse 2s ease-in-out infinite}
-    .pt{animation:nkTwinkle 3.4s ease-in-out infinite}
-    .pt:nth-of-type(2){animation-delay:.6s}.pt:nth-of-type(3){animation-delay:1.2s}
-    .pt:nth-of-type(4){animation-delay:.3s}.pt:nth-of-type(5){animation-delay:1.6s}
-    .pt:nth-of-type(6){animation-delay:.9s}.pt:nth-of-type(7){animation-delay:2s}
-    #hexes{transform-box:fill-box;transform-origin:center;animation:nkDrift 7s ease-in-out infinite}
-    #floor1,#floor2{transform-box:fill-box;transform-origin:center;animation:nkFloorPulse 4s ease-in-out infinite}
-    #coinRidge{transform-box:fill-box;transform-origin:230px 400px;animation:nkSpin 28s linear infinite}
-    @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+    /* one small human touch: an occasional blink. Nothing else moves. */
+    @keyframes nkBlink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+    #eyes{transform-box:fill-box;transform-origin:center;animation:nkBlink 6.5s ease-in-out infinite}
+    @media (prefers-reduced-motion:reduce){#eyes{animation:none}}
   </style>
 
   <!-- ambient aura + floating particles -->
   <ellipse cx="230" cy="250" rx="205" ry="240" fill="url(#aura)"/>
-  <g fill="#7ff0b0">
+  <g fill="#86d8a8">
     <circle class="pt" cx="104" cy="150" r="3" opacity="0.8"/>
     <circle class="pt" cx="356" cy="118" r="2.4" opacity="0.7"/>
     <circle class="pt" cx="92" cy="352" r="2.2" opacity="0.6"/>
@@ -67,14 +51,14 @@
     <circle class="pt" cx="316" cy="470" r="2.4" opacity="0.6"/>
     <circle class="pt" cx="120" cy="486" r="2" opacity="0.55"/>
   </g>
-  <g id="hexes" stroke="#22e07a" stroke-width="1.4" opacity="0.35" fill="none">
+  <g id="hexes" stroke="#23c76f" stroke-width="1.4" opacity="0.35" fill="none">
     <path d="M78 250 l14 -8 l14 8 l0 16 l-14 8 l-14 -8 Z"/>
     <path d="M368 210 l12 -7 l12 7 l0 14 l-12 7 l-12 -7 Z"/>
   </g>
 
   <!-- floor glow (floating) -->
-  <ellipse id="floor1" cx="230" cy="540" rx="132" ry="20" fill="#22e07a" opacity="0.28" filter="url(#blurG)"/>
-  <ellipse id="floor2" cx="230" cy="540" rx="72" ry="10" fill="#7ff0b0" opacity="0.35" filter="url(#blurS)"/>
+  <ellipse id="floor1" cx="230" cy="540" rx="132" ry="20" fill="#23c76f" opacity="0.16" filter="url(#blurG)"/>
+  <ellipse id="floor2" cx="230" cy="540" rx="72" ry="10" fill="#86d8a8" opacity="0.35" filter="url(#blurS)"/>
 
   <!-- lower hover body + thruster (behind coin) -->
   <path d="M188 348 L200 442 Q230 476 260 442 L272 348 Z" fill="url(#metal)" stroke="#275c42" stroke-width="1.5"/>
@@ -93,8 +77,8 @@
   <!-- shoulders -->
   <circle cx="160" cy="246" r="24" fill="url(#metal)" stroke="#2c6349" stroke-width="1.5"/>
   <circle cx="300" cy="246" r="24" fill="url(#metal)" stroke="#2c6349" stroke-width="1.5"/>
-  <circle cx="160" cy="246" r="7" fill="#22e07a" opacity="0.8"/>
-  <circle cx="300" cy="246" r="7" fill="#22e07a" opacity="0.8"/>
+  <circle cx="160" cy="246" r="7" fill="#23c76f" opacity="0.8"/>
+  <circle cx="300" cy="246" r="7" fill="#23c76f" opacity="0.8"/>
   <!-- chest core -->
   <circle id="coreGlow" cx="230" cy="286" r="34" fill="url(#core)" filter="url(#blurS)"/>
   <circle cx="230" cy="286" r="26" fill="none" stroke="#2a6247" stroke-width="5"/>
@@ -122,26 +106,26 @@
   <circle cx="309" cy="129" r="3" fill="#5fe6a0"/>
 
   <!-- AI label on forehead -->
-  <text x="231" y="105" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="31" letter-spacing="1" fill="#22e07a" filter="url(#blurG)">AI</text>
+  <text x="231" y="105" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="31" letter-spacing="1" fill="#23c76f" filter="url(#blurG)">AI</text>
   <text x="230" y="104" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="31" letter-spacing="1" fill="#dcf7e8">AI</text>
 
   <!-- visor + eyes -->
   <rect x="175" y="116" width="110" height="52" rx="22" fill="url(#visor)" stroke="#1e4a35" stroke-width="1.5"/>
-  <rect class="eyeGlow" x="196" y="134" width="30" height="12" rx="6" fill="#22e07a" filter="url(#blurG)"/>
-  <rect class="eyeGlow" x="234" y="134" width="30" height="12" rx="6" fill="#22e07a" filter="url(#blurG)"/>
+  <rect class="eyeGlow" x="196" y="134" width="30" height="12" rx="6" fill="#23c76f" filter="url(#blurG)"/>
+  <rect class="eyeGlow" x="234" y="134" width="30" height="12" rx="6" fill="#23c76f" filter="url(#blurG)"/>
   <g id="eyes">
     <rect x="196" y="135" width="30" height="10" rx="5" fill="#c2f7db"/>
     <rect x="234" y="135" width="30" height="10" rx="5" fill="#c2f7db"/>
   </g>
 
   <!-- coin (in front of arms) -->
-  <circle cx="230" cy="400" r="62" fill="#22e07a" opacity="0.5" filter="url(#blurG)"/>
+  <circle cx="230" cy="400" r="62" fill="#23c76f" opacity="0.5" filter="url(#blurG)"/>
   <circle cx="230" cy="400" r="58" fill="url(#coinFace)"/>
   <circle cx="230" cy="400" r="56" fill="none" stroke="#0f2a1c" stroke-width="8"/>
-  <circle id="coinRidge" cx="230" cy="400" r="56" fill="none" stroke="#22e07a" stroke-width="8" stroke-dasharray="3 7" opacity="0.55"/>
+  <circle id="coinRidge" cx="230" cy="400" r="56" fill="none" stroke="#23c76f" stroke-width="8" stroke-dasharray="3 7" opacity="0.55"/>
   <circle cx="230" cy="400" r="47" fill="none" stroke="#20573c" stroke-width="2"/>
   <path d="M196 368 A58 58 0 0 1 264 368" stroke="#ffffff" stroke-width="6" fill="none" opacity="0.14"/>
-  <text x="231" y="401" dy="0.35em" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="62" fill="#22e07a" filter="url(#blurG)">N</text>
+  <text x="231" y="401" dy="0.35em" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="62" fill="#23c76f" filter="url(#blurG)">N</text>
   <text x="230" y="400" dy="0.35em" text-anchor="middle" font-family="Geist, ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="62" fill="#e4f9ed">N</text>
 
   <!-- hands / grippers (in front of coin) -->

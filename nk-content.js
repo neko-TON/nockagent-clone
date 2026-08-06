@@ -1,7 +1,8 @@
 /* ============================================================
-   None — content + animation expansion layer
-   Adds detailed sections (metrics, routing deep-dive, fees, markets,
-   security, comparison, roadmap, FAQ) and a richer animation system.
+   None — content layer.
+   Adds the reference sections (routing, fees, markets, safety,
+   comparison, roadmap, FAQ), the FAQ accordion and the mobile menu.
+   One quiet fade-up on reveal; no decorative motion.
    Injected after hydration; defensive and idempotent.
    ============================================================ */
 (function () {
@@ -21,69 +22,37 @@
   var css = document.createElement('style');
   css.id = 'nk-content-css';
   css.textContent = [
-    /* staggered rise-in */
-    '.nk-rise{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}',
+    '.nk-rise{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}',
     '.nk-rise.nk-in{opacity:1;transform:none}',
-    /* animated section divider */
-    '.nk-div{position:relative;height:1px;max-width:72rem;margin:0 auto;background:linear-gradient(90deg,transparent,var(--border),transparent);overflow:visible}',
-    '.nk-div::after{content:"";position:absolute;top:-1px;left:0;width:22%;height:3px;border-radius:3px;',
-      'background:linear-gradient(90deg,transparent,#22e07a,transparent);filter:blur(.5px);animation:nk-sweep 7s ease-in-out infinite}',
-    '@keyframes nk-sweep{0%{left:-25%;opacity:0}12%{opacity:1}88%{opacity:1}100%{left:103%;opacity:0}}',
-    /* metric tiles */
-    '.nk-metric{position:relative;overflow:hidden}',
-    '.nk-metric .v{font-variant-numeric:tabular-nums}',
-    '.nk-metric::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,rgba(34,224,122,.10),transparent 60%);pointer-events:none}',
-    '.nk-live{display:inline-flex;align-items:center;gap:.4rem;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#37d67a}',
-    '.nk-live b{width:6px;height:6px;border-radius:50%;background:#37d67a;animation:nk-lp 1.6s ease-out infinite}',
-    '@keyframes nk-lp{0%{box-shadow:0 0 0 0 rgba(55,214,122,.6)}70%{box-shadow:0 0 0 7px rgba(55,214,122,0)}100%{box-shadow:0 0 0 0 rgba(55,214,122,0)}}',
-    /* tables */
     '.nk-tbl{width:100%;border-collapse:collapse;font-size:14px}',
-    '.nk-tbl th{text-align:left;font-family:var(--font-geist-mono),monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#8a9a90;padding:0 .9rem .7rem;font-weight:500}',
-    '.nk-tbl td{padding:.85rem .9rem;border-top:1px solid var(--border);color:#c2d6c9;vertical-align:middle}',
-    '.nk-tbl tbody tr{transition:background .25s}',
-    '.nk-tbl tbody tr:hover{background:color-mix(in oklab,#22e07a 7%,transparent)}',
+    '.nk-tbl th{text-align:left;font-family:var(--font-geist-mono),monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8a9a90;padding:0 .9rem .7rem;font-weight:500}',
+    '.nk-tbl td{padding:.85rem .9rem;border-top:1px solid var(--border);color:#c2d6c9;vertical-align:middle;line-height:1.6}',
     '.nk-tbl .mono{font-family:var(--font-geist-mono),monospace;font-variant-numeric:tabular-nums}',
     '.nk-scroll{overflow-x:auto}',
-    '.nk-pill{display:inline-block;padding:.15rem .55rem;border-radius:999px;font-size:11px;font-family:var(--font-geist-mono),monospace;border:1px solid color-mix(in oklab,#22e07a 35%,transparent);color:#7ff0b0}',
-    '.nk-pill.g{border-color:color-mix(in oklab,#37d67a 40%,transparent);color:#37d67a}',
+    '.nk-pill{display:inline-block;padding:.12rem .5rem;border-radius:5px;font-size:11px;font-family:var(--font-geist-mono),monospace;border:1px solid var(--border);color:#8a9a90}',
+    '.nk-pill.g{border-color:rgba(35,199,111,.35);color:#86d8a8}',
     '.nk-pill.m{border-color:var(--border);color:#8a9a90}',
-    /* comparison check marks */
-    '.nk-yes{color:#37d67a;font-weight:700}.nk-no{color:#5a6b60}.nk-mid{color:#e0b34d}',
-    /* FAQ accordion */
-    '.nk-q{border:1px solid var(--border);border-radius:14px;background:color-mix(in oklab,#0a120d 50%,transparent);overflow:hidden;transition:border-color .3s,background .3s}',
-    '.nk-q+.nk-q{margin-top:.7rem}',
-    '.nk-q:hover{border-color:color-mix(in oklab,#22e07a 40%,transparent)}',
-    '.nk-q.open{border-color:color-mix(in oklab,#22e07a 55%,transparent);background:color-mix(in oklab,#0a120d 75%,transparent)}',
-    '.nk-qh{display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;padding:1.05rem 1.2rem;cursor:pointer;text-align:left;background:none;border:0;color:#eaf4ee;font-size:15.5px;font-weight:600;font-family:inherit}',
-    '.nk-qi{flex:0 0 auto;width:22px;height:22px;position:relative}',
-    '.nk-qi::before,.nk-qi::after{content:"";position:absolute;left:50%;top:50%;background:#22e07a;border-radius:2px;transition:transform .34s cubic-bezier(.16,1,.3,1)}',
-    '.nk-qi::before{width:13px;height:2px;transform:translate(-50%,-50%)}',
-    '.nk-qi::after{width:2px;height:13px;transform:translate(-50%,-50%)}',
-    '.nk-q.open .nk-qi::after{transform:translate(-50%,-50%) rotate(90deg) scaleX(0)}',
-    '.nk-qb{max-height:0;opacity:0;transition:max-height .42s cubic-bezier(.16,1,.3,1),opacity .3s ease,padding .3s ease;padding:0 1.2rem}',
-    '.nk-q.open .nk-qb{opacity:1;padding-bottom:1.15rem}',
-    '.nk-qb p{color:#8a9a90;font-size:14px;line-height:1.65;margin:0}',
-    /* roadmap timeline */
-    '.nk-tl{position:relative;padding-left:2.1rem}',
-    '.nk-tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,#22e07a,color-mix(in oklab,#22e07a 15%,transparent));transform-origin:top;transform:scaleY(0);transition:transform 1.5s cubic-bezier(.16,1,.3,1)}',
-    '.nk-tl.nk-in::before{transform:scaleY(1)}',
-    '.nk-tli{position:relative;padding-bottom:1.6rem}',
+    '.nk-yes{color:#86d8a8}.nk-no{color:#5a6b60}.nk-mid{color:#8a9a90}',
+    '.nk-q{border-top:1px solid var(--border)}',
+    '.nk-q:last-child{border-bottom:1px solid var(--border)}',
+    '.nk-qh{display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;padding:1.05rem .2rem;cursor:pointer;text-align:left;background:none;border:0;color:#eaf4ee;font-size:15.5px;font-weight:600;font-family:inherit}',
+    '.nk-qh:hover{color:#86d8a8}',
+    '.nk-qi{flex:0 0 auto;width:16px;height:16px;position:relative}',
+    '.nk-qi::before,.nk-qi::after{content:"";position:absolute;left:50%;top:50%;background:#8a9a90;border-radius:1px;transition:transform .25s ease}',
+    '.nk-qi::before{width:12px;height:1.5px;transform:translate(-50%,-50%)}',
+    '.nk-qi::after{width:1.5px;height:12px;transform:translate(-50%,-50%)}',
+    '.nk-q.open .nk-qi::after{transform:translate(-50%,-50%) scaleY(0)}',
+    '.nk-qb{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 .2rem}',
+    '.nk-q.open .nk-qb{padding-bottom:1.15rem}',
+    '.nk-qb p{color:#8a9a90;font-size:14.5px;line-height:1.7;margin:0;max-width:62ch}',
+    '.nk-tl{position:relative;padding-left:1.6rem;border-left:1px solid var(--border)}',
+    '.nk-tli{position:relative;padding-bottom:1.9rem}',
     '.nk-tli:last-child{padding-bottom:0}',
-    '.nk-tli::before{content:"";position:absolute;left:-2.1rem;top:4px;width:16px;height:16px;border-radius:50%;background:#050a07;border:2px solid #22e07a;box-shadow:0 0 0 0 rgba(34,224,122,.5)}',
-    '.nk-tli.now::before{animation:nk-lp 2s ease-out infinite;background:#22e07a}',
-    /* routing steps */
-    '.nk-step{position:relative;padding-left:3.2rem}',
-    '.nk-step .n{position:absolute;left:0;top:0;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;',
-      'font-family:var(--font-geist-mono),monospace;font-size:13px;font-weight:700;color:#7ff0b0;border:1px solid color-mix(in oklab,#22e07a 40%,transparent);background:color-mix(in oklab,#22e07a 10%,transparent)}',
-    /* gradient sweep border for feature blocks */
-    '.nk-glowbox{position:relative}',
-    '.nk-glowbox::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;',
-      'background:conic-gradient(from var(--a,0deg),transparent 62%,#22e07a,#7ff0b0,transparent 88%);',
-      '-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.75}',
-    '@property --a{syntax:"<angle>";inherits:false;initial-value:0deg}',
-    '@keyframes nk-rot{to{--a:360deg}}',
-    '.nk-glowbox{animation:nk-rot 8s linear infinite}',
-    REDUCE ? '.nk-rise{opacity:1;transform:none}.nk-div::after,.nk-glowbox{animation:none}' : ''
+    '.nk-tli::before{content:"";position:absolute;left:calc(-1.6rem - 4px);top:6px;width:7px;height:7px;border-radius:50%;background:#2a6247}',
+    '.nk-tli.now::before{background:#23c76f}',
+    '.nk-step{position:relative;padding-left:2.6rem}',
+    '.nk-step .n{position:absolute;left:0;top:1px;font-family:var(--font-geist-mono),monospace;font-size:12px;color:#5a6b60}',
+    REDUCE ? '.nk-rise{opacity:1;transform:none}' : ''
   ].join('\n');
   document.head.appendChild(css);
 
@@ -103,31 +72,7 @@
       '</section>'
     );
   }
-  function divider() { return el('<div class="nk-div" aria-hidden="true"></div>'); }
 
-  /* ---------------- 1. live metrics ---------------- */
-  var METRICS = [
-    { k: 'routed30d', label: 'Routed volume · 30d', val: 48213904, pre: '$', fmt: 'compact' },
-    { k: 'trades', label: 'Trades settled', val: 128407, fmt: 'int' },
-    { k: 'saved', label: 'Slippage saved · 30d', val: 312884, pre: '$', fmt: 'compact' },
-    { k: 'latency', label: 'Median quote → settle', val: 1.4, post: 's', fmt: 'dec1' }
-  ];
-  function metricsSection() {
-    var tiles = METRICS.map(function (m) {
-      return '<div class="' + CARD + ' nk-metric nk-rise">' +
-        '<div class="text-3xl font-bold text-accent sm:text-4xl v" data-nk-count="' + m.val + '" data-fmt="' + m.fmt + '" data-pre="' + (m.pre || '') + '" data-post="' + (m.post || '') + '">' + (m.pre || '') + '0' + (m.post || '') + '</div>' +
-        '<div class="mt-2 text-sm text-muted">' + m.label + '</div></div>';
-    }).join('');
-    return section({
-      id: 'metrics', alt: true,
-      eyebrow: 'By the numbers',
-      title: 'Execution you can <span class="text-accent">measure.</span>',
-      lead: 'None reports what the router actually did — volume, fills, and the slippage it removed. Figures below are illustrative for this preview build.',
-      body: '<div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">' + tiles + '</div>' +
-        '<div class="mt-6 flex items-center gap-3 text-xs text-muted"><span class="nk-live"><b></b>live feed</span>' +
-        '<span>·</span><span>quotes refresh every block (~250ms)</span></div>'
-    });
-  }
 
   /* ---------------- 2. routing deep dive ---------------- */
   function routingSection() {
@@ -243,7 +188,7 @@
       title: 'Against a DEX tab <span class="text-accent">and an exchange app.</span>',
       lead: 'Where None sits relative to trading by hand on a DEX interface, or handing your assets to a centralized venue.',
       body: '<div class="mt-10 nk-rise ' + CARD + ' nk-scroll"><table class="nk-tbl">' +
-        '<thead><tr><th></th><th class="!text-center" style="color:#7ff0b0">None</th><th class="!text-center">DEX interface</th><th class="!text-center">Centralized app</th></tr></thead>' +
+        '<thead><tr><th></th><th class="!text-center" style="color:#86d8a8">None</th><th class="!text-center">DEX interface</th><th class="!text-center">Centralized app</th></tr></thead>' +
         '<tbody>' + rows + '</tbody></table></div>' +
         '<p class="mt-4 text-xs text-muted">✓ built in · ~ partial or manual · — not available. Comparison reflects typical behaviour, not any single named product.</p>'
     });
@@ -327,24 +272,13 @@
 
     function after(ref, node) { if (ref && ref.parentNode) { ref.parentNode.insertBefore(node, ref.nextSibling); return node; } return null; }
 
-    // metrics right before "what it is"
-    if (whatSec.parentNode) {
-      whatSec.parentNode.insertBefore(metricsSection(), whatSec);
-      whatSec.parentNode.insertBefore(divider(), whatSec);
-    }
-    // routing deep-dive after "what it is"
-    var r = after(whatSec, routingSection());
-    if (r) after(r, divider());
-    // fees + markets after product
+    after(whatSec, routingSection());
     var f = after(productSec, feesSection());
-    var m = f ? after(f, marketsSection()) : null;
-    if (m) after(m, divider());
-    // security + comparison before "no token games"
+    if (f) after(f, marketsSection());
     var beforeRef = noToken || x402;
     if (beforeRef && beforeRef.parentNode) {
       beforeRef.parentNode.insertBefore(securitySection(), beforeRef);
       beforeRef.parentNode.insertBefore(compareSection(), beforeRef);
-      beforeRef.parentNode.insertBefore(divider(), beforeRef);
     }
     // roadmap + FAQ before the x402 section
     if (x402 && x402.parentNode) {
@@ -379,7 +313,7 @@
   function observeRise() {
     var targets = document.querySelectorAll('.nk-rise:not(.nk-in), .nk-tl:not(.nk-in)');
     if (!('IntersectionObserver' in window) || REDUCE) {
-      [].forEach.call(targets, function (t, i) { t.classList.add('nk-in'); runCounter(t); });
+      [].forEach.call(targets, function (t) { t.classList.add('nk-in'); });
       return;
     }
     if (!riseIO) riseIO = new IntersectionObserver(function (ents) {
@@ -389,39 +323,12 @@
         riseIO.unobserve(t);
         var sibs = t.parentElement ? [].slice.call(t.parentElement.children).filter(function (c) { return c.classList.contains('nk-rise'); }) : [];
         var idx = Math.max(0, sibs.indexOf(t));
-        setTimeout(function () { t.classList.add('nk-in'); runCounter(t); }, Math.min(idx * 80, 400));
+        setTimeout(function () { t.classList.add('nk-in'); }, Math.min(idx * 60, 240));
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
     [].forEach.call(targets, function (t) { riseIO.observe(t); });
   }
 
-  function fmtVal(v, fmt) {
-    if (fmt === 'compact') {
-      if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
-      if (v >= 1e3) return Math.round(v / 1e3) + 'K';
-      return Math.round(v).toString();
-    }
-    if (fmt === 'dec1') return v.toFixed(1);
-    return Math.round(v).toLocaleString('en-US');
-  }
-  function runCounter(scope) {
-    var nodes = scope.matches && scope.matches('[data-nk-count]') ? [scope] : scope.querySelectorAll ? scope.querySelectorAll('[data-nk-count]') : [];
-    [].forEach.call(nodes, function (n) {
-      if (n.__nk) return; n.__nk = 1;
-      var target = parseFloat(n.getAttribute('data-nk-count')), fmt = n.getAttribute('data-fmt');
-      var pre = n.getAttribute('data-pre') || '', post = n.getAttribute('data-post') || '';
-      if (REDUCE) { n.textContent = pre + fmtVal(target, fmt) + post; return; }
-      var start = null, dur = 1500;
-      function step(ts) {
-        if (!start) start = ts;
-        var p = Math.min(1, (ts - start) / dur), e = 1 - Math.pow(1 - p, 3);
-        n.textContent = pre + fmtVal(target * e, fmt) + post;
-        if (p < 1) requestAnimationFrame(step);
-        else n.textContent = pre + fmtVal(target, fmt) + post;
-      }
-      requestAnimationFrame(step);
-    });
-  }
 
   /* ---------------- nav links for new sections ---------------- */
   function addNav() {
@@ -476,8 +383,8 @@
         '@keyframes nkDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}',
         '#nk-mobile a{text-decoration:none;color:var(--foreground);padding:.75rem .9rem;border-radius:12px;font-size:15px}',
         '#nk-mobile a:hover{background:rgba(255,255,255,.06)}',
-        '#nk-mobile a.cta{margin-top:.3rem;text-align:center;font-weight:700;color:#04140a;background:linear-gradient(135deg,#4dea95,#22e07a 46%,#12b45f)}',
-        '@media (max-width:880px){#nk-burger{display:block}nav a[href^="/#"]{display:none}}'
+        '#nk-mobile a.cta{margin-top:.3rem;text-align:center;font-weight:700;color:#04140a;background:linear-gradient(135deg,#2fd882,#23c76f 46%,#12b45f)}',
+        '@media (max-width:880px){#nk-burger{display:block}nav a[href^="/#"],nav a[href="/docs"]{display:none}}'
       ].join('\n');
       document.head.appendChild(st);
     }
