@@ -120,17 +120,6 @@
   <!-- draw hand closing on the string -->
   <circle id="nk-drawhand" cx="246" cy="292" r="10.5" fill="#22462f" stroke="#356b4a" stroke-width="1.3"/>
 
-  <!-- ============ arrow — the page translates this group on scroll ============ -->
-  <g id="nk-arrow">
-    <line x1="240" y1="292" x2="372" y2="292" stroke="#08130d" stroke-width="5.5" stroke-linecap="round"/>
-    <line x1="240" y1="292" x2="372" y2="292" stroke="#9ecdb2" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M372 292 l-15 -7.5 l0 15 Z" fill="#23c76f"/>
-    <path d="M380 292 l-9 -4.5 l0 9 Z" fill="#b9f0d2"/>
-    <g fill="#23c76f">
-      <path d="M254 292 l-13 -8 l-7 8 l7 8 Z"/>
-      <path d="M266 292 l-13 -8 l-7 8 l7 8 Z" opacity="0.55"/>
-    </g>
-  </g>
 
   <!-- ============ the coin, standing off as a target ============ -->
   <g id="nk-target">
@@ -144,5 +133,17 @@
     <text x="560" y="292" dy="0.36em" text-anchor="middle"
           font-family="'Space Grotesk', Geist, ui-sans-serif, sans-serif"
           font-weight="700" font-size="20" fill="#d8f3e4">N</text>
+  </g>
+
+  <!-- ============ arrow — the page translates this group on scroll ============ -->
+  <g id="nk-arrow">
+    <line x1="240" y1="292" x2="372" y2="292" stroke="#08130d" stroke-width="5.5" stroke-linecap="round"/>
+    <line x1="240" y1="292" x2="372" y2="292" stroke="#9ecdb2" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M372 292 l-12 -6 l0 12 Z" fill="#23c76f"/>
+    <path d="M380 292 l-7 -3.5 l0 7 Z" fill="#b9f0d2"/>
+    <g fill="#23c76f">
+      <path d="M254 292 l-13 -8 l-7 8 l7 8 Z"/>
+      <path d="M266 292 l-13 -8 l-7 8 l7 8 Z" opacity="0.55"/>
+    </g>
   </g>
 </svg>

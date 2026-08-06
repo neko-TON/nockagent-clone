@@ -66,7 +66,7 @@
   function mascot() { if (!document.querySelector('svg[data-nk-mascot]')) inlineMascot(); }
 
   /* 2b. the shot plays out as the page scrolls ------------------------ */
-  var ARROW_TRAVEL = 168;   // nocked arrowhead (372) to just inside the bullseye (540)
+  var ARROW_TRAVEL = 180;   // bright tip (380 when nocked) lands dead centre on the N (560)
   var NOCK_X = 250;         // where the string sits when drawn
   var REST_X = 346;         // where the string sits at rest, between the limb tips
 
@@ -110,14 +110,15 @@
     function tick() {
       var diff = goal - shown;
       if (Math.abs(diff) < 0.0004) { shown = goal; render(shown); raf = null; return; }
-      shown += diff * 0.11;
+      shown += diff * 0.17;
       render(shown);
       raf = requestAnimationFrame(tick);
     }
 
     function onScroll() {
-      // A short span: the whole shot resolves in a flick of the wheel.
-      var span = Math.max(60, Math.min(110, window.innerHeight * 0.09));
+      // Barely scroll-bound: the first nudge is enough to loose the arrow,
+      // and the damped loop below carries it the rest of the way on its own.
+      var span = Math.max(26, Math.min(52, window.innerHeight * 0.04));
       goal = Math.max(0, Math.min(1, window.scrollY / span));
       if (raf === null) raf = requestAnimationFrame(tick);
     }
