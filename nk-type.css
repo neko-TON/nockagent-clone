@@ -24,26 +24,57 @@
     U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
 }
 
+@font-face{
+  font-family:'Instrument Serif';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('/fonts/instrument-serif-latin.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Instrument Serif';
+  font-style:italic;
+  font-weight:400;
+  font-display:swap;
+  src:url('/fonts/instrument-serif-latin-italic.woff2') format('woff2');
+}
+
+:root{
+  --font-serif:'Instrument Serif', Georgia, 'Times New Roman', serif;
+}
 :root{ --font-display:'Space Grotesk', var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
 
-/* ---------- display type ---------- */
-h1,h2,h3,
+/* ---------- display type ----------
+   The big moments run in a high-contrast serif. Every other agent site in
+   this corner of the market reaches for a grotesque; the serif reads
+   editorial rather than SaaS, and its thick/thin stroke plays off the mono
+   labels and the neon. Interface type stays in Space Grotesk. */
+h1,h2{
+  font-family:var(--font-serif);
+  /* Instrument Serif ships one weight — let the browser fake a bold and it
+     smears the thin strokes, so the utility class is overridden here. */
+  font-weight:400 !important;
+  letter-spacing:-.008em;   /* serifs need far less tracking than a grotesque */
+  line-height:1.02;
+}
+h3,
 .nk-brand,
 .nk-qh,
 .exec-box h3{
   font-family:var(--font-display);
   font-feature-settings:'ss01' 1,'ss02' 1;
 }
-h1{ letter-spacing:-.028em; }
-h2{ letter-spacing:-.022em; }
 h3{ letter-spacing:-.012em; }
 
-/* Space Grotesk sits a touch wide — pull the big sizes in slightly */
-h1,.nk-main h1{ word-spacing:-.02em; }
+/* the accent half of a headline turns italic — the one flourish, and it
+   falls exactly on the words the eye should land on */
+h1 .text-accent,
+h2 .text-accent{ font-style:italic; }
 
 /* ---------- light neon ---------- */
-/* accent fragments glow; the white part of a heading only gets a faint lift */
-h1,h2{ text-shadow:0 0 30px rgba(190,255,220,.07); }
+/* thin serif strokes muddy quickly, so the lift on the white text is lighter
+   here than it was under the grotesque */
+h1,h2{ text-shadow:0 0 30px rgba(190,255,220,.05); }
 
 h1 .text-accent,
 h2 .text-accent,
