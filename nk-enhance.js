@@ -2,7 +2,7 @@
    None — minimal support layer.
    Only three jobs, all of them functional rather than decorative:
      1. un-stick the site's scroll-reveal when its observer stalls
-     2. inline the robot SVG so it renders at all
+     2. inline the mascot SVG so it renders at all
      3. draw the route diagram that explains the product
    ============================================================ */
 (function () {
@@ -36,18 +36,18 @@
     [].forEach.call(els, function (el) { if (!el.__nkRev) { el.__nkRev = 1; revealIO.observe(el); } });
   }
 
-  /* 2. inline the robot ---------------------------------------------- */
-  function inlineRobot() {
-    var img = document.querySelector('img[src^="/robot-ai"]');
+  /* 2. inline the mascot ---------------------------------------------- */
+  function inlineMascot() {
+    var img = document.querySelector('img[src^="/mascot-archer"]');
     if (!img || img.__nkSwapping) return;
     img.__nkSwapping = 1;
     var cls = img.getAttribute('class') || '';
     fetch(img.getAttribute('src')).then(function (r) { return r.text(); }).then(function (txt) {
       var svg = new DOMParser().parseFromString(txt, 'image/svg+xml').documentElement;
       if (!svg || svg.nodeName.toLowerCase() !== 'svg') { img.__nkSwapping = 0; return; }
-      svg.setAttribute('data-nk-robot', '1');
+      svg.setAttribute('data-nk-mascot', '1');
       svg.setAttribute('class', cls);
-      svg.style.aspectRatio = '460 / 580';
+      svg.style.aspectRatio = '306 / 462';
       svg.style.width = 'auto';
       img.replaceWith(svg);
       // the site's reveal wrapper can leave the hero hidden
@@ -62,7 +62,7 @@
       }
     }).catch(function () { img.__nkSwapping = 0; });
   }
-  function robot() { if (!document.querySelector('svg[data-nk-robot]')) inlineRobot(); }
+  function mascot() { if (!document.querySelector('svg[data-nk-mascot]')) inlineMascot(); }
 
   /* 3. route diagram -------------------------------------------------- */
   function node(x, y, label) {
@@ -90,7 +90,7 @@
     if (box) box.insertAdjacentHTML('afterend', ROUTE);
   }
 
-  function boot() { T(revealFix); T(robot); T(mountRoute); }
+  function boot() { T(revealFix); T(mascot); T(mountRoute); }
   if (document.readyState !== 'loading') boot();
   else document.addEventListener('DOMContentLoaded', boot);
   [700, 1800, 3400].forEach(function (d) { setTimeout(boot, d); });
