@@ -47,9 +47,10 @@
       if (!svg || svg.nodeName.toLowerCase() !== 'svg') { img.__nkSwapping = 0; return; }
       svg.setAttribute('data-nk-mascot', '1');
       svg.setAttribute('class', cls);
-      svg.style.aspectRatio = '384 / 462';
+      svg.style.aspectRatio = '536 / 462';
       svg.style.width = 'auto';
       img.replaceWith(svg);
+      flyArrow(svg);
       // the site's reveal wrapper can leave the hero hidden
       var a = svg;
       for (var k = 0; k < 6 && a; k++) {
@@ -63,6 +64,38 @@
     }).catch(function () { img.__nkSwapping = 0; });
   }
   function mascot() { if (!document.querySelector('svg[data-nk-mascot]')) inlineMascot(); }
+
+  /* 2b. the arrow crosses to the target as the page scrolls ----------- */
+  // distance from the nocked arrowhead (372) to just inside the bullseye (540)
+  var ARROW_TRAVEL = 168;
+  function flyArrow(svg) {
+    var arrow = svg.querySelector('#nk-arrow');
+    if (!arrow || arrow.__nkFly) return;
+    arrow.__nkFly = 1;
+    if (REDUCE) return;                    // leave it nocked, no flight
+    var ticking = false, docTargetY = null;
+    function update() {
+      // The shot has to land before the target scrolls off the top, so the
+      // span is measured from where the target actually sits rather than
+      // guessed as a fraction of the page.
+      if (docTargetY === null || window.scrollY < 4) {
+        var r = svg.getBoundingClientRect();
+        if (r.height < 10) return;                 // not laid out yet
+        docTargetY = r.top + r.height * 0.41 + window.scrollY;   // target's line in the artwork
+      }
+      var span = Math.max(150, docTargetY - 150);  // land it while the target is still comfortably on screen
+      var prog = Math.max(0, Math.min(1, window.scrollY / span));
+      arrow.setAttribute('transform', 'translate(' + (prog * ARROW_TRAVEL).toFixed(1) + ' 0)');
+    }
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { update(); ticking = false; });
+    }
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    update();
+  }
 
   /* 3. route diagram -------------------------------------------------- */
   function node(x, y, label) {
