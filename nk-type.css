@@ -1,0 +1,84 @@
+/* ============================================================
+   None — typography.
+   Space Grotesk for display, Geist for reading. A light neon lift
+   on accented type; body copy stays clean so it remains legible.
+   ============================================================ */
+@font-face{
+  font-family:'Space Grotesk';
+  font-style:normal;
+  font-weight:500 700;
+  font-display:swap;
+  src:url('/fonts/space-grotesk-latin.woff2') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,
+    U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,
+    U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Space Grotesk';
+  font-style:normal;
+  font-weight:500 700;
+  font-display:swap;
+  src:url('/fonts/space-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,
+    U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,
+    U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+:root{ --font-display:'Space Grotesk', var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+
+/* ---------- display type ---------- */
+h1,h2,h3,
+.nk-brand,
+.nk-qh,
+.exec-box h3{
+  font-family:var(--font-display);
+  font-feature-settings:'ss01' 1,'ss02' 1;
+}
+h1{ letter-spacing:-.028em; }
+h2{ letter-spacing:-.022em; }
+h3{ letter-spacing:-.012em; }
+
+/* Space Grotesk sits a touch wide — pull the big sizes in slightly */
+h1,.nk-main h1{ word-spacing:-.02em; }
+
+/* ---------- light neon ---------- */
+/* accent fragments glow; the white part of a heading only gets a faint lift */
+h1,h2{ text-shadow:0 0 30px rgba(190,255,220,.07); }
+
+h1 .text-accent,
+h2 .text-accent,
+h3 .text-accent,
+.text-accent{
+  text-shadow:0 0 16px rgba(35,199,111,.30), 0 0 34px rgba(35,199,111,.14);
+}
+
+/* mono eyebrows / labels — the smallest, quietest glow */
+[class*="tracking-[0.25em]"],
+.eyebrow,
+.nk-side-t{
+  text-shadow:0 0 14px rgba(35,199,111,.26);
+}
+
+/* brand wordmark and its ring */
+.nk-brand{ letter-spacing:-.015em; }
+.nk-logo{ box-shadow:0 0 14px rgba(35,199,111,.28); }
+
+/* the terminal prompt keeps a soft phosphor feel */
+.inputrow .gt,
+.nk-topbar .accent{
+  text-shadow:0 0 12px rgba(35,199,111,.35);
+}
+
+/* numbers that matter in the app read as lit, not painted */
+.qrow.delta span:last-child,
+.receipt .g{
+  text-shadow:0 0 14px rgba(35,199,111,.30);
+}
+
+/* ---------- reading comfort ---------- */
+p{ text-wrap:pretty; }
+h1,h2,h3{ text-wrap:balance; }
+
+@media (prefers-reduced-motion:reduce){
+  h1,h2,h3,.text-accent{ text-shadow:none; }
+}
