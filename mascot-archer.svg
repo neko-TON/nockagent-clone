@@ -51,10 +51,10 @@
   <g>
     <path d="M148 262 L128 348 L150 357 L170 272 Z" fill="#112418" stroke="#2a5138" stroke-width="1.3"/>
     <g stroke="#5a8f70" stroke-width="2" stroke-linecap="round">
-      <path d="M155 262 L147 218"/><path d="M166 264 L164 216"/>
+      <path d="M152 264 L133 208"/><path d="M162 266 L146 202"/>
     </g>
     <g fill="#23c76f" opacity="0.8">
-      <path d="M147 218 l-5 9 l5 -2 l5 2 Z"/><path d="M164 216 l-5 9 l5 -2 l5 2 Z"/>
+      <path d="M133 208 l-3 10 l4 -3 l6 1 Z"/><path d="M146 202 l-3 10 l4 -3 l6 1 Z"/>
     </g>
   </g>
 
@@ -83,29 +83,36 @@
   <rect x="334" y="276" width="19" height="31" rx="9" fill="#22462f" stroke="#356b4a" stroke-width="1.3"/>
 
   <!-- ============ hood ============ -->
-  <path d="M154 200 C 143 216, 138 242, 141 264 C 150 260, 158 242, 162 220 Z" fill="#142b1c"/>
-  <path d="M196 124
-           C 234 122, 260 150, 260 190
-           C 260 214, 251 232, 236 242
-           C 224 250, 205 252, 192 248
-           C 170 242, 151 224, 149 192
-           C 147 154, 168 126, 196 124 Z"
+  <!-- drape falling off the back of the cowl -->
+  <path d="M154 212 C 143 228, 138 252, 141 274 C 150 270, 158 252, 162 230 Z" fill="#142b1c"/>
+  <!-- cowl: rises to a point at the back, edges kept taut rather than round -->
+  <path d="M174 119
+           C 211 126, 246 153, 256 189
+           C 261 208, 256 230, 243 245
+           L 225 255
+           C 200 258, 176 250, 160 235
+           C 147 220, 141 192, 148 166
+           C 154 144, 163 129, 174 119 Z"
         fill="url(#hood)"/>
-  <path d="M196 124 C 168 126, 147 154, 149 192" stroke="#4a8f63" stroke-width="1.9" fill="none" opacity="0.5"/>
+  <!-- lit edge along the taut back seam -->
+  <path d="M174 119 C 163 129, 154 144, 148 166 C 141 192, 147 220, 160 235"
+        stroke="#4a8f63" stroke-width="1.9" fill="none" opacity="0.5"/>
+  <!-- a single crease so the cowl reads as cloth, not a shell -->
+  <path d="M181 136 C 171 160, 168 192, 175 220" stroke="#2a5138" stroke-width="1.4" fill="none" opacity="0.45"/>
   <!-- the face is a void — this is None -->
-  <path d="M214 152
-           C 243 150, 255 172, 253 195
-           C 251 218, 235 233, 214 233
-           C 198 233, 188 220, 187 201
-           C 186 176, 196 154, 214 152 Z"
+  <path d="M212 158
+           C 239 158, 251 178, 249 201
+           C 247 224, 231 240, 211 240
+           C 195 240, 186 226, 185 207
+           C 184 181, 194 160, 212 158 Z"
         fill="#04100a"/>
   <g filter="url(#tiny)" opacity="0.7">
-    <rect x="202" y="192" width="15" height="6" rx="3" fill="#23c76f"/>
-    <rect x="226" y="188" width="15" height="6" rx="3" fill="#23c76f"/>
+    <rect x="200" y="197" width="15" height="6" rx="3" fill="#23c76f"/>
+    <rect x="224" y="193" width="15" height="6" rx="3" fill="#23c76f"/>
   </g>
   <g id="eyes">
-    <rect x="202" y="192" width="15" height="5" rx="2.5" fill="#b9f0d2"/>
-    <rect x="226" y="188" width="15" height="5" rx="2.5" fill="#b9f0d2"/>
+    <rect x="200" y="197" width="15" height="5" rx="2.5" fill="#b9f0d2"/>
+    <rect x="224" y="193" width="15" height="5" rx="2.5" fill="#b9f0d2"/>
   </g>
 
   <!-- draw hand closing on the string -->
