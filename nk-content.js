@@ -22,8 +22,11 @@
   var css = document.createElement('style');
   css.id = 'nk-content-css';
   css.textContent = [
-    '.nk-rise{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}',
+    '.nk-rise{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1)}',
     '.nk-rise.nk-in{opacity:1;transform:none}',
+    /* headings that light up word by word as they scroll into view */
+    '.nk-words .rw{opacity:.17;transition:opacity .35s cubic-bezier(.22,.61,.36,1)}',
+    '.nk-words .rw.lit{opacity:1}',
     '.nk-tbl{width:100%;border-collapse:collapse;font-size:14px}',
     '.nk-tbl th{text-align:left;font-family:var(--font-geist-mono),monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8a9a90;padding:0 .9rem .7rem;font-weight:500}',
     '.nk-tbl td{padding:.85rem .9rem;border-top:1px solid var(--border);color:#c2d6c9;vertical-align:middle;line-height:1.6}',
@@ -330,6 +333,76 @@
   }
 
 
+  /* ---------------- word-by-word heading reveal ---------------- */
+  var wordHeads = [];
+  function splitWords(root) {
+    // wrap every word in its own span, but keep inline elements
+    // (the accent fragments) intact so they hold their own colour
+    var out = [];
+    (function walk(node) {
+      [].slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var parts = n.textContent.split(/(\s+)/);
+          var frag = document.createDocumentFragment();
+          parts.forEach(function (p) {
+            if (!p) return;
+            if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+            var s = document.createElement('span');
+            s.className = 'rw';
+            s.textContent = p;
+            frag.appendChild(s);
+            out.push(s);
+          });
+          n.parentNode.replaceChild(frag, n);
+        } else if (n.nodeType === 1) {
+          walk(n);
+        }
+      });
+    })(root);
+    return out;
+  }
+
+  function initWordHeads() {
+    if (REDUCE) return;
+    var hs = document.querySelectorAll('[data-nk-sec] h2');
+    for (var i = 0; i < hs.length; i++) {
+      var h = hs[i];
+      if (h.__nkWords) continue;
+      h.__nkWords = 1;
+      var words = splitWords(h);
+      if (!words.length) continue;
+      h.classList.add('nk-words');
+      wordHeads.push({ el: h, words: words });
+    }
+    if (wordHeads.length && !window.__nkWordScroll) {
+      window.__nkWordScroll = 1;
+      var ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () { updateWords(); ticking = false; });
+      }
+      addEventListener('scroll', onScroll, { passive: true });
+      addEventListener('resize', onScroll);
+    }
+    updateWords();
+  }
+
+  function updateWords() {
+    var vh = window.innerHeight;
+    for (var i = 0; i < wordHeads.length; i++) {
+      var w = wordHeads[i];
+      var top = w.el.getBoundingClientRect().top;
+      // progress runs from "heading enters the lower fifth" to half a screen later
+      var prog = (vh * 0.82 - top) / (vh * 0.5);
+      prog = Math.max(0, Math.min(1, prog));
+      var lit = Math.round(prog * w.words.length);
+      for (var j = 0; j < w.words.length; j++) {
+        w.words[j].classList.toggle('lit', j < lit);
+      }
+    }
+  }
+
   /* ---------------- nav links for new sections ---------------- */
   function addNav() {
     var nav = document.querySelector('nav');
@@ -442,7 +515,7 @@
     }
   }
 
-  function boot() { T(mount); T(bindFAQ); T(observeRise); T(addNav); T(addBurger); }
+  function boot() { T(mount); T(bindFAQ); T(observeRise); T(initWordHeads); T(addNav); T(addBurger); }
   if (document.readyState !== 'loading') boot();
   else document.addEventListener('DOMContentLoaded', boot);
   [900, 2000, 3600].forEach(function (d) { setTimeout(boot, d); });
