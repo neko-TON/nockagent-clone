@@ -45,7 +45,7 @@
   <path d="M346 170 Q380 292 346 414" stroke="#4a8f63" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.55"/>
   <circle cx="346" cy="170" r="3.6" fill="#356b4a"/>
   <circle cx="346" cy="414" r="3.6" fill="#356b4a"/>
-  <path d="M346 170 L250 292 L346 414" stroke="#6b9d80" stroke-width="1.5" fill="none" opacity="0.85"/>
+  <path id="nk-string" d="M346 170 L250 292 L346 414" stroke="#6b9d80" stroke-width="1.5" fill="none" opacity="0.85"/>
 
   <!-- ============ quiver on the back ============ -->
   <g>
@@ -74,8 +74,10 @@
   <path d="M157 526 L262 526" stroke="#4a8f63" stroke-width="1.8" opacity="0.4"/>
 
   <!-- ============ draw arm — elbow pulled back, clear of the hood ============ -->
-  <path d="M204 306 L144 272 L240 292" stroke="#0d2015" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <path d="M204 306 L144 272 L240 292" stroke="#1a3626" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <g id="nk-drawarm">
+    <path d="M204 306 L144 272 L240 292" stroke="#0d2015" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M204 306 L144 272 L240 292" stroke="#1a3626" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
 
   <!-- ============ bow arm — extended to the grip ============ -->
   <path d="M226 306 L336 292" stroke="#122a1c" stroke-width="19" stroke-linecap="round" fill="none"/>
@@ -116,7 +118,7 @@
   </g>
 
   <!-- draw hand closing on the string -->
-  <circle cx="246" cy="292" r="10.5" fill="#22462f" stroke="#356b4a" stroke-width="1.3"/>
+  <circle id="nk-drawhand" cx="246" cy="292" r="10.5" fill="#22462f" stroke="#356b4a" stroke-width="1.3"/>
 
   <!-- ============ arrow — the page translates this group on scroll ============ -->
   <g id="nk-arrow">

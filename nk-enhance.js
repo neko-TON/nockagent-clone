@@ -65,27 +65,48 @@
   }
   function mascot() { if (!document.querySelector('svg[data-nk-mascot]')) inlineMascot(); }
 
-  /* 2b. the arrow crosses to the target as the page scrolls ----------- */
-  // distance from the nocked arrowhead (372) to just inside the bullseye (540)
-  var ARROW_TRAVEL = 168;
+  /* 2b. the shot plays out as the page scrolls ------------------------ */
+  var ARROW_TRAVEL = 168;   // nocked arrowhead (372) to just inside the bullseye (540)
+  var NOCK_X = 250;         // where the string sits when drawn
+  var REST_X = 346;         // where the string sits at rest, between the limb tips
+
   function flyArrow(svg) {
     var arrow = svg.querySelector('#nk-arrow');
     if (!arrow || arrow.__nkFly) return;
     arrow.__nkFly = 1;
-    if (REDUCE) return;                    // leave it nocked, no flight
-    var ticking = false, docTargetY = null;
+    if (REDUCE) return;                    // leave it drawn, no shot
+
+    var string = svg.querySelector('#nk-string');
+    var hand = svg.querySelector('#nk-drawhand');
+    var arm = svg.querySelectorAll('#nk-drawarm path');
+    var ticking = false;
+
     function update() {
-      // The shot has to land before the target scrolls off the top, so the
-      // span is measured from where the target actually sits rather than
-      // guessed as a fraction of the page.
-      if (docTargetY === null || window.scrollY < 4) {
-        var r = svg.getBoundingClientRect();
-        if (r.height < 10) return;                 // not laid out yet
-        docTargetY = r.top + r.height * 0.41 + window.scrollY;   // target's line in the artwork
-      }
-      var span = Math.max(150, docTargetY - 150);  // land it while the target is still comfortably on screen
+      // A short span: the whole shot resolves in a flick of the wheel.
+      var span = Math.max(60, Math.min(110, window.innerHeight * 0.09));
       var prog = Math.max(0, Math.min(1, window.scrollY / span));
-      arrow.setAttribute('transform', 'translate(' + (prog * ARROW_TRAVEL).toFixed(1) + ' 0)');
+
+      // ease-out — the arrow leaves fast and settles into the target
+      var flown = (1 - Math.pow(1 - prog, 2)) * ARROW_TRAVEL;
+      arrow.setAttribute('transform', 'translate(' + flown.toFixed(1) + ' 0)');
+
+      // the string stays in contact with the nock, then stops at rest:
+      // that contact is what makes the release read as a push, not a slide
+      if (string) {
+        var mid = Math.min(NOCK_X + flown, REST_X);
+        string.setAttribute('d', 'M346 170 L' + mid.toFixed(1) + ' 292 L346 414');
+      }
+
+      // the hand opens and travels back — follow-through, not a push
+      var rel = Math.min(1, prog / 0.14);
+      rel = 1 - Math.pow(1 - rel, 3);
+      var hx = 246 - 30 * rel, hy = 292 - 22 * rel;
+      if (hand) { hand.setAttribute('cx', hx.toFixed(1)); hand.setAttribute('cy', hy.toFixed(1)); }
+      if (arm.length) {
+        var d = 'M204 306 L' + (144 + 7 * rel).toFixed(1) + ' ' + (272 - 11 * rel).toFixed(1) +
+                ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1);
+        for (var i = 0; i < arm.length; i++) arm[i].setAttribute('d', d);
+      }
     }
     function onScroll() {
       if (ticking) return;
