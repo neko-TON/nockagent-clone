@@ -79,43 +79,52 @@
     var string = svg.querySelector('#nk-string');
     var hand = svg.querySelector('#nk-drawhand');
     var arm = svg.querySelectorAll('#nk-drawarm path');
-    var ticking = false;
+    var goal = 0, shown = 0, raf = null;
 
-    function update() {
-      // A short span: the whole shot resolves in a flick of the wheel.
-      var span = Math.max(60, Math.min(110, window.innerHeight * 0.09));
-      var prog = Math.max(0, Math.min(1, window.scrollY / span));
-
+    function render(p) {
       // ease-out — the arrow leaves fast and settles into the target
-      var flown = (1 - Math.pow(1 - prog, 2)) * ARROW_TRAVEL;
-      arrow.setAttribute('transform', 'translate(' + flown.toFixed(1) + ' 0)');
+      var flown = (1 - Math.pow(1 - p, 2)) * ARROW_TRAVEL;
+      arrow.setAttribute('transform', 'translate(' + flown.toFixed(2) + ' 0)');
 
       // the string stays in contact with the nock, then stops at rest:
       // that contact is what makes the release read as a push, not a slide
       if (string) {
         var mid = Math.min(NOCK_X + flown, REST_X);
-        string.setAttribute('d', 'M346 170 L' + mid.toFixed(1) + ' 292 L346 414');
+        string.setAttribute('d', 'M346 170 L' + mid.toFixed(2) + ' 292 L346 414');
       }
 
       // the hand opens and travels back — follow-through, not a push
-      var rel = Math.min(1, prog / 0.14);
+      var rel = Math.min(1, p / 0.14);
       rel = 1 - Math.pow(1 - rel, 3);
       var hx = 246 - 30 * rel, hy = 292 - 22 * rel;
-      if (hand) { hand.setAttribute('cx', hx.toFixed(1)); hand.setAttribute('cy', hy.toFixed(1)); }
+      if (hand) { hand.setAttribute('cx', hx.toFixed(2)); hand.setAttribute('cy', hy.toFixed(2)); }
       if (arm.length) {
-        var d = 'M204 306 L' + (144 + 7 * rel).toFixed(1) + ' ' + (272 - 11 * rel).toFixed(1) +
-                ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1);
+        var d = 'M204 306 L' + (144 + 7 * rel).toFixed(2) + ' ' + (272 - 11 * rel).toFixed(2) +
+                ' L' + hx.toFixed(2) + ' ' + hy.toFixed(2);
         for (var i = 0; i < arm.length; i++) arm[i].setAttribute('d', d);
       }
     }
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () { update(); ticking = false; });
+
+    // Scroll sets a goal; the shot eases toward it frame by frame. Without
+    // this the arrow snaps between wheel notches instead of travelling.
+    function tick() {
+      var diff = goal - shown;
+      if (Math.abs(diff) < 0.0004) { shown = goal; render(shown); raf = null; return; }
+      shown += diff * 0.11;
+      render(shown);
+      raf = requestAnimationFrame(tick);
     }
+
+    function onScroll() {
+      // A short span: the whole shot resolves in a flick of the wheel.
+      var span = Math.max(60, Math.min(110, window.innerHeight * 0.09));
+      goal = Math.max(0, Math.min(1, window.scrollY / span));
+      if (raf === null) raf = requestAnimationFrame(tick);
+    }
+
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll);
-    update();
+    onScroll();
   }
 
   /* 3. route diagram -------------------------------------------------- */
