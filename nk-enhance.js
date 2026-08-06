@@ -20,54 +20,54 @@
   css.id = 'nk-enhance-2';
   css.textContent = [
     '#nk-progress{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;',
-      'background:linear-gradient(90deg,#3b6dff,#8fa8ff);box-shadow:0 0 12px rgba(59,109,255,.7);z-index:60;pointer-events:none;transition:transform .08s linear}',
+      'background:linear-gradient(90deg,#22e07a,#7ff0b0);box-shadow:0 0 12px rgba(34,224,122,.7);z-index:60;pointer-events:none;transition:transform .08s linear}',
     'img[src^="/robot-ai.svg"]{transition:filter .3s ease}',
     '.nk-parallax{transition:transform .35s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d;will-change:transform}',
     /* agent readout */
     '.nk-agent{display:flex;align-items:center;gap:.6rem;margin:.9rem auto 0;max-width:44rem;padding:.6rem .9rem;',
-      'border:1px solid color-mix(in oklab,#3b6dff 28%,transparent);border-radius:12px;',
-      'background:color-mix(in oklab,#0d0f1a 75%,transparent);backdrop-filter:blur(6px);',
-      'font-family:var(--font-geist-mono),ui-monospace,monospace;font-size:12.5px;color:#8a97a0;',
-      'box-shadow:0 10px 30px -18px rgba(59,109,255,.6)}',
-    '.nk-dot{width:8px;height:8px;border-radius:50%;background:#3b6dff;box-shadow:0 0 0 0 rgba(59,109,255,.6);animation:nk-ping 1.8s ease-out infinite;flex:0 0 auto}',
-    '@keyframes nk-ping{0%{box-shadow:0 0 0 0 rgba(59,109,255,.55)}70%{box-shadow:0 0 0 9px rgba(59,109,255,0)}100%{box-shadow:0 0 0 0 rgba(59,109,255,0)}}',
+      'border:1px solid color-mix(in oklab,#22e07a 28%,transparent);border-radius:12px;',
+      'background:color-mix(in oklab,#0a120d 75%,transparent);backdrop-filter:blur(6px);',
+      'font-family:var(--font-geist-mono),ui-monospace,monospace;font-size:12.5px;color:#8a9a90;',
+      'box-shadow:0 10px 30px -18px rgba(34,224,122,.6)}',
+    '.nk-dot{width:8px;height:8px;border-radius:50%;background:#22e07a;box-shadow:0 0 0 0 rgba(34,224,122,.6);animation:nk-ping 1.8s ease-out infinite;flex:0 0 auto}',
+    '@keyframes nk-ping{0%{box-shadow:0 0 0 0 rgba(34,224,122,.55)}70%{box-shadow:0 0 0 9px rgba(34,224,122,0)}100%{box-shadow:0 0 0 0 rgba(34,224,122,0)}}',
     '.nk-agent-txt{transition:opacity .28s ease,transform .28s ease;opacity:1;transform:translateY(0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
     '.nk-agent-txt.nk-out{opacity:0;transform:translateY(4px)}',
-    '.nk-agent .nk-ok{color:#4f7bff}',
+    '.nk-agent .nk-ok{color:#35d97f}',
     /* route graph */
-    '#nk-route{margin:1.1rem 0 .2rem;border:1px solid var(--border);border-radius:12px;background:color-mix(in oklab,#060713 55%,transparent);padding:.6rem .4rem .3rem;overflow:hidden}',
-    '#nk-route .cap{font-family:var(--font-geist-mono),monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#8a97a0;padding:0 .6rem .1rem}',
+    '#nk-route{margin:1.1rem 0 .2rem;border:1px solid var(--border);border-radius:12px;background:color-mix(in oklab,#050a07 55%,transparent);padding:.6rem .4rem .3rem;overflow:hidden}',
+    '#nk-route .cap{font-family:var(--font-geist-mono),monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#8a9a90;padding:0 .6rem .1rem}',
     '#nk-route svg{display:block;width:100%;height:auto}',
     /* live price ticker */
     '#nk-ticker{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:55;display:flex;align-items:center;overflow:hidden;',
-      'background:color-mix(in oklab,#060713 88%,transparent);border-top:1px solid color-mix(in oklab,#3b6dff 30%,transparent);backdrop-filter:blur(8px);',
+      'background:color-mix(in oklab,#050a07 88%,transparent);border-top:1px solid color-mix(in oklab,#22e07a 30%,transparent);backdrop-filter:blur(8px);',
       '-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}',
     '.nk-ticker-track{display:inline-flex;white-space:nowrap;animation:nk-tape 55s linear infinite;will-change:transform}',
     '#nk-ticker:hover .nk-ticker-track{animation-play-state:paused}',
     '@keyframes nk-tape{to{transform:translateX(-50%)}}',
     '.nk-set{display:inline-flex}',
-    '.nk-tk{display:inline-flex;align-items:center;gap:.4rem;padding:0 1.1rem;font-family:var(--font-geist-mono),monospace;font-size:12px;color:#c7cfda;border-right:1px solid color-mix(in oklab,#22252e 60%,transparent)}',
-    '.nk-tk b{color:#eaf3f4;font-weight:700}',
+    '.nk-tk{display:inline-flex;align-items:center;gap:.4rem;padding:0 1.1rem;font-family:var(--font-geist-mono),monospace;font-size:12px;color:#c2d6c9;border-right:1px solid color-mix(in oklab,#1e2a22 60%,transparent)}',
+    '.nk-tk b{color:#eaf4ee;font-weight:700}',
     '.nk-tk i{font-style:normal;color:#aab4c2;transition:color .35s;font-variant-numeric:tabular-nums}',
     '.nk-tk u{text-decoration:none;font-size:11px;color:#6b7482;transition:color .35s}',
     '.nk-tk.nk-up i,.nk-tk.nk-up u{color:#37d67a}',
     '.nk-tk.nk-dn i,.nk-tk.nk-dn u{color:#ff6b6b}',
     /* intro boot loader */
-    '#nk-intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(62% 62% at 50% 42%,#0b1326,#050713 78%);transition:opacity .55s ease}',
+    '#nk-intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(62% 62% at 50% 42%,#061a10,#040a07 78%);transition:opacity .55s ease}',
     '#nk-intro.nk-out{opacity:0;pointer-events:none}',
     '.nk-intro-inner{width:min(90vw,440px);text-align:center}',
-    '.nk-wm{font-family:Geist,ui-sans-serif,system-ui,sans-serif;font-weight:800;font-size:64px;letter-spacing:-2px;color:#eaf3f4;text-shadow:0 0 34px rgba(59,109,255,.6);animation:nk-wm 1.8s ease infinite alternate}',
-    '@keyframes nk-wm{to{text-shadow:0 0 56px rgba(59,109,255,.95)}}',
-    '.nk-sub{margin-top:-4px;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#3b6dff;font-family:var(--font-geist-mono),monospace}',
-    '.nk-boot{margin:24px auto 14px;text-align:left;min-height:104px;max-width:360px;font-family:var(--font-geist-mono),monospace;font-size:12.5px;line-height:2;color:#8a97a0}',
+    '.nk-wm{font-family:Geist,ui-sans-serif,system-ui,sans-serif;font-weight:800;font-size:64px;letter-spacing:-2px;color:#eaf4ee;text-shadow:0 0 34px rgba(34,224,122,.6);animation:nk-wm 1.8s ease infinite alternate}',
+    '@keyframes nk-wm{to{text-shadow:0 0 56px rgba(34,224,122,.95)}}',
+    '.nk-sub{margin-top:-4px;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#22e07a;font-family:var(--font-geist-mono),monospace}',
+    '.nk-boot{margin:24px auto 14px;text-align:left;min-height:104px;max-width:360px;font-family:var(--font-geist-mono),monospace;font-size:12.5px;line-height:2;color:#8a9a90}',
     '.nk-line{opacity:0;transform:translateY(4px);animation:nk-lineIn .25s ease forwards}',
     '@keyframes nk-lineIn{to{opacity:1;transform:none}}',
-    '.nk-line .nk-gt{color:#3b6dff;margin-right:.4rem}',
-    '.nk-line .nk-dots{color:#33477a}',
+    '.nk-line .nk-gt{color:#22e07a;margin-right:.4rem}',
+    '.nk-line .nk-dots{color:#2a6247}',
     '.nk-line .nk-ok{color:#37d67a;opacity:0;margin-left:.35rem;font-weight:700}',
     '.nk-line .nk-ok.on{opacity:1}',
-    '.nk-bar{height:3px;border-radius:3px;max-width:360px;margin:0 auto;background:color-mix(in oklab,#3b6dff 18%,transparent);overflow:hidden}',
-    '.nk-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3b6dff,#8fa8ff);animation:nk-fill 2.4s cubic-bezier(.4,0,.2,1) forwards;box-shadow:0 0 12px rgba(59,109,255,.7)}',
+    '.nk-bar{height:3px;border-radius:3px;max-width:360px;margin:0 auto;background:color-mix(in oklab,#22e07a 18%,transparent);overflow:hidden}',
+    '.nk-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22e07a,#7ff0b0);animation:nk-fill 2.4s cubic-bezier(.4,0,.2,1) forwards;box-shadow:0 0 12px rgba(34,224,122,.7)}',
     '@keyframes nk-fill{to{width:100%}}',
     '.nk-online{margin-top:18px;font-family:var(--font-geist-mono),monospace;font-size:13px;letter-spacing:.24em;color:#37d67a;opacity:0;transition:opacity .4s}',
     '.nk-online.on{opacity:1;animation:nk-blink 1s steps(1) infinite}',
@@ -276,28 +276,28 @@
   var ROUTE_SVG =
     '<div id="nk-route"><div class="cap">Best-route engine · live</div>' +
     '<svg viewBox="0 0 520 132" xmlns="http://www.w3.org/2000/svg" fill="none">' +
-      '<defs><radialGradient id="nkg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#eaf1ff"/><stop offset="1" stop-color="#3b6dff" stop-opacity="0"/></radialGradient></defs>' +
+      '<defs><radialGradient id="nkg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#e9fdf1"/><stop offset="1" stop-color="#22e07a" stop-opacity="0"/></radialGradient></defs>' +
       // direct (naive) edge - dim
-      '<path d="M60 78 Q260 138 460 78" stroke="#2c3d6b" stroke-width="2" stroke-dasharray="4 6" fill="none"/>' +
-      '<text x="260" y="126" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-size="9" letter-spacing="1.5" fill="#5b6472">NAIVE · DIRECT</text>' +
+      '<path d="M60 78 Q260 138 460 78" stroke="#20573c" stroke-width="2" stroke-dasharray="4 6" fill="none"/>' +
+      '<text x="260" y="126" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-size="9" letter-spacing="1.5" fill="#5a6b60">NAIVE · DIRECT</text>' +
       // best hop path - bright animated flow
-      '<path id="nkhop" d="M60 78 Q150 30 260 34 Q370 38 460 78" stroke="#3b6dff" stroke-width="2.5" fill="none" opacity="0.9" stroke-dasharray="9 11">' +
+      '<path id="nkhop" d="M60 78 Q150 30 260 34 Q370 38 460 78" stroke="#22e07a" stroke-width="2.5" fill="none" opacity="0.9" stroke-dasharray="9 11">' +
         '<animate attributeName="stroke-dashoffset" from="0" to="-40" dur="1.1s" repeatCount="indefinite"/></path>' +
-      '<path d="M60 78 Q150 30 260 34 Q370 38 460 78" stroke="#3b6dff" stroke-width="8" fill="none" opacity="0.16"/>' +
+      '<path d="M60 78 Q150 30 260 34 Q370 38 460 78" stroke="#22e07a" stroke-width="8" fill="none" opacity="0.16"/>' +
       // travelling pulse
       '<circle r="9" fill="url(#nkg)"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#nkhop"/></animateMotion></circle>' +
-      '<circle r="3.5" fill="#eaf1ff"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#nkhop"/></animateMotion></circle>' +
+      '<circle r="3.5" fill="#e9fdf1"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#nkhop"/></animateMotion></circle>' +
       // nodes
       nodeSvg(60, 78, 'USDG') + nodeSvg(260, 34, 'WETH') + nodeSvg(460, 78, 'NVDA') +
       // best tag
       '<g opacity="0"><animate attributeName="opacity" from="0" to="1" dur="0.5s" begin="0.9s" fill="freeze"/>' +
-        '<rect x="382" y="92" width="128" height="24" rx="12" fill="#3b6dff" opacity="0.14"/>' +
-        '<text x="446" y="108" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-weight="700" font-size="12" fill="#8fa8ff">+0.22 NVDA</text></g>' +
+        '<rect x="382" y="92" width="128" height="24" rx="12" fill="#22e07a" opacity="0.14"/>' +
+        '<text x="446" y="108" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-weight="700" font-size="12" fill="#7ff0b0">+0.22 NVDA</text></g>' +
     '</svg></div>';
   function nodeSvg(x, y, label){
-    return '<circle cx="' + x + '" cy="' + y + '" r="21" fill="#0d0f1a" stroke="#3b6dff" stroke-width="1.5"/>' +
-      '<circle cx="' + x + '" cy="' + y + '" r="21" fill="none" stroke="#3b6dff" stroke-width="1.5" opacity="0.5"><animate attributeName="r" values="21;27;21" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="2.6s" repeatCount="indefinite"/></circle>' +
-      '<text x="' + x + '" y="' + (y + 4) + '" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-weight="700" font-size="11" fill="#dfe8ff">' + label + '</text>';
+    return '<circle cx="' + x + '" cy="' + y + '" r="21" fill="#0a120d" stroke="#22e07a" stroke-width="1.5"/>' +
+      '<circle cx="' + x + '" cy="' + y + '" r="21" fill="none" stroke="#22e07a" stroke-width="1.5" opacity="0.5"><animate attributeName="r" values="21;27;21" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="2.6s" repeatCount="indefinite"/></circle>' +
+      '<text x="' + x + '" y="' + (y + 4) + '" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-weight="700" font-size="11" fill="#dcf7e8">' + label + '</text>';
   }
   function mountRoute(){
     if (document.getElementById('nk-route')) return;
