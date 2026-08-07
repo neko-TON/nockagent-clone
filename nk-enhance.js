@@ -83,7 +83,9 @@
     var leg = svg.querySelector('#nk-leg');
     if (!leg || leg.__nkStrike) return;
     leg.__nkStrike = 1;
-    var legPaths = svg.querySelectorAll('#nk-leg .nk-leg-p');
+    var legUp = svg.querySelector('#nk-leg .nk-leg-up');
+    var legLo = svg.querySelector('#nk-leg .nk-leg-lo');
+    var knee = svg.querySelector('#nk-leg .nk-leg-knee');
     var hoof = svg.querySelector('#nk-hoof');
     var impact = svg.querySelector('#nk-impact');
     var coins = svg.querySelectorAll('#nk-coins .nk-coin');
@@ -95,8 +97,10 @@
       fall = fall * fall;                              // ease-in, like a real strike
       var kx = UP.kx + (DOWN.kx - UP.kx) * fall, ky = UP.ky + (DOWN.ky - UP.ky) * fall;
       var hx = UP.hx + (DOWN.hx - UP.hx) * fall, hy = UP.hy + (DOWN.hy - UP.hy) * fall;
-      var d = 'M348 262 L' + kx.toFixed(1) + ' ' + ky.toFixed(1) + ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1);
-      for (var j = 0; j < legPaths.length; j++) legPaths[j].setAttribute('d', d);
+      // two segments so the limb keeps its taper: heavy above the joint, light below
+      if (legUp) legUp.setAttribute('d', 'M352 268 L' + kx.toFixed(1) + ' ' + ky.toFixed(1));
+      if (legLo) legLo.setAttribute('d', 'M' + kx.toFixed(1) + ' ' + ky.toFixed(1) + ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1));
+      if (knee) { knee.setAttribute('cx', kx.toFixed(1)); knee.setAttribute('cy', ky.toFixed(1)); }
       if (hoof) hoof.setAttribute('transform', 'translate(' + hx.toFixed(1) + ' ' + hy.toFixed(1) + ')');
 
       // flash only around the moment of contact
