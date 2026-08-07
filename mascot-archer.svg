@@ -1,28 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="116 102 536 462" fill="none" role="img" aria-label="Hooded archer drawing a bow, the None mascot">
   <defs>
     <radialGradient id="aura" cx="50%" cy="44%" r="58%">
-      <stop offset="0%" stop-color="#23c76f" stop-opacity="0.20"/>
-      <stop offset="55%" stop-color="#149657" stop-opacity="0.07"/>
-      <stop offset="100%" stop-color="#23c76f" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#c72389" stop-opacity="0.20"/>
+      <stop offset="55%" stop-color="#96145e" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#c72389" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="cloak" x1="0.1" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#1f3f2c"/>
-      <stop offset="55%" stop-color="#122619"/>
-      <stop offset="100%" stop-color="#091410"/>
+      <stop offset="0%" stop-color="#3f1f35"/>
+      <stop offset="55%" stop-color="#261221"/>
+      <stop offset="100%" stop-color="#14090e"/>
     </linearGradient>
     <linearGradient id="hood" x1="0.15" y1="0" x2="0.85" y2="1">
-      <stop offset="0%" stop-color="#27492f"/>
-      <stop offset="60%" stop-color="#16301f"/>
-      <stop offset="100%" stop-color="#0d1e14"/>
+      <stop offset="0%" stop-color="#492744"/>
+      <stop offset="60%" stop-color="#301629"/>
+      <stop offset="100%" stop-color="#1e0d18"/>
     </linearGradient>
     <linearGradient id="limb" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#356b4a"/>
-      <stop offset="100%" stop-color="#1c3f2b"/>
+      <stop offset="0%" stop-color="#6b355a"/>
+      <stop offset="100%" stop-color="#3f1c33"/>
     </linearGradient>
     <radialGradient id="coin" cx="40%" cy="36%" r="70%">
-      <stop offset="0%" stop-color="#1c4230"/>
-      <stop offset="70%" stop-color="#0d2117"/>
-      <stop offset="100%" stop-color="#07130d"/>
+      <stop offset="0%" stop-color="#421c31"/>
+      <stop offset="70%" stop-color="#210d19"/>
+      <stop offset="100%" stop-color="#13070e"/>
     </radialGradient>
     <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"/></filter>
     <filter id="tiny" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter>
@@ -37,23 +37,23 @@
 
   <ellipse cx="269" cy="330" rx="146" ry="216" fill="url(#aura)"/>
 
-  <ellipse cx="216" cy="530" rx="72" ry="12" fill="#23c76f" opacity="0.13" filter="url(#soft)"/>
-  <ellipse cx="216" cy="530" rx="42" ry="5" fill="#86d8a8" opacity="0.15" filter="url(#tiny)"/>
+  <ellipse cx="216" cy="530" rx="72" ry="12" fill="#c72389" opacity="0.13" filter="url(#soft)"/>
+  <ellipse cx="216" cy="530" rx="42" ry="5" fill="#d886bd" opacity="0.15" filter="url(#tiny)"/>
 
   <!-- ============ bow, behind everything ============ -->
   <path d="M346 170 Q380 292 346 414" stroke="url(#limb)" stroke-width="8.5" stroke-linecap="round" fill="none"/>
-  <path d="M346 170 Q380 292 346 414" stroke="#4a8f63" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.55"/>
-  <circle cx="346" cy="170" r="3.6" fill="#356b4a"/>
-  <circle cx="346" cy="414" r="3.6" fill="#356b4a"/>
-  <path id="nk-string" d="M346 170 L250 292 L346 414" stroke="#6b9d80" stroke-width="1.5" fill="none" opacity="0.85"/>
+  <path d="M346 170 Q380 292 346 414" stroke="#8f4a7c" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.55"/>
+  <circle cx="346" cy="170" r="3.6" fill="#6b355a"/>
+  <circle cx="346" cy="414" r="3.6" fill="#6b355a"/>
+  <path id="nk-string" d="M346 170 L250 292 L346 414" stroke="#9d6b8c" stroke-width="1.5" fill="none" opacity="0.85"/>
 
   <!-- ============ quiver on the back ============ -->
   <g>
-    <path d="M148 262 L128 348 L150 357 L170 272 Z" fill="#112418" stroke="#2a5138" stroke-width="1.3"/>
-    <g stroke="#5a8f70" stroke-width="2" stroke-linecap="round">
+    <path d="M148 262 L128 348 L150 357 L170 272 Z" fill="#24111f" stroke="#512a46" stroke-width="1.3"/>
+    <g stroke="#8f5a7d" stroke-width="2" stroke-linecap="round">
       <path d="M152 264 L133 208"/><path d="M162 266 L146 202"/>
     </g>
-    <g fill="#23c76f" opacity="0.8">
+    <g fill="#c72389" opacity="0.8">
       <path d="M133 208 l-3 10 l4 -3 l6 1 Z"/><path d="M146 202 l-3 10 l4 -3 l6 1 Z"/>
     </g>
   </g>
@@ -68,25 +68,25 @@
            C 274 466, 270 406, 261 354
            C 251 302, 232 256, 210 248 Z"
         fill="url(#cloak)"/>
-  <path d="M192 300 C 180 356, 176 434, 180 522" stroke="#2a5138" stroke-width="1.5" fill="none" opacity="0.55"/>
-  <path d="M230 312 C 240 366, 245 442, 247 522" stroke="#2a5138" stroke-width="1.5" fill="none" opacity="0.4"/>
-  <path d="M162 356 C 158 416, 158 476, 161 522" stroke="#2a5138" stroke-width="1.3" fill="none" opacity="0.28"/>
-  <path d="M157 526 L262 526" stroke="#4a8f63" stroke-width="1.8" opacity="0.4"/>
+  <path d="M192 300 C 180 356, 176 434, 180 522" stroke="#512a46" stroke-width="1.5" fill="none" opacity="0.55"/>
+  <path d="M230 312 C 240 366, 245 442, 247 522" stroke="#512a46" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <path d="M162 356 C 158 416, 158 476, 161 522" stroke="#512a46" stroke-width="1.3" fill="none" opacity="0.28"/>
+  <path d="M157 526 L262 526" stroke="#8f4a7c" stroke-width="1.8" opacity="0.4"/>
 
   <!-- ============ draw arm — elbow pulled back, clear of the hood ============ -->
   <g id="nk-drawarm">
-    <path d="M204 306 L144 272 L240 292" stroke="#0d2015" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <path d="M204 306 L144 272 L240 292" stroke="#1a3626" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M204 306 L144 272 L240 292" stroke="#200d1a" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M204 306 L144 272 L240 292" stroke="#361a2c" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   </g>
 
   <!-- ============ bow arm — extended to the grip ============ -->
-  <path d="M226 306 L336 292" stroke="#122a1c" stroke-width="19" stroke-linecap="round" fill="none"/>
-  <path d="M226 306 L336 292" stroke="#22462f" stroke-width="13" stroke-linecap="round" fill="none"/>
-  <rect x="334" y="276" width="19" height="31" rx="9" fill="#22462f" stroke="#356b4a" stroke-width="1.3"/>
+  <path d="M226 306 L336 292" stroke="#2a1222" stroke-width="19" stroke-linecap="round" fill="none"/>
+  <path d="M226 306 L336 292" stroke="#46223c" stroke-width="13" stroke-linecap="round" fill="none"/>
+  <rect x="334" y="276" width="19" height="31" rx="9" fill="#46223c" stroke="#6b355a" stroke-width="1.3"/>
 
   <!-- ============ hood ============ -->
   <!-- drape falling off the back of the cowl -->
-  <path d="M154 212 C 143 228, 138 252, 141 274 C 150 270, 158 252, 162 230 Z" fill="#142b1c"/>
+  <path d="M154 212 C 143 228, 138 252, 141 274 C 150 270, 158 252, 162 230 Z" fill="#2b1425"/>
   <!-- cowl: rises to a point at the back, edges kept taut rather than round -->
   <path d="M174 119
            C 211 126, 246 153, 256 189
@@ -98,50 +98,50 @@
         fill="url(#hood)"/>
   <!-- lit edge along the taut back seam -->
   <path d="M174 119 C 163 129, 154 144, 148 166 C 141 192, 147 220, 160 235"
-        stroke="#4a8f63" stroke-width="1.9" fill="none" opacity="0.5"/>
+        stroke="#8f4a7c" stroke-width="1.9" fill="none" opacity="0.5"/>
   <!-- a single crease so the cowl reads as cloth, not a shell -->
-  <path d="M181 136 C 171 160, 168 192, 175 220" stroke="#2a5138" stroke-width="1.4" fill="none" opacity="0.45"/>
+  <path d="M181 136 C 171 160, 168 192, 175 220" stroke="#512a46" stroke-width="1.4" fill="none" opacity="0.45"/>
   <!-- the face is a void — this is None -->
   <path d="M212 158
            C 239 158, 251 178, 249 201
            C 247 224, 231 240, 211 240
            C 195 240, 186 226, 185 207
            C 184 181, 194 160, 212 158 Z"
-        fill="#04100a"/>
+        fill="#10040b"/>
   <g filter="url(#tiny)" opacity="0.7">
-    <rect x="200" y="197" width="15" height="6" rx="3" fill="#23c76f"/>
-    <rect x="224" y="193" width="15" height="6" rx="3" fill="#23c76f"/>
+    <rect x="200" y="197" width="15" height="6" rx="3" fill="#c72389"/>
+    <rect x="224" y="193" width="15" height="6" rx="3" fill="#c72389"/>
   </g>
   <g id="eyes">
-    <rect x="200" y="197" width="15" height="5" rx="2.5" fill="#b9f0d2"/>
-    <rect x="224" y="193" width="15" height="5" rx="2.5" fill="#b9f0d2"/>
+    <rect x="200" y="197" width="15" height="5" rx="2.5" fill="#f0b9dc"/>
+    <rect x="224" y="193" width="15" height="5" rx="2.5" fill="#f0b9dc"/>
   </g>
 
   <!-- draw hand closing on the string -->
-  <circle id="nk-drawhand" cx="246" cy="292" r="10.5" fill="#22462f" stroke="#356b4a" stroke-width="1.3"/>
+  <circle id="nk-drawhand" cx="246" cy="292" r="10.5" fill="#46223c" stroke="#6b355a" stroke-width="1.3"/>
 
 
   <!-- ============ the coin, standing off as a target ============ -->
   <g id="nk-target">
-    <circle cx="560" cy="292" r="56" fill="#23c76f" opacity="0.15" filter="url(#soft)"/>
-    <circle cx="560" cy="292" r="44" fill="url(#coin)" stroke="#356b4a" stroke-width="2"/>
-    <circle cx="560" cy="292" r="44" fill="none" stroke="#23c76f" stroke-width="1.6" stroke-dasharray="3 7" opacity="0.5"/>
-    <circle cx="560" cy="292" r="34" fill="none" stroke="#2a6247" stroke-width="1.6"/>
-    <circle cx="560" cy="292" r="24" fill="none" stroke="#356b4a" stroke-width="1.6"/>
-    <circle cx="560" cy="292" r="16" fill="#23c76f" opacity="0.12"/>
-    <circle cx="560" cy="292" r="16" fill="none" stroke="#23c76f" stroke-width="1.4" opacity="0.8"/>
+    <circle cx="560" cy="292" r="56" fill="#c72389" opacity="0.15" filter="url(#soft)"/>
+    <circle cx="560" cy="292" r="44" fill="url(#coin)" stroke="#6b355a" stroke-width="2"/>
+    <circle cx="560" cy="292" r="44" fill="none" stroke="#c72389" stroke-width="1.6" stroke-dasharray="3 7" opacity="0.5"/>
+    <circle cx="560" cy="292" r="34" fill="none" stroke="#622a4a" stroke-width="1.6"/>
+    <circle cx="560" cy="292" r="24" fill="none" stroke="#6b355a" stroke-width="1.6"/>
+    <circle cx="560" cy="292" r="16" fill="#c72389" opacity="0.12"/>
+    <circle cx="560" cy="292" r="16" fill="none" stroke="#c72389" stroke-width="1.4" opacity="0.8"/>
     <text x="560" y="292" dy="0.36em" text-anchor="middle"
           font-family="'Space Grotesk', Geist, ui-sans-serif, sans-serif"
-          font-weight="700" font-size="20" fill="#d8f3e4">N</text>
+          font-weight="700" font-size="20" fill="#f3d8e9">N</text>
   </g>
 
   <!-- ============ arrow — the page translates this group on scroll ============ -->
   <g id="nk-arrow">
-    <line x1="240" y1="292" x2="372" y2="292" stroke="#08130d" stroke-width="5.5" stroke-linecap="round"/>
-    <line x1="240" y1="292" x2="372" y2="292" stroke="#9ecdb2" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M372 292 l-12 -6 l0 12 Z" fill="#23c76f"/>
-    <path d="M380 292 l-7 -3.5 l0 7 Z" fill="#b9f0d2"/>
-    <g fill="#23c76f">
+    <line x1="240" y1="292" x2="372" y2="292" stroke="#13080f" stroke-width="5.5" stroke-linecap="round"/>
+    <line x1="240" y1="292" x2="372" y2="292" stroke="#cd9ebd" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M372 292 l-12 -6 l0 12 Z" fill="#c72389"/>
+    <path d="M380 292 l-7 -3.5 l0 7 Z" fill="#f0b9dc"/>
+    <g fill="#c72389">
       <path d="M254 292 l-13 -8 l-7 8 l7 8 Z"/>
       <path d="M266 292 l-13 -8 l-7 8 l7 8 Z" opacity="0.55"/>
     </g>

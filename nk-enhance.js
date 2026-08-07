@@ -16,7 +16,7 @@
   css.id = 'nk-enhance-2';
   css.textContent = [
     '#nk-route{margin:1.25rem 0 .25rem;border:1px solid var(--border);border-radius:10px;',
-      'background:rgba(3,11,6,.5);padding:.85rem .5rem .3rem}',
+      'background:rgba(16,16,16,.5);padding:.85rem .5rem .3rem}',
     '#nk-route .cap{font-family:var(--font-geist-mono),monospace;font-size:10px;letter-spacing:.18em;',
       'text-transform:uppercase;color:var(--muted);padding:0 .7rem .5rem}',
     '#nk-route svg{display:block;width:100%;height:auto}'
@@ -130,19 +130,19 @@
 
   /* 3. route diagram -------------------------------------------------- */
   function node(x, y, label) {
-    return '<circle cx="' + x + '" cy="' + y + '" r="20" fill="#0a120d" stroke="#2a6247" stroke-width="1.5"/>' +
+    return '<circle cx="' + x + '" cy="' + y + '" r="20" fill="#1f1f1f" stroke="#622a4a" stroke-width="1.5"/>' +
       '<text x="' + x + '" y="' + (y + 4) + '" text-anchor="middle" font-family="var(--font-geist-mono),monospace" ' +
-      'font-size="11" fill="#c2d6c9">' + label + '</text>';
+      'font-size="11" fill="#d4d4d4">' + label + '</text>';
   }
   var ROUTE =
     '<div id="nk-route"><div class="cap">Route comparison</div>' +
     '<svg viewBox="0 0 520 118" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-      '<path d="M60 72 Q260 118 460 72" stroke="#20573c" stroke-width="1.5" stroke-dasharray="4 5" fill="none"/>' +
+      '<path d="M60 72 Q260 118 460 72" stroke="#572040" stroke-width="1.5" stroke-dasharray="4 5" fill="none"/>' +
       '<text x="260" y="112" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-size="9" ' +
-        'letter-spacing="1.2" fill="#5a6b60">DIRECT</text>' +
-      '<path d="M60 72 Q150 32 260 32 Q370 32 460 72" stroke="#23c76f" stroke-width="2" fill="none"/>' +
+        'letter-spacing="1.2" fill="#6e6e6e">DIRECT</text>' +
+      '<path d="M60 72 Q150 32 260 32 Q370 32 460 72" stroke="#ff37c7" stroke-width="2" fill="none"/>' +
       '<text x="260" y="20" text-anchor="middle" font-family="var(--font-geist-mono),monospace" font-size="9" ' +
-        'letter-spacing="1.2" fill="#86d8a8">ROUTED · +0.22 NVDA</text>' +
+        'letter-spacing="1.2" fill="#fc72ff">ROUTED · +0.22 NVDA</text>' +
       node(60, 72, 'USDG') + node(260, 32, 'WETH') + node(460, 72, 'NVDA') +
     '</svg></div>';
 

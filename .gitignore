@@ -8,3 +8,4 @@
 # local dev-only no-cache static server
 .serve-nocache.py
 *.bluebak
+*.greenbak2
