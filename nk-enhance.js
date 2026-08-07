@@ -47,7 +47,7 @@
       if (!svg || svg.nodeName.toLowerCase() !== 'svg') { img.__nkSwapping = 0; return; }
       svg.setAttribute('data-nk-mascot', '1');
       svg.setAttribute('class', cls);
-      svg.style.aspectRatio = '600 / 480';
+      svg.style.aspectRatio = '439 / 462';
       svg.style.width = 'auto';
       img.replaceWith(svg);
       strike(svg);
