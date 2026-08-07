@@ -78,6 +78,8 @@
   var UP   = { kx: 394, ky: 300, fx: 408, fy: 338, hx: 410, hy: 354 };
   var DOWN = { kx: 378, ky: 330, fx: 380, fy: 396, hx: 381, hy: 412 };
   var CYCLE = 2800;                                    // ms per paw
+  // every asset that has a real mark; six are dealt per paw
+  var POOL = ['NVDA','AAPL','TSLA','COIN','AMZN','GOOGL','META','ETH','BTC','NFLX','AMD'];
 
   // beats of one cycle, as fractions
   var T_RISE = 0.30, T_HIT = 0.38, T_SETTLE = 0.52, T_COINS_END = 0.94;
@@ -100,6 +102,25 @@
     var dust  = svg.querySelector('#nk-dust');
     var flash = svg.querySelector('#nk-impact');
     var coins = svg.querySelectorAll('#nk-coins .nk-coin');
+    var glyphs = svg.querySelectorAll('#nk-coins .nk-glyph');
+
+    // Deal from a shuffled deck rather than picking at random each time: random
+    // draws repeat, and a repeat inside one burst looks like a bug.
+    var deck = POOL.slice(), cut = deck.length;
+    function shuffle() {
+      for (var i = deck.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = deck[i]; deck[i] = deck[j]; deck[j] = t;
+      }
+      cut = 0;
+    }
+    function deal() {
+      for (var i = 0; i < glyphs.length; i++) {
+        if (cut + i >= deck.length) shuffle();       // deck spent, cut a new one
+        glyphs[i].setAttribute('href', '#gl-' + deck[(cut + i) % deck.length]);
+      }
+      cut = (cut + glyphs.length) % deck.length;
+    }
 
     function place(t) {
       // ---- the limb: gather slowly, strike fast ----
@@ -155,15 +176,19 @@
       }
     }
 
+    shuffle(); deal();
     if (REDUCE) { place(0.55); return; }   // planted, coins mid-air, nothing moving
 
     // No scroll binding: the paw runs on its own clock, and only while the
     // mascot is actually on screen.
-    var raf = null, t0 = null, running = false;
+    var raf = null, t0 = null, running = false, lastCycle = -1;
     function frame(ts) {
       if (!running) { raf = null; return; }
       if (t0 === null) t0 = ts;
-      place(((ts - t0) % CYCLE) / CYCLE);
+      var elapsed = ts - t0;
+      var n = Math.floor(elapsed / CYCLE);
+      if (n !== lastCycle) { lastCycle = n; deal(); }   // new paw, new six
+      place((elapsed % CYCLE) / CYCLE);
       raf = requestAnimationFrame(frame);
     }
     function run(on) {
