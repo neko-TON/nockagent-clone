@@ -47,7 +47,7 @@
       if (!svg || svg.nodeName.toLowerCase() !== 'svg') { img.__nkSwapping = 0; return; }
       svg.setAttribute('data-nk-mascot', '1');
       svg.setAttribute('class', cls);
-      svg.style.aspectRatio = '560 / 440';
+      svg.style.aspectRatio = '600 / 480';
       svg.style.width = 'auto';
       img.replaceWith(svg);
       strike(svg);
@@ -72,9 +72,11 @@
     { a: -78, d: 74,  rise: 172, spin:  460 }, { a: -108, d: 86, rise: 158, spin: -420 },
     { a: -138, d: 122, rise: 128, spin:  360 }, { a: -160, d: 156, rise: 96, spin: -300 }
   ];
-  var HOOF_X = 391, HOOF_Y = 386;
-  var UP   = { kx: 362, ky: 296, hx: 364, hy: 328 };   // gathered, ready to strike
-  var DOWN = { kx: 372, ky: 322, hx: 390, hy: 378 };   // planted
+  var HOOF_X = 381, HOOF_Y = 424;
+  // Equine foreleg: elbow stays put, the knee and fetlock carry the movement.
+  // Gathered, the cannon folds up and forward; planted, the column is straight.
+  var UP   = { kx: 394, ky: 300, fx: 408, fy: 338, hx: 410, hy: 354 };
+  var DOWN = { kx: 378, ky: 330, fx: 380, fy: 396, hx: 381, hy: 412 };
   var CYCLE = 2800;                                    // ms per paw
 
   // beats of one cycle, as fractions
@@ -88,9 +90,11 @@
     if (!leg || leg.__nkStrike) return;
     leg.__nkStrike = 1;
 
-    var legUp = svg.querySelector('#nk-leg .nk-leg-up');
-    var legLo = svg.querySelector('#nk-leg .nk-leg-lo');
-    var knee  = svg.querySelector('#nk-leg .nk-leg-knee');
+    var fore    = svg.querySelector('#nk-leg .nk-leg-fore');
+    var cannon  = svg.querySelector('#nk-leg .nk-leg-cannon');
+    var pastern = svg.querySelector('#nk-leg .nk-leg-pastern');
+    var knee    = svg.querySelector('#nk-leg .nk-leg-knee');
+    var fet     = svg.querySelector('#nk-leg .nk-leg-fet');
     var hoof  = svg.querySelector('#nk-hoof');
     var rig   = svg.querySelector('#nk-rig');
     var dust  = svg.querySelector('#nk-dust');
@@ -103,11 +107,15 @@
       if (t < T_RISE)      lift = easeOut(t / T_RISE);              // draw it up
       else if (t < T_HIT)  lift = 1 - easeIn((t - T_RISE) / (T_HIT - T_RISE));  // snap down
       else                 lift = 0;                                // planted
-      var kx = DOWN.kx + (UP.kx - DOWN.kx) * lift, ky = DOWN.ky + (UP.ky - DOWN.ky) * lift;
-      var hx = DOWN.hx + (UP.hx - DOWN.hx) * lift, hy = DOWN.hy + (UP.hy - DOWN.hy) * lift;
-      if (legUp) legUp.setAttribute('d', 'M352 268 L' + kx.toFixed(1) + ' ' + ky.toFixed(1));
-      if (legLo) legLo.setAttribute('d', 'M' + kx.toFixed(1) + ' ' + ky.toFixed(1) + ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1));
+      function mix(a, b) { return b + (a - b) * lift; }
+      var kx = mix(UP.kx, DOWN.kx), ky = mix(UP.ky, DOWN.ky);
+      var fx = mix(UP.fx, DOWN.fx), fy = mix(UP.fy, DOWN.fy);
+      var hx = mix(UP.hx, DOWN.hx), hy = mix(UP.hy, DOWN.hy);
+      if (fore)    fore.setAttribute('d', 'M372 260 L' + kx.toFixed(1) + ' ' + ky.toFixed(1));
+      if (cannon)  cannon.setAttribute('d', 'M' + kx.toFixed(1) + ' ' + ky.toFixed(1) + ' L' + fx.toFixed(1) + ' ' + fy.toFixed(1));
+      if (pastern) pastern.setAttribute('d', 'M' + fx.toFixed(1) + ' ' + fy.toFixed(1) + ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1));
       if (knee) { knee.setAttribute('cx', kx.toFixed(1)); knee.setAttribute('cy', ky.toFixed(1)); }
+      if (fet)  { fet.setAttribute('cx', fx.toFixed(1)); fet.setAttribute('cy', fy.toFixed(1)); }
       if (hoof) hoof.setAttribute('transform', 'translate(' + hx.toFixed(1) + ' ' + hy.toFixed(1) + ')');
 
       // ---- the body answers the blow: a short dip, then it springs back ----
@@ -125,7 +133,7 @@
       if (flash) flash.setAttribute('opacity', (hit * 0.95).toFixed(3));
       if (dust) {
         var dt = (t < T_HIT) ? 0 : Math.min(1, (t - T_HIT) / 0.30);
-        dust.setAttribute('rx', (30 + dt * 58).toFixed(1));
+        dust.setAttribute('rx', (30 + dt * 62).toFixed(1));
         dust.setAttribute('ry', (8 + dt * 12).toFixed(1));
         dust.setAttribute('opacity', (dt > 0 ? (1 - dt) * 0.55 : 0).toFixed(3));
       }
