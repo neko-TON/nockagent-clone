@@ -55,6 +55,7 @@
   <ellipse cx="290" cy="400" rx="155" ry="13" fill="#ff37c7" opacity="0.10" filter="url(#soft)"/>
   <ellipse cx="290" cy="400" rx="74" ry="6" fill="#fc72ff" opacity="0.14" filter="url(#tiny)"/>
 
+  <g id="nk-rig">
   <!-- ================= tail: separate strands ================= -->
   <g>
     <path d="M198 234 C 168 240, 138 268, 122 306 C 110 336, 112 364, 126 380
@@ -186,6 +187,12 @@
       <path d="M-13 -7 h26 l1 5 h-28 z" fill="#fc72ff" opacity="0.5"/>
     </g>
   </g>
+
+  </g>
+
+  <!-- dust kicked out by the strike -->
+  <ellipse id="nk-dust" cx="391" cy="396" rx="30" ry="8" fill="none"
+           stroke="#ffd9f4" stroke-width="2.5" opacity="0"/>
 
   <!-- impact flash under the hoof -->
   <g id="nk-impact" opacity="0">

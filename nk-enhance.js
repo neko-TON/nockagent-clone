@@ -65,87 +65,109 @@
   }
   function mascot() { if (!document.querySelector('svg[data-nk-mascot]')) inlineMascot(); }
 
-  /* 2b. the strike plays out as the page scrolls --------------------- */
-  // Coin fan: angle in degrees (0 = right), reach, and how high it arcs.
+  /* 2b. the strike runs on its own clock ------------------------------ */
+  // Coin fan: launch angle in degrees (0 = right), reach, arc height, spin.
   var COINS = [
-    { a: -18, d: 128, rise: 74 }, { a: -46, d: 96,  rise: 96 },
-    { a: -72, d: 66,  rise: 112 }, { a: -104, d: 74, rise: 100 },
-    { a: -134, d: 104, rise: 78 }, { a: -158, d: 132, rise: 56 }
+    { a: -22, d: 150, rise: 120, spin:  400 }, { a: -50, d: 112, rise: 150, spin: -330 },
+    { a: -78, d: 74,  rise: 172, spin:  460 }, { a: -108, d: 86, rise: 158, spin: -420 },
+    { a: -138, d: 122, rise: 128, spin:  360 }, { a: -160, d: 156, rise: 96, spin: -300 }
   ];
   var HOOF_X = 391, HOOF_Y = 386;
-  // Two poses for the striking leg. A plain rotation swung the whole leg
-  // forward like a kick; interpolating the knee and hoof bends it instead,
-  // which is what a paw-and-stomp actually looks like.
-  var UP   = { kx: 366, ky: 300, hx: 370, hy: 336 };
-  var DOWN = { kx: 372, ky: 322, hx: 390, hy: 380 };
+  var UP   = { kx: 362, ky: 296, hx: 364, hy: 328 };   // gathered, ready to strike
+  var DOWN = { kx: 372, ky: 322, hx: 390, hy: 378 };   // planted
+  var CYCLE = 2800;                                    // ms per paw
+
+  // beats of one cycle, as fractions
+  var T_RISE = 0.30, T_HIT = 0.38, T_SETTLE = 0.52, T_COINS_END = 0.94;
+
+  function easeOut(x){ return 1 - Math.pow(1 - x, 3); }
+  function easeIn(x){ return x * x * x; }
 
   function strike(svg) {
     var leg = svg.querySelector('#nk-leg');
     if (!leg || leg.__nkStrike) return;
     leg.__nkStrike = 1;
+
     var legUp = svg.querySelector('#nk-leg .nk-leg-up');
     var legLo = svg.querySelector('#nk-leg .nk-leg-lo');
-    var knee = svg.querySelector('#nk-leg .nk-leg-knee');
-    var hoof = svg.querySelector('#nk-hoof');
-    var impact = svg.querySelector('#nk-impact');
+    var knee  = svg.querySelector('#nk-leg .nk-leg-knee');
+    var hoof  = svg.querySelector('#nk-hoof');
+    var rig   = svg.querySelector('#nk-rig');
+    var dust  = svg.querySelector('#nk-dust');
+    var flash = svg.querySelector('#nk-impact');
     var coins = svg.querySelectorAll('#nk-coins .nk-coin');
 
-    function place(p) {
-      // the hoof falls over the first stretch, accelerating in like a real
-      // strike; everything after that is the scatter
-      var fall = Math.min(1, p / 0.34);
-      fall = fall * fall;                              // ease-in, like a real strike
-      var kx = UP.kx + (DOWN.kx - UP.kx) * fall, ky = UP.ky + (DOWN.ky - UP.ky) * fall;
-      var hx = UP.hx + (DOWN.hx - UP.hx) * fall, hy = UP.hy + (DOWN.hy - UP.hy) * fall;
-      // two segments so the limb keeps its taper: heavy above the joint, light below
+    function place(t) {
+      // ---- the limb: gather slowly, strike fast ----
+      var lift;
+      if (t < T_RISE)      lift = easeOut(t / T_RISE);              // draw it up
+      else if (t < T_HIT)  lift = 1 - easeIn((t - T_RISE) / (T_HIT - T_RISE));  // snap down
+      else                 lift = 0;                                // planted
+      var kx = DOWN.kx + (UP.kx - DOWN.kx) * lift, ky = DOWN.ky + (UP.ky - DOWN.ky) * lift;
+      var hx = DOWN.hx + (UP.hx - DOWN.hx) * lift, hy = DOWN.hy + (UP.hy - DOWN.hy) * lift;
       if (legUp) legUp.setAttribute('d', 'M352 268 L' + kx.toFixed(1) + ' ' + ky.toFixed(1));
       if (legLo) legLo.setAttribute('d', 'M' + kx.toFixed(1) + ' ' + ky.toFixed(1) + ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1));
       if (knee) { knee.setAttribute('cx', kx.toFixed(1)); knee.setAttribute('cy', ky.toFixed(1)); }
       if (hoof) hoof.setAttribute('transform', 'translate(' + hx.toFixed(1) + ' ' + hy.toFixed(1) + ')');
 
-      // flash only around the moment of contact
-      if (impact) {
-        var f = p < 0.28 ? 0 : Math.max(0, 1 - (p - 0.28) / 0.22);
-        impact.setAttribute('opacity', f.toFixed(3));
+      // ---- the body answers the blow: a short dip, then it springs back ----
+      var jolt = 0;
+      if (t >= T_HIT && t < T_SETTLE) {
+        var j = (t - T_HIT) / (T_SETTLE - T_HIT);
+        jolt = Math.sin(j * Math.PI) * 5;              // down and back in one arc
+      } else if (t < T_HIT && t > T_RISE) {
+        jolt = -1.5 * ((t - T_RISE) / (T_HIT - T_RISE));   // a touch of lift on the wind-up
+      }
+      if (rig) rig.setAttribute('transform', 'translate(0 ' + jolt.toFixed(2) + ')');
+
+      // ---- contact: flash and a ring of dust ----
+      var hit = (t < T_HIT) ? 0 : Math.max(0, 1 - (t - T_HIT) / 0.14);
+      if (flash) flash.setAttribute('opacity', (hit * 0.95).toFixed(3));
+      if (dust) {
+        var dt = (t < T_HIT) ? 0 : Math.min(1, (t - T_HIT) / 0.30);
+        dust.setAttribute('rx', (30 + dt * 58).toFixed(1));
+        dust.setAttribute('ry', (8 + dt * 12).toFixed(1));
+        dust.setAttribute('opacity', (dt > 0 ? (1 - dt) * 0.55 : 0).toFixed(3));
       }
 
-      var t = Math.max(0, Math.min(1, (p - 0.3) / 0.7));
+      // ---- coins: a real throw, up and back down, fading as they drop ----
+      var ct = (t - T_HIT) / (T_COINS_END - T_HIT);
+      ct = Math.max(0, Math.min(1, ct));
       for (var i = 0; i < coins.length; i++) {
         var c = COINS[i % COINS.length];
         var rad = c.a * Math.PI / 180;
-        // outward travel eases out; the arc is a parabola so they rise then drop
-        var e = 1 - Math.pow(1 - t, 2);
-        var x = HOOF_X + Math.cos(rad) * c.d * e;
-        // rise monotonically: the parabola returned to zero at the end, which
-        // left every coin lying in a line on the ground
-        var y = HOOF_Y + Math.sin(rad) * c.d * e * 0.55 - c.rise * e * 0.45;
-        var sc = Math.min(1, t * 3);
+        var out = easeOut(ct);                                   // outward travel decelerates
+        var x = HOOF_X + Math.cos(rad) * c.d * out;
+        var y = HOOF_Y + Math.sin(rad) * c.d * out * 0.5 - c.rise * (4 * ct * (1 - ct));
+        var sc = Math.min(1, ct * 6);
+        var op = ct <= 0 ? 0 : Math.min(1, ct * 8) * (ct > 0.72 ? Math.max(0, 1 - (ct - 0.72) / 0.28) : 1);
         coins[i].setAttribute('transform',
-          'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (t * (i % 2 ? 150 : -150)).toFixed(0) + ') scale(' + sc.toFixed(3) + ')');
-        coins[i].setAttribute('opacity', (t > 0 ? Math.min(1, t * 4) : 0).toFixed(3));
+          'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (ct * c.spin).toFixed(0) + ') scale(' + sc.toFixed(3) + ')');
+        coins[i].setAttribute('opacity', op.toFixed(3));
       }
     }
 
-    if (REDUCE) { place(1); return; }   // hoof down, coins already scattered
+    if (REDUCE) { place(0.55); return; }   // planted, coins mid-air, nothing moving
 
-    var goal = 0, shown = 0, raf = null;
-    function tick() {
-      var diff = goal - shown;
-      if (Math.abs(diff) < 0.0004) { shown = goal; place(shown); raf = null; return; }
-      shown += diff * 0.17;
-      place(shown);
-      raf = requestAnimationFrame(tick);
+    // No scroll binding: the paw runs on its own clock, and only while the
+    // mascot is actually on screen.
+    var raf = null, t0 = null, running = false;
+    function frame(ts) {
+      if (!running) { raf = null; return; }
+      if (t0 === null) t0 = ts;
+      place(((ts - t0) % CYCLE) / CYCLE);
+      raf = requestAnimationFrame(frame);
     }
-    function onScroll() {
-      // barely scroll-bound: the first nudge triggers the strike, the damped
-      // loop carries the scatter the rest of the way
-      var span = Math.max(26, Math.min(52, window.innerHeight * 0.04));
-      goal = Math.max(0, Math.min(1, window.scrollY / span));
-      if (raf === null) raf = requestAnimationFrame(tick);
+    function run(on) {
+      if (on === running) return;
+      running = on;
+      if (on) { t0 = null; raf = requestAnimationFrame(frame); }
+      else if (raf) { cancelAnimationFrame(raf); raf = null; }
     }
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', onScroll);
-    onScroll();
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { run(e[0].isIntersecting); }, { threshold: 0 }).observe(svg);
+    } else { run(true); }
+    place(0);
   }
 
   /* 3. route diagram -------------------------------------------------- */
