@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 440" fill="none" role="img" aria-label="Unicorn striking the ground, N coins scattering from the hoof">
+  <defs>
+    <radialGradient id="aura" cx="52%" cy="52%" r="58%">
+      <stop offset="0%" stop-color="#ff37c7" stop-opacity="0.16"/>
+      <stop offset="60%" stop-color="#7850ff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ff37c7" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hide" x1="0.2" y1="0" x2="0.7" y2="1">
+      <stop offset="0%" stop-color="#43304a"/>
+      <stop offset="55%" stop-color="#2c2033"/>
+      <stop offset="100%" stop-color="#1d1524"/>
+    </linearGradient>
+    <linearGradient id="hideLit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4d3856"/>
+      <stop offset="100%" stop-color="#2a1e31"/>
+    </linearGradient>
+    <linearGradient id="mane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff37c7"/>
+      <stop offset="55%" stop-color="#fc72ff"/>
+      <stop offset="100%" stop-color="#a24bff"/>
+    </linearGradient>
+    <linearGradient id="horn" x1="0" y1="1" x2="0.6" y2="0">
+      <stop offset="0%" stop-color="#fc72ff"/>
+      <stop offset="100%" stop-color="#ffe4f7"/>
+    </linearGradient>
+    <radialGradient id="coinFace" cx="40%" cy="34%" r="70%">
+      <stop offset="0%" stop-color="#3a2a40"/>
+      <stop offset="70%" stop-color="#221a29"/>
+      <stop offset="100%" stop-color="#171020"/>
+    </radialGradient>
+    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="8"/></filter>
+    <filter id="tiny" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6"/></filter>
+  </defs>
+
+  <style>
+    /* one small human touch: an occasional blink. Nothing else moves on its own. */
+    @keyframes blink{0%,95%,100%{transform:scaleY(1)}97.5%{transform:scaleY(.1)}}
+    #eye{transform-box:fill-box;transform-origin:center;animation:blink 6.5s ease-in-out infinite}
+    @media (prefers-reduced-motion:reduce){#eye{animation:none}}
+  </style>
+
+  <ellipse cx="290" cy="230" rx="220" ry="185" fill="url(#aura)"/>
+
+  <!-- ground -->
+  <ellipse cx="285" cy="398" rx="150" ry="13" fill="#ff37c7" opacity="0.10" filter="url(#soft)"/>
+  <ellipse cx="285" cy="398" rx="70" ry="6" fill="#fc72ff" opacity="0.14" filter="url(#tiny)"/>
+
+  <!-- ================= tail ================= -->
+  <path d="M186 232
+           C 158 236, 128 262, 116 300
+           C 108 328, 112 352, 126 366
+           C 128 342, 140 316, 158 296
+           C 172 280, 186 268, 196 262 Z"
+        fill="url(#mane)" opacity="0.9"/>
+  <path d="M182 244 C 156 258, 136 290, 132 322" stroke="#ffd9f4" stroke-width="2" fill="none" opacity="0.35"/>
+
+  <!-- ================= hind legs ================= -->
+  <path d="M214 288 L206 340 L200 388" stroke="#241a2b" stroke-width="21" stroke-linecap="round" fill="none"/>
+  <path d="M214 288 L206 340 L200 388" stroke="url(#hideLit)" stroke-width="15" stroke-linecap="round" fill="none"/>
+  <rect x="189" y="380" width="23" height="15" rx="5" fill="#1a1220" stroke="#5d4468" stroke-width="1.3"/>
+
+  <path d="M250 292 L246 342 L244 388" stroke="#1d1524" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <path d="M250 292 L246 342 L244 388" stroke="url(#hide)" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <rect x="233" y="380" width="23" height="15" rx="5" fill="#1a1220" stroke="#5d4468" stroke-width="1.3"/>
+
+  <!-- ================= planted front leg ================= -->
+  <path d="M330 286 L328 340 L326 388" stroke="#1d1524" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <path d="M330 286 L328 340 L326 388" stroke="url(#hide)" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <rect x="315" y="380" width="23" height="15" rx="5" fill="#1a1220" stroke="#5d4468" stroke-width="1.3"/>
+
+  <!-- ================= body ================= -->
+  <path d="M196 240
+           C 204 212, 240 198, 286 200
+           C 324 202, 352 214, 362 238
+           C 371 260, 366 284, 352 296
+           C 332 308, 290 312, 250 309
+           C 214 306, 194 294, 189 274
+           C 185 259, 189 248, 196 240 Z"
+        fill="url(#hide)"/>
+  <path d="M212 226 C 250 210, 306 212, 344 232" stroke="#6a4f76" stroke-width="2" fill="none" opacity="0.35"/>
+
+  <!-- ================= neck + head ================= -->
+  <path d="M330 232
+           C 340 200, 362 172, 392 154
+           C 406 146, 418 142, 428 142
+           L 436 176
+           C 420 182, 400 196, 386 214
+           C 374 230, 366 244, 362 254
+           C 352 246, 340 238, 330 232 Z"
+        fill="url(#hideLit)"/>
+  <!-- head: muzzle points right -->
+  <path d="M424 132
+           C 444 130, 462 140, 472 156
+           C 480 168, 478 180, 466 186
+           C 452 193, 432 192, 420 184
+           C 410 177, 406 164, 410 150
+           C 413 140, 418 134, 424 132 Z"
+        fill="url(#hideLit)"/>
+  <!-- ear -->
+  <path d="M416 130 L410 106 L428 122 Z" fill="#3b2b42"/>
+  <!-- nostril + mouth line -->
+  <circle cx="462" cy="170" r="3.2" fill="#170f1d"/>
+  <path d="M452 182 C 458 184, 464 183, 468 179" stroke="#170f1d" stroke-width="1.6" fill="none" opacity="0.8"/>
+  <!-- eye -->
+  <g id="eye">
+    <ellipse cx="434" cy="154" rx="6" ry="7" fill="#140d1a"/>
+    <circle cx="436" cy="151" r="2" fill="#ffd9f4"/>
+  </g>
+
+  <!-- ================= horn ================= -->
+  <path d="M436 126 L448 122 L470 62 Z" fill="url(#horn)"/>
+  <g stroke="#2c2033" stroke-width="1.5" opacity="0.5">
+    <path d="M440 116 L452 112"/>
+    <path d="M445 100 L456 97"/>
+    <path d="M450 84 L459 82"/>
+  </g>
+  <circle cx="470" cy="62" r="8" fill="#fc72ff" opacity="0.4" filter="url(#tiny)"/>
+
+  <!-- ================= mane ================= -->
+  <path d="M424 134
+           C 410 130, 392 138, 378 154
+           C 362 172, 348 198, 338 226
+           C 348 220, 356 214, 364 210
+           C 356 232, 348 252, 344 268
+           C 356 254, 368 240, 380 230
+           C 376 246, 372 260, 370 272
+           C 382 252, 398 226, 410 202
+           C 420 182, 426 158, 424 134 Z"
+        fill="url(#mane)"/>
+  <path d="M414 146 C 398 166, 382 196, 372 226" stroke="#ffe4f7" stroke-width="2" fill="none" opacity="0.4"/>
+
+  <!-- ================= striking front leg (page rotates this) ================= -->
+  <g id="nk-leg">
+    <path class="nk-leg-p" d="M348 262 L372 322 L390 380" stroke="#181120" stroke-width="21" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path class="nk-leg-p" d="M348 262 L372 322 L390 380" stroke="url(#hideLit)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <g id="nk-hoof">
+      <rect x="-12" y="-8" width="24" height="16" rx="5" fill="#1a1220" stroke="#8a5d95" stroke-width="1.4"/>
+      <rect x="-12" y="-8" width="24" height="4" rx="2" fill="#fc72ff" opacity="0.45"/>
+    </g>
+  </g>
+
+  <!-- impact flash under the hoof -->
+  <g id="nk-impact" opacity="0">
+    <ellipse cx="391" cy="392" rx="34" ry="8" fill="#fc72ff" opacity="0.5" filter="url(#tiny)"/>
+    <path d="M362 386 L350 378 M420 386 L432 378 M391 380 L391 368"
+          stroke="#ffd9f4" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/>
+  </g>
+
+  <!-- ================= coins thrown up by the strike ================= -->
+  <g id="nk-coins">
+    <g class="nk-coin" transform="translate(391 386) scale(0)" opacity="0"><circle r="20" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2"/><circle r="18" fill="none" stroke="#fc72ff" stroke-width="1" opacity="0.5"/><text y="0" dy="0.36em" text-anchor="middle" font-family="var(--font-geist-sans),system-ui,sans-serif" font-weight="600" font-size="19" fill="#ffe4f7">N</text></g>
+    <g class="nk-coin" transform="translate(391 386) scale(0)" opacity="0"><circle r="17" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2"/><circle r="16" fill="none" stroke="#fc72ff" stroke-width="1" opacity="0.5"/><text y="0" dy="0.36em" text-anchor="middle" font-family="var(--font-geist-sans),system-ui,sans-serif" font-weight="600" font-size="16" fill="#ffe4f7">N</text></g>
+    <g class="nk-coin" transform="translate(391 386) scale(0)" opacity="0"><circle r="21" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2"/><circle r="14" fill="none" stroke="#fc72ff" stroke-width="1" opacity="0.5"/><text y="0" dy="0.36em" text-anchor="middle" font-family="var(--font-geist-sans),system-ui,sans-serif" font-weight="600" font-size="20" fill="#ffe4f7">N</text></g>
+    <g class="nk-coin" transform="translate(391 386) scale(0)" opacity="0"><circle r="16" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2"/><circle r="10" fill="none" stroke="#fc72ff" stroke-width="1" opacity="0.5"/><text y="0" dy="0.36em" text-anchor="middle" font-family="var(--font-geist-sans),system-ui,sans-serif" font-weight="600" font-size="15" fill="#ffe4f7">N</text></g>
+    <g class="nk-coin" transform="translate(391 386) scale(0)" opacity="0"><circle r="18" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2"/><circle r="12" fill="none" stroke="#fc72ff" stroke-width="1" opacity="0.5"/><text y="0" dy="0.36em" text-anchor="middle" font-family="var(--font-geist-sans),system-ui,sans-serif" font-weight="600" font-size="17" fill="#ffe4f7">N</text></g>
+    <g class="nk-coin" transform="translate(391 386) scale(0)" opacity="0"><circle r="14" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2"/><circle r="9" fill="none" stroke="#fc72ff" stroke-width="1" opacity="0.5"/><text y="0" dy="0.36em" text-anchor="middle" font-family="var(--font-geist-sans),system-ui,sans-serif" font-weight="600" font-size="10" fill="#ffe4f7">N</text></g>
+  </g>
+</svg>

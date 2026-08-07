@@ -38,7 +38,7 @@
 
   /* 2. inline the mascot ---------------------------------------------- */
   function inlineMascot() {
-    var img = document.querySelector('img[src^="/mascot-archer"]');
+    var img = document.querySelector('img[src^="/mascot-unicorn"]');
     if (!img || img.__nkSwapping) return;
     img.__nkSwapping = 1;
     var cls = img.getAttribute('class') || '';
@@ -47,10 +47,10 @@
       if (!svg || svg.nodeName.toLowerCase() !== 'svg') { img.__nkSwapping = 0; return; }
       svg.setAttribute('data-nk-mascot', '1');
       svg.setAttribute('class', cls);
-      svg.style.aspectRatio = '536 / 462';
+      svg.style.aspectRatio = '560 / 440';
       svg.style.width = 'auto';
       img.replaceWith(svg);
-      flyArrow(svg);
+      strike(svg);
       // the site's reveal wrapper can leave the hero hidden
       var a = svg;
       for (var k = 0; k < 6 && a; k++) {
@@ -65,64 +65,80 @@
   }
   function mascot() { if (!document.querySelector('svg[data-nk-mascot]')) inlineMascot(); }
 
-  /* 2b. the shot plays out as the page scrolls ------------------------ */
-  var ARROW_TRAVEL = 180;   // bright tip (380 when nocked) lands dead centre on the N (560)
-  var NOCK_X = 250;         // where the string sits when drawn
-  var REST_X = 346;         // where the string sits at rest, between the limb tips
+  /* 2b. the strike plays out as the page scrolls --------------------- */
+  // Coin fan: angle in degrees (0 = right), reach, and how high it arcs.
+  var COINS = [
+    { a: -18, d: 128, rise: 74 }, { a: -46, d: 96,  rise: 96 },
+    { a: -72, d: 66,  rise: 112 }, { a: -104, d: 74, rise: 100 },
+    { a: -134, d: 104, rise: 78 }, { a: -158, d: 132, rise: 56 }
+  ];
+  var HOOF_X = 391, HOOF_Y = 386;
+  // Two poses for the striking leg. A plain rotation swung the whole leg
+  // forward like a kick; interpolating the knee and hoof bends it instead,
+  // which is what a paw-and-stomp actually looks like.
+  var UP   = { kx: 366, ky: 300, hx: 370, hy: 336 };
+  var DOWN = { kx: 372, ky: 322, hx: 390, hy: 380 };
 
-  function flyArrow(svg) {
-    var arrow = svg.querySelector('#nk-arrow');
-    if (!arrow || arrow.__nkFly) return;
-    arrow.__nkFly = 1;
-    if (REDUCE) return;                    // leave it drawn, no shot
+  function strike(svg) {
+    var leg = svg.querySelector('#nk-leg');
+    if (!leg || leg.__nkStrike) return;
+    leg.__nkStrike = 1;
+    var legPaths = svg.querySelectorAll('#nk-leg .nk-leg-p');
+    var hoof = svg.querySelector('#nk-hoof');
+    var impact = svg.querySelector('#nk-impact');
+    var coins = svg.querySelectorAll('#nk-coins .nk-coin');
 
-    var string = svg.querySelector('#nk-string');
-    var hand = svg.querySelector('#nk-drawhand');
-    var arm = svg.querySelectorAll('#nk-drawarm path');
-    var goal = 0, shown = 0, raf = null;
+    function place(p) {
+      // the hoof falls over the first stretch, accelerating in like a real
+      // strike; everything after that is the scatter
+      var fall = Math.min(1, p / 0.34);
+      fall = fall * fall;                              // ease-in, like a real strike
+      var kx = UP.kx + (DOWN.kx - UP.kx) * fall, ky = UP.ky + (DOWN.ky - UP.ky) * fall;
+      var hx = UP.hx + (DOWN.hx - UP.hx) * fall, hy = UP.hy + (DOWN.hy - UP.hy) * fall;
+      var d = 'M348 262 L' + kx.toFixed(1) + ' ' + ky.toFixed(1) + ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1);
+      for (var j = 0; j < legPaths.length; j++) legPaths[j].setAttribute('d', d);
+      if (hoof) hoof.setAttribute('transform', 'translate(' + hx.toFixed(1) + ' ' + hy.toFixed(1) + ')');
 
-    function render(p) {
-      // ease-out — the arrow leaves fast and settles into the target
-      var flown = (1 - Math.pow(1 - p, 2)) * ARROW_TRAVEL;
-      arrow.setAttribute('transform', 'translate(' + flown.toFixed(2) + ' 0)');
-
-      // the string stays in contact with the nock, then stops at rest:
-      // that contact is what makes the release read as a push, not a slide
-      if (string) {
-        var mid = Math.min(NOCK_X + flown, REST_X);
-        string.setAttribute('d', 'M346 170 L' + mid.toFixed(2) + ' 292 L346 414');
+      // flash only around the moment of contact
+      if (impact) {
+        var f = p < 0.28 ? 0 : Math.max(0, 1 - (p - 0.28) / 0.22);
+        impact.setAttribute('opacity', f.toFixed(3));
       }
 
-      // the hand opens and travels back — follow-through, not a push
-      var rel = Math.min(1, p / 0.14);
-      rel = 1 - Math.pow(1 - rel, 3);
-      var hx = 246 - 30 * rel, hy = 292 - 22 * rel;
-      if (hand) { hand.setAttribute('cx', hx.toFixed(2)); hand.setAttribute('cy', hy.toFixed(2)); }
-      if (arm.length) {
-        var d = 'M204 306 L' + (144 + 7 * rel).toFixed(2) + ' ' + (272 - 11 * rel).toFixed(2) +
-                ' L' + hx.toFixed(2) + ' ' + hy.toFixed(2);
-        for (var i = 0; i < arm.length; i++) arm[i].setAttribute('d', d);
+      var t = Math.max(0, Math.min(1, (p - 0.3) / 0.7));
+      for (var i = 0; i < coins.length; i++) {
+        var c = COINS[i % COINS.length];
+        var rad = c.a * Math.PI / 180;
+        // outward travel eases out; the arc is a parabola so they rise then drop
+        var e = 1 - Math.pow(1 - t, 2);
+        var x = HOOF_X + Math.cos(rad) * c.d * e;
+        // rise monotonically: the parabola returned to zero at the end, which
+        // left every coin lying in a line on the ground
+        var y = HOOF_Y + Math.sin(rad) * c.d * e * 0.55 - c.rise * e * 0.45;
+        var sc = Math.min(1, t * 3);
+        coins[i].setAttribute('transform',
+          'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (t * (i % 2 ? 150 : -150)).toFixed(0) + ') scale(' + sc.toFixed(3) + ')');
+        coins[i].setAttribute('opacity', (t > 0 ? Math.min(1, t * 4) : 0).toFixed(3));
       }
     }
 
-    // Scroll sets a goal; the shot eases toward it frame by frame. Without
-    // this the arrow snaps between wheel notches instead of travelling.
+    if (REDUCE) { place(1); return; }   // hoof down, coins already scattered
+
+    var goal = 0, shown = 0, raf = null;
     function tick() {
       var diff = goal - shown;
-      if (Math.abs(diff) < 0.0004) { shown = goal; render(shown); raf = null; return; }
+      if (Math.abs(diff) < 0.0004) { shown = goal; place(shown); raf = null; return; }
       shown += diff * 0.17;
-      render(shown);
+      place(shown);
       raf = requestAnimationFrame(tick);
     }
-
     function onScroll() {
-      // Barely scroll-bound: the first nudge is enough to loose the arrow,
-      // and the damped loop below carries it the rest of the way on its own.
+      // barely scroll-bound: the first nudge triggers the strike, the damped
+      // loop carries the scatter the rest of the way
       var span = Math.max(26, Math.min(52, window.innerHeight * 0.04));
       goal = Math.max(0, Math.min(1, window.scrollY / span));
       if (raf === null) raf = requestAnimationFrame(tick);
     }
-
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll);
     onScroll();
