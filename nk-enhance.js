@@ -47,7 +47,7 @@
       if (!svg || svg.nodeName.toLowerCase() !== 'svg') { img.__nkSwapping = 0; return; }
       svg.setAttribute('data-nk-mascot', '1');
       svg.setAttribute('class', cls);
-      svg.style.aspectRatio = '483 / 462';
+      svg.style.aspectRatio = '470 / 470';
       svg.style.width = 'auto';
       img.replaceWith(svg);
       strike(svg);
@@ -72,11 +72,28 @@
     { a: -78, d: 74,  rise: 172, spin:  460 }, { a: -108, d: 86, rise: 158, spin: -420 },
     { a: -138, d: 122, rise: 128, spin:  360 }, { a: -160, d: 156, rise: 96, spin: -300 }
   ];
-  var HOOF_X = 381, HOOF_Y = 424;
-  // Equine foreleg: elbow stays put, the knee and fetlock carry the movement.
+  var HOOF_X = 325, HOOF_Y = 410;
+  var ELBOW = [322, 244];
+  var LEG_W = [36, 21, 15, 13];          // forearm, knee, fetlock, pastern
   // Gathered, the cannon folds up and forward; planted, the column is straight.
-  var UP   = { kx: 394, ky: 300, fx: 408, fy: 338, hx: 410, hy: 354 };
-  var DOWN = { kx: 378, ky: 330, fx: 380, fy: 396, hx: 381, hy: 412 };
+  var UP   = { kx: 344, ky: 286, fx: 358, fy: 322, hx: 358, hy: 344 };
+  var DOWN = { kx: 328, ky: 312, fx: 326, fy: 372, hx: 325, hy: 396 };
+
+  // Same ribbon the static legs are built from, so the pawing limb keeps its
+  // taper through the whole stroke instead of flattening to a constant bar.
+  function ribbon(pts, w) {
+    var L = [], R = [], i, p, pr, nx, dx, dy, ln, ox, oy;
+    for (i = 0; i < pts.length; i++) {
+      p = pts[i]; pr = pts[i - 1] || pts[i]; nx = pts[i + 1] || pts[i];
+      dx = nx[0] - pr[0]; dy = nx[1] - pr[1];
+      ln = Math.sqrt(dx * dx + dy * dy) || 1;
+      ox = -dy / ln * w[i] / 2; oy = dx / ln * w[i] / 2;
+      L.push([p[0] + ox, p[1] + oy]); R.push([p[0] - ox, p[1] - oy]);
+    }
+    var all = L.concat(R.reverse()), d = 'M' + all[0][0].toFixed(1) + ' ' + all[0][1].toFixed(1);
+    for (i = 1; i < all.length; i++) d += 'L' + all[i][0].toFixed(1) + ' ' + all[i][1].toFixed(1);
+    return d + 'Z';
+  }
   var CYCLE = 2800;                                    // ms per paw
   // every asset that has a real mark; six are dealt per paw
   var POOL = ['NVDA','AAPL','TSLA','COIN','AMZN','GOOGL','META','ETH','BTC','NFLX','AMD'];
@@ -92,11 +109,8 @@
     if (!leg || leg.__nkStrike) return;
     leg.__nkStrike = 1;
 
-    var fore    = svg.querySelector('#nk-leg .nk-leg-fore');
-    var cannon  = svg.querySelector('#nk-leg .nk-leg-cannon');
-    var pastern = svg.querySelector('#nk-leg .nk-leg-pastern');
-    var knee    = svg.querySelector('#nk-leg .nk-leg-knee');
-    var fet     = svg.querySelector('#nk-leg .nk-leg-fet');
+    var shape = svg.querySelector('#nk-leg .nk-leg-shape');
+    var capG  = svg.querySelector('#nk-leg .nk-leg-caps');
     var hoof  = svg.querySelector('#nk-hoof');
     var rig   = svg.querySelector('#nk-rig');
     var dust  = svg.querySelector('#nk-dust');
@@ -129,15 +143,19 @@
       else if (t < T_HIT)  lift = 1 - easeIn((t - T_RISE) / (T_HIT - T_RISE));  // snap down
       else                 lift = 0;                                // planted
       function mix(a, b) { return b + (a - b) * lift; }
-      var kx = mix(UP.kx, DOWN.kx), ky = mix(UP.ky, DOWN.ky);
-      var fx = mix(UP.fx, DOWN.fx), fy = mix(UP.fy, DOWN.fy);
-      var hx = mix(UP.hx, DOWN.hx), hy = mix(UP.hy, DOWN.hy);
-      if (fore)    fore.setAttribute('d', 'M372 260 L' + kx.toFixed(1) + ' ' + ky.toFixed(1));
-      if (cannon)  cannon.setAttribute('d', 'M' + kx.toFixed(1) + ' ' + ky.toFixed(1) + ' L' + fx.toFixed(1) + ' ' + fy.toFixed(1));
-      if (pastern) pastern.setAttribute('d', 'M' + fx.toFixed(1) + ' ' + fy.toFixed(1) + ' L' + hx.toFixed(1) + ' ' + hy.toFixed(1));
-      if (knee) { knee.setAttribute('cx', kx.toFixed(1)); knee.setAttribute('cy', ky.toFixed(1)); }
-      if (fet)  { fet.setAttribute('cx', fx.toFixed(1)); fet.setAttribute('cy', fy.toFixed(1)); }
-      if (hoof) hoof.setAttribute('transform', 'translate(' + hx.toFixed(1) + ' ' + hy.toFixed(1) + ')');
+      var pts = [ELBOW,
+                 [mix(UP.kx, DOWN.kx), mix(UP.ky, DOWN.ky)],
+                 [mix(UP.fx, DOWN.fx), mix(UP.fy, DOWN.fy)],
+                 [mix(UP.hx, DOWN.hx), mix(UP.hy, DOWN.hy)]];
+      if (shape) shape.setAttribute('d', ribbon(pts, LEG_W));
+      if (capG) {
+        var cd = '';
+        for (var q = 0; q < pts.length; q++)
+          cd += '<circle cx="' + pts[q][0].toFixed(1) + '" cy="' + pts[q][1].toFixed(1) +
+                '" r="' + (LEG_W[q] / 2).toFixed(1) + '" fill="#6b4f95"/>';
+        capG.innerHTML = cd;
+      }
+      if (hoof) hoof.setAttribute('transform', 'translate(' + pts[3][0].toFixed(1) + ' ' + (pts[3][1] - 5).toFixed(1) + ')');
 
       // ---- the body answers the blow: a short dip, then it springs back ----
       var jolt = 0;

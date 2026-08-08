@@ -1,23 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="62 -16 483 462" fill="none" role="img" aria-label="Unicorn pawing the ground, N coins scattering from the hoof">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill="none" role="img" aria-label="Unicorn pawing the ground, asset coins scattering from the hoof">
   <defs>
-    <radialGradient id="aura" cx="50%" cy="48%" r="58%">
+    <radialGradient id="aura" cx="50%" cy="50%" r="58%">
       <stop offset="0%" stop-color="#ff37c7" stop-opacity="0.15"/>
       <stop offset="60%" stop-color="#7850ff" stop-opacity="0.06"/>
       <stop offset="100%" stop-color="#ff37c7" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="hide" x1="0.3" y1="0" x2="0.55" y2="1">
-      <stop offset="0%" stop-color="#8f6cae"/>
-      <stop offset="45%" stop-color="#5b4180"/>
-      <stop offset="100%" stop-color="#332352"/>
-    </linearGradient>
-    <linearGradient id="hideLit" x1="0.15" y1="0" x2="0.8" y2="1">
-      <stop offset="0%" stop-color="#9d78bd"/>
-      <stop offset="55%" stop-color="#634789"/>
+    <linearGradient id="hide" x1="0.25" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#a07dc0"/>
+      <stop offset="40%" stop-color="#6b4f95"/>
       <stop offset="100%" stop-color="#3a285c"/>
     </linearGradient>
-    <linearGradient id="limbG" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#7a5b9c"/>
-      <stop offset="70%" stop-color="#4a3568"/>
+    <linearGradient id="hideLit" x1="0.15" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#ac8acb"/>
+      <stop offset="55%" stop-color="#70529b"/>
+      <stop offset="100%" stop-color="#412c66"/>
+    </linearGradient>
+    <linearGradient id="limbG" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#8462a8"/>
+      <stop offset="60%" stop-color="#553d7c"/>
       <stop offset="100%" stop-color="#3c2a5a"/>
     </linearGradient>
     <linearGradient id="mane1" x1="0" y1="0" x2="0.7" y2="1">
@@ -63,220 +63,212 @@
     @media (prefers-reduced-motion:reduce){#eye{animation:none}}
   </style>
 
-  <ellipse cx="303" cy="215" rx="228" ry="222" fill="url(#aura)"/>
-  <ellipse cx="278" cy="436" rx="162" ry="13" fill="#ff37c7" opacity="0.10" filter="url(#soft)"/>
-  <ellipse cx="278" cy="436" rx="80" ry="6" fill="#fc72ff" opacity="0.13" filter="url(#tiny)"/>
+  <ellipse cx="292" cy="200" rx="222" ry="228" fill="url(#aura)"/>
+  <ellipse cx="262" cy="422" rx="158" ry="13" fill="#ff37c7" opacity="0.10" filter="url(#soft)"/>
+  <ellipse cx="262" cy="422" rx="78" ry="6" fill="#fc72ff" opacity="0.13" filter="url(#tiny)"/>
 
-
-  <!-- sparks: small, off the main read, so they add air without noise -->
+  <!-- sparks, kept off the main read -->
   <g fill="#ffd9f4">
-    <path d="M172 96 l3.5 9 l9 3.5 l-9 3.5 l-3.5 9 l-3.5 -9 l-9 -3.5 l9 -3.5 z" opacity="0.55"/>
-    <path d="M536 128 l2.8 7 l7 2.8 l-7 2.8 l-2.8 7 l-2.8 -7 l-7 -2.8 l7 -2.8 z" opacity="0.45"/>
-    <path d="M150 300 l2.4 6 l6 2.4 l-6 2.4 l-2.4 6 l-2.4 -6 l-6 -2.4 l6 -2.4 z" opacity="0.35"/>
-    <path d="M520 292 l3 7.5 l7.5 3 l-7.5 3 l-3 7.5 l-3 -7.5 l-7.5 -3 l7.5 -3 z" opacity="0.4"/>
-    <path d="M262 60 l2.6 6.5 l6.5 2.6 l-6.5 2.6 l-2.6 6.5 l-2.6 -6.5 l-6.5 -2.6 l6.5 -2.6 z" opacity="0.42"/>
+    <path d="M140 70 l3.5 9 l9 3.5 l-9 3.5 l-3.5 9 l-3.5 -9 l-9 -3.5 l9 -3.5 z" opacity="0.5"/>
+    <path d="M498 104 l2.8 7 l7 2.8 l-7 2.8 l-2.8 7 l-2.8 -7 l-7 -2.8 l7 -2.8 z" opacity="0.42"/>
+    <path d="M104 268 l2.4 6 l6 2.4 l-6 2.4 l-2.4 6 l-2.4 -6 l-6 -2.4 l6 -2.4 z" opacity="0.32"/>
+    <path d="M482 286 l3 7.5 l7.5 3 l-7.5 3 l-3 7.5 l-3 -7.5 l-7.5 -3 l7.5 -3 z" opacity="0.36"/>
+    <path d="M232 22 l2.6 6.5 l6.5 2.6 l-6.5 2.6 l-2.6 6.5 l-2.6 -6.5 l-6.5 -2.6 l6.5 -2.6 z" opacity="0.4"/>
   </g>
 
   <g id="nk-rig">
 
-    <!-- ================= tail, set on at the croup ================= -->
-    <g transform="translate(-48 0)">
-      <path d="M200 168 C 168 178, 140 214, 126 258 C 112 302, 116 350, 136 380
-               C 132 340, 140 296, 158 260 C 174 228, 192 202, 204 188 Z" fill="url(#mane4)"/>
-      <path d="M204 176 C 176 192, 152 226, 142 268 C 132 306, 134 346, 148 372
-               C 144 336, 152 298, 168 266 C 182 238, 198 214, 208 198 Z" fill="url(#mane3)"/>
-      <path d="M208 186 C 186 204, 168 234, 160 270 C 152 302, 154 334, 164 356
-               C 162 326, 168 296, 180 270 C 192 244, 204 224, 212 210 Z" fill="url(#mane2)"/>
-      <path d="M202 196 C 182 220, 168 252, 162 286" stroke="#ffe9fa" stroke-width="2" fill="none" opacity="0.35"/>
+    <!-- ================= tail, set on at the dock ================= -->
+    <g>
+      <path d="M126 158 C 96 172, 70 212, 60 258 C 50 304, 56 350, 76 378
+               C 70 338, 76 294, 94 256 C 110 222, 124 194, 134 178 Z" fill="url(#mane4)"/>
+      <path d="M132 166 C 106 186, 84 224, 76 268 C 68 308, 72 348, 88 372
+               C 84 334, 90 296, 106 262 C 120 232, 134 208, 142 190 Z" fill="url(#mane3)"/>
+      <path d="M138 176 C 118 198, 102 232, 96 272 C 90 306, 94 338, 106 358
+               C 102 326, 108 294, 120 266 C 132 238, 142 218, 148 202 Z" fill="url(#mane2)"/>
+      <path d="M130 186 C 110 212, 96 246, 90 282" stroke="#ffe9fa" stroke-width="2" fill="none" opacity="0.32"/>
     </g>
 
-    <!-- ================= off-side legs, dropped back ================= -->
-    <g opacity="0.62">
-      <!-- hind: thigh, then the hock angling back — the zig-zag that reads as equine -->
-      <g transform="translate(-48 0)">
-        <path d="M256 268 L228 330" stroke="#4a3568" stroke-width="26" stroke-linecap="round"/>
-        <path d="M228 330 L246 396" stroke="#4a3568" stroke-width="12" stroke-linecap="round"/>
-        <path d="M238 392 h18 l2 20 q0 6 -6 6 h-12 q-6 0 -6 -6 z" fill="#2b1d42"/>
-      </g>
-      <!-- fore -->
-      <path d="M378 268 L380 334" stroke="#4a3568" stroke-width="24" stroke-linecap="round"/>
-      <path d="M380 334 L378 396" stroke="#4a3568" stroke-width="11" stroke-linecap="round"/>
-      <path d="M370 392 h18 l2 20 q0 6 -6 6 h-12 q-6 0 -6 -6 z" fill="#2b1d42"/>
+    <!-- ================= off-side legs ================= -->
+    <g opacity="0.55">
+    <path d="M200.8 234.7 L184.0 313.1 L206.7 375.8 L209.5 396.6 L222.5 395.4 L221.3 372.2 L208.0 314.9 L247.2 253.3 Z" fill="#4a3568"/>
+      <circle cx="224.0" cy="244.0" r="25.0" fill="#4a3568"/>
+      <circle cx="196.0" cy="314.0" r="12.0" fill="#4a3568"/>
+      <circle cx="214.0" cy="374.0" r="7.5" fill="#4a3568"/>
+      <circle cx="216.0" cy="396.0" r="6.5" fill="#4a3568"/>
+      <path d="M206.0 391.0 h20.0 l2.0 17.0 q0 5 -5 5 h-16.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#6b4f95" stroke-width="1.4"/>
+    <path d="M330.0 247.1 L341.5 314.2 L342.5 373.7 L342.5 395.7 L355.5 396.3 L357.5 374.3 L362.5 313.8 L366.0 244.9 Z" fill="#4a3568"/>
+      <circle cx="348.0" cy="246.0" r="18.0" fill="#4a3568"/>
+      <circle cx="352.0" cy="314.0" r="10.5" fill="#4a3568"/>
+      <circle cx="350.0" cy="374.0" r="7.5" fill="#4a3568"/>
+      <circle cx="349.0" cy="396.0" r="6.5" fill="#4a3568"/>
+      <path d="M339.0 391.0 h20.0 l2.0 17.0 q0 5 -5 5 h-16.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#6b4f95" stroke-width="1.4"/>
     </g>
 
     <!-- ================= near hind leg ================= -->
-    <g transform="translate(-48 0)">
-    <path d="M240 254 L206 326" stroke="url(#limbG)" stroke-width="40" stroke-linecap="round"/>
-    <path d="M206 326 L222 398" stroke="url(#limbG)" stroke-width="15" stroke-linecap="round"/>
-    <circle cx="206" cy="326" r="11" fill="#7a5b9c"/>
-    <circle cx="222" cy="392" r="7" fill="#7a5b9c"/>
-    <path d="M222 398 L223 414" stroke="url(#limbG)" stroke-width="12" stroke-linecap="round"/>
-    <path d="M213 410 h20 l2 18 q0 6 -6 6 h-14 q-6 0 -6 -6 z" fill="#2b1d42" stroke="#c79ad9" stroke-width="1.4"/>
-    </g>
+    <path d="M167.4 229.3 L144.1 310.8 L168.7 375.9 L171.5 396.6 L184.5 395.4 L183.3 372.1 L167.9 313.2 L212.6 250.7 Z" fill="url(#limbG)"/>
+      <circle cx="190.0" cy="240.0" r="25.0" fill="#6b4f95"/>
+      <circle cx="156.0" cy="312.0" r="12.0" fill="#6b4f95"/>
+      <circle cx="176.0" cy="374.0" r="7.5" fill="#6b4f95"/>
+      <circle cx="178.0" cy="396.0" r="6.5" fill="#6b4f95"/>
+      <path d="M167.0 391.0 h22.0 l2.0 19.0 q0 5 -5 5 h-18.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.4"/>
 
-    <!-- ================= barrel ================= -->
-    <path d="M152 172
-             C 160 150, 194 140, 234 145
-             C 270 150, 304 148, 334 147
-             C 356 156, 372 188, 378 218
-             C 383 242, 376 262, 360 272
-             C 340 284, 306 290, 272 287
-             C 236 284, 198 276, 176 262
-             C 154 248, 140 206, 150 162 Z"
+    <!-- ================= barrel: shoulder, girth, flank and croup all in one
+         outline, so the masses belong to the body instead of sitting on it -->
+    <path d="M120 176
+             C 118 148, 140 128, 172 126
+             C 206 124, 244 132, 274 138
+             C 298 143, 318 152, 332 172
+             C 344 189, 350 208, 348 226
+             C 346 246, 334 260, 314 266
+             C 292 273, 262 276, 232 272
+             C 200 268, 170 260, 150 244
+             C 130 228, 122 202, 120 176 Z"
           fill="url(#hide)"/>
-    <!-- the two great masses: hindquarter and shoulder -->
-    <ellipse cx="190" cy="206" rx="50" ry="57" fill="#6b4f95" opacity="0.5"/>
-    <ellipse cx="356" cy="222" rx="28" ry="46" fill="#7d5da8" opacity="0.45" transform="rotate(12 356 222)"/>
-    <!-- withers, then the dip of the back -->
-    <path d="M168 178 C 196 154, 248 148, 296 148 C 318 149, 336 156, 350 170"
-          stroke="#d7bce8" stroke-width="2.6" fill="none" opacity="0.45" stroke-linecap="round"/>
-    <!-- deep chest and the tuck of the flank -->
-    <path d="M184 264 C 232 284, 300 288, 352 272" stroke="#241733" stroke-width="10" fill="none" opacity="0.45" stroke-linecap="round"/>
-    <path d="M228 280 C 224 260, 222 238, 226 218" stroke="#4a3568" stroke-width="2" fill="none" opacity="0.4"/>
-    <path d="M348 250 C 356 236, 360 220, 358 202" stroke="#4a3568" stroke-width="2" fill="none" opacity="0.35"/>
+    <!-- muscle, drawn as light along the form rather than blobs laid over it -->
+    <path d="M138 168 C 158 140, 200 132, 246 140" stroke="#cfb0e4" stroke-width="3" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <path d="M262 142 C 292 148, 314 158, 330 176" stroke="#cfb0e4" stroke-width="2.4" fill="none" opacity="0.3" stroke-linecap="round"/>
+    <path d="M156 246 C 190 264, 246 270, 306 262" stroke="#2a1a3f" stroke-width="11" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <!-- shoulder blade and the stifle groove -->
+    <path d="M318 176 C 326 196, 326 220, 316 240" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.45"/>
+    <path d="M186 158 C 176 186, 174 218, 182 246" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.35"/>
+    <path d="M232 268 C 228 250, 228 228, 234 210" stroke="#3c2a5a" stroke-width="1.8" fill="none" opacity="0.3"/>
 
-    <!-- ================= neck: crest arched, throat hollow ================= -->
-    <path d="M332 150
-             C 356 120, 392 96, 428 84
-             C 442 79, 454 78, 462 80
-             L 464 122
-             C 452 126, 438 134, 424 145
-             C 406 159, 390 180, 379 202
-             C 373 214, 369 222, 367 230
-             C 355 202, 343 174, 332 150 Z"
+    <!-- ================= neck: crest above, throat hollow below ========== -->
+    <path d="M312 146
+             C 330 114, 358 86, 394 70
+             C 408 64, 420 61, 428 62
+             L 432 104
+             C 420 108, 404 118, 390 130
+             C 372 145, 356 166, 344 188
+             C 338 200, 334 210, 332 218
+             C 330 194, 322 168, 312 146 Z"
           fill="url(#hideLit)"/>
-    <path d="M346 148 C 368 118, 402 96, 436 86" stroke="#d7bce8" stroke-width="2.4" fill="none" opacity="0.4"/>
+    <path d="M322 142 C 344 110, 374 84, 404 70" stroke="#cfb0e4" stroke-width="2.4" fill="none" opacity="0.35"/>
 
-    <!-- ================= head: long wedge, jaw beneath ================= -->
-    <path d="M456 76
-             C 476 72, 492 82, 500 100
-             C 510 122, 522 148, 530 166
-             C 535 177, 531 186, 520 188
-             C 508 190, 495 183, 487 172
-             C 474 154, 461 132, 454 114
-             C 449 100, 449 84, 456 76 Z"
+    <!-- ================= head: forehead, the dish of the nasal bone, muzzle -->
+    <path d="M424 56
+             C 444 52, 460 62, 468 80
+             C 476 100, 486 124, 494 142
+             C 499 154, 495 164, 484 166
+             C 472 168, 459 160, 451 148
+             C 438 130, 426 110, 420 92
+             C 415 78, 416 62, 424 56 Z"
           fill="url(#hideLit)"/>
-    <path d="M462 108 C 470 130, 486 150, 508 162" stroke="#4a3568" stroke-width="2.4" fill="none" opacity="0.5"/>
-    <!-- muzzle, a shade darker -->
-    <path d="M508 160 C 522 160, 533 168, 533 177 C 533 186, 522 190, 511 188
-             C 502 186, 496 179, 498 171 C 500 164, 503 161, 508 160 Z" fill="#4c3670"/>
-    <circle cx="522" cy="174" r="3.4" fill="#130d1b"/>
-    <path d="M508 185 C 516 189, 526 188, 531 183" stroke="#130d1b" stroke-width="1.7" fill="none" opacity="0.7"/>
+    <!-- cheekbone, then the jaw beneath it -->
+    <path d="M428 86 C 436 110, 452 130, 474 142" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.45"/>
+    <path d="M472 138 C 486 138, 496 146, 496 155 C 496 164, 486 168, 475 166
+             C 466 164, 460 157, 462 149 C 464 142, 467 139, 472 138 Z" fill="#4c3670"/>
+    <circle cx="486" cy="152" r="3.4" fill="#180f22"/>
+    <path d="M472 163 C 480 167, 490 166, 495 161" stroke="#180f22" stroke-width="1.7" fill="none" opacity="0.7"/>
     <!-- ears -->
-    <path d="M450 78 L444 48 L466 70 Z" fill="#7d5da8"/>
-    <path d="M449 74 L446 55 L459 68 Z" fill="#3a285c"/>
-    <path d="M470 74 L472 48 L486 70 Z" fill="#634789" opacity="0.85"/>
-    <!-- brow, then the eye -->
-    <path d="M466 96 C 474 92, 484 93, 490 99" stroke="#3a285c" stroke-width="2.4" fill="none" opacity="0.75" stroke-linecap="round"/>
+    <path d="M418 58 L412 28 L434 50 Z" fill="#70529b"/>
+    <path d="M417 54 L414 35 L427 48 Z" fill="#3a285c"/>
+    <path d="M438 54 L440 28 L454 50 Z" fill="#5a3f85" opacity="0.85"/>
+    <path d="M434 76 C 442 72, 452 73, 458 79" stroke="#3a285c" stroke-width="2.4" fill="none" opacity="0.7" stroke-linecap="round"/>
     <g id="eye">
-      <ellipse cx="478" cy="110" rx="7.5" ry="9" fill="#110b18"/>
-      <circle cx="481" cy="106" r="2.7" fill="#ffe9fa"/>
-      <circle cx="475" cy="114" r="1.4" fill="#ff9ae8" opacity="0.8"/>
+      <ellipse cx="446" cy="90" rx="7.5" ry="9" fill="#150d1d"/>
+      <circle cx="449" cy="86" r="2.7" fill="#ffe9fa"/>
+      <circle cx="443" cy="94" r="1.4" fill="#ff9ae8" opacity="0.8"/>
     </g>
 
     <!-- ================= horn ================= -->
-    <path d="M462 72 L478 68 L506 4 Z" fill="url(#hornG)"/>
-    <g stroke="#634789" stroke-width="1.6" opacity="0.4" stroke-linecap="round">
-      <path d="M467 60 L481 56"/><path d="M473 44 L485 41"/>
-      <path d="M479 28 L489 26"/><path d="M485 16 L493 14"/>
+    <path d="M430 52 L446 48 L474 -18 Z" fill="url(#hornG)"/>
+    <g stroke="#3a285c" stroke-width="1.6" opacity="0.38" stroke-linecap="round">
+      <path d="M435 40 L449 36"/><path d="M441 24 L453 21"/>
+      <path d="M447 8 L457 6"/><path d="M453 -6 L461 -8"/>
     </g>
-    <circle cx="506" cy="6" r="10" fill="#fc72ff" opacity="0.4" filter="url(#tiny)"/>
-    <circle cx="506" cy="6" r="3" fill="#ffffff" opacity="0.85"/>
+    <circle cx="474" cy="-18" r="10" fill="#fc72ff" opacity="0.4" filter="url(#tiny)"/>
+    <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.85"/>
 
-    <!-- ================= mane, falling along the crest ================= -->
+    <!-- ================= mane, laid along the crest ================= -->
     <g>
-      <path d="M462 80 C 438 76, 408 92, 384 118 C 358 146, 340 182, 330 218
-               C 342 208, 352 200, 362 194 C 350 222, 342 250, 338 272
-               C 354 246, 370 220, 384 204 C 378 226, 374 244, 372 258
-               C 388 228, 408 192, 424 160 C 440 128, 464 100, 462 80 Z" fill="url(#mane4)"/>
-      <path d="M460 82 C 438 80, 411 96, 389 121 C 365 148, 349 181, 340 213
-               C 351 204, 360 197, 369 192 C 358 217, 350 242, 347 262
-               C 361 239, 375 216, 387 202 C 383 222, 380 238, 378 250
-               C 392 224, 410 191, 424 162 C 439 132, 460 102, 460 82 Z" fill="url(#mane3)"/>
-      <path d="M458 84 C 438 84, 414 100, 394 124 C 372 150, 358 180, 350 209
-               C 360 201, 368 195, 376 191 C 366 213, 359 235, 356 253
-               C 368 232, 380 212, 391 200 C 388 218, 385 232, 384 243
-               C 396 220, 412 190, 425 164 C 438 137, 458 103, 458 84 Z" fill="url(#mane2)"/>
-      <path d="M456 86 C 438 88, 417 104, 399 127 C 379 152, 366 179, 359 205
-               C 368 198, 376 193, 383 190 C 374 209, 368 229, 366 245
-               C 376 226, 386 208, 395 198 C 393 214, 391 226, 390 236
-               C 400 216, 414 189, 426 166 C 438 142, 456 104, 456 86 Z" fill="url(#mane1)" opacity="0.92"/>
-      <path d="M448 100 C 428 120, 408 150, 394 182" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.4"/>
+      <path d="M430 60 C 404 56, 374 74, 350 102 C 324 132, 306 170, 296 208
+               C 308 198, 318 190, 328 184 C 316 214, 308 242, 304 266
+               C 320 238, 336 212, 350 196 C 344 220, 340 238, 338 254
+               C 354 222, 376 184, 392 150 C 408 116, 432 82, 430 60 Z" fill="url(#mane4)"/>
+      <path d="M428 62 C 404 60, 377 78, 355 105 C 331 134, 315 169, 306 203
+               C 317 194, 326 187, 335 182 C 324 209, 316 236, 313 256
+               C 327 231, 341 208, 353 194 C 349 216, 346 232, 344 244
+               C 358 216, 378 181, 392 152 C 407 120, 428 84, 428 62 Z" fill="url(#mane3)"/>
+      <path d="M426 64 C 404 64, 380 82, 360 108 C 338 136, 324 168, 316 199
+               C 326 191, 334 185, 342 181 C 332 205, 325 227, 322 247
+               C 334 224, 346 204, 357 192 C 354 212, 351 226, 350 237
+               C 362 212, 379 180, 393 154 C 406 126, 426 84, 426 64 Z" fill="url(#mane2)"/>
+      <path d="M424 66 C 404 68, 383 86, 365 111 C 345 138, 332 167, 325 195
+               C 334 188, 342 183, 349 180 C 340 201, 334 221, 332 239
+               C 342 218, 352 200, 361 190 C 359 208, 357 220, 356 230
+               C 366 208, 380 179, 394 156 C 406 132, 424 84, 424 66 Z" fill="url(#mane1)" opacity="0.9"/>
+      <path d="M416 80 C 396 100, 374 132, 360 166" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.38"/>
     </g>
 
     <!-- ================= near fore leg, planted ================= -->
-    <path d="M360 264 L362 332" stroke="url(#limbG)" stroke-width="28" stroke-linecap="round"/>
-    <path d="M362 332 L359 398" stroke="url(#limbG)" stroke-width="13" stroke-linecap="round"/>
-    <circle cx="362" cy="332" r="10" fill="#7a5b9c"/>
-    <circle cx="359" cy="392" r="7" fill="#7a5b9c"/>
-    <path d="M359 398 L358 414" stroke="url(#limbG)" stroke-width="11" stroke-linecap="round"/>
-    <path d="M348 410 h20 l2 18 q0 6 -6 6 h-14 q-6 0 -6 -6 z" fill="#2b1d42" stroke="#c79ad9" stroke-width="1.4"/>
+    <path d="M304.1 245.6 L317.5 312.3 L318.5 371.7 L318.5 395.7 L331.5 396.3 L333.5 372.3 L338.5 311.7 L339.9 242.4 Z" fill="url(#limbG)"/>
+      <circle cx="322.0" cy="244.0" r="18.0" fill="#6b4f95"/>
+      <circle cx="328.0" cy="312.0" r="10.5" fill="#6b4f95"/>
+      <circle cx="326.0" cy="372.0" r="7.5" fill="#6b4f95"/>
+      <circle cx="325.0" cy="396.0" r="6.5" fill="#6b4f95"/>
+      <path d="M314.0 391.0 h22.0 l2.0 19.0 q0 5 -5 5 h-18.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.4"/>
 
-    <!-- ================= pawing fore leg — the page drives this ============= -->
+    <!-- ================= pawing fore leg — the page rebuilds this shape ==== -->
     <g id="nk-leg">
-      <path class="nk-leg-fore" d="M372 260 L378 330" stroke="url(#limbG)" stroke-width="29" stroke-linecap="round"/>
-      <path class="nk-leg-cannon" d="M378 330 L380 396" stroke="url(#limbG)" stroke-width="14" stroke-linecap="round"/>
-      <path class="nk-leg-pastern" d="M380 396 L381 412" stroke="url(#limbG)" stroke-width="12" stroke-linecap="round"/>
-      <circle class="nk-leg-knee" cx="378" cy="330" r="10.5" fill="#8f6cae"/>
-      <circle class="nk-leg-fet" cx="380" cy="392" r="7.5" fill="#8f6cae"/>
-      <g id="nk-hoof" transform="translate(381 412)">
-        <path d="M-11 -4 h22 l2 18 q0 6 -6 6 h-14 q-6 0 -6 -6 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.5"/>
-        <path d="M-11 -4 h22 l1 5 h-24 z" fill="#fc72ff" opacity="0.45"/>
+      <path class="nk-leg-shape" d="M304.1 245.6 L317.5 312.3 L318.5 371.7 L318.5 395.7 L331.5 396.3 L333.5 372.3 L338.5 311.7 L339.9 242.4 Z" fill="url(#limbG)"/>
+      <g class="nk-leg-caps"></g>
+      <g id="nk-hoof" transform="translate(325 391)">
+        <path d="M-11 0 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.5"/>
+        <path d="M-11 0 h22 l1 5 h-24 z" fill="#fc72ff" opacity="0.45"/>
       </g>
     </g>
   </g>
 
-  <!-- dust kicked out by the strike -->
-  <ellipse id="nk-dust" cx="381" cy="434" rx="30" ry="8" fill="none"
+  <ellipse id="nk-dust" cx="325" cy="420" rx="30" ry="8" fill="none"
            stroke="#ffd9f4" stroke-width="2.5" opacity="0"/>
 
-  <!-- impact flash under the hoof -->
   <g id="nk-impact" opacity="0">
-    <ellipse cx="381" cy="432" rx="42" ry="9" fill="#fc72ff" opacity="0.55" filter="url(#tiny)"/>
+    <ellipse cx="325" cy="418" rx="42" ry="9" fill="#fc72ff" opacity="0.55" filter="url(#tiny)"/>
     <g stroke="#ffe9fa" stroke-width="2.6" stroke-linecap="round" opacity="0.9">
-      <path d="M348 426 L330 415"/><path d="M414 426 L432 415"/>
-      <path d="M381 418 L381 400"/><path d="M361 422 L350 406"/><path d="M401 422 L412 406"/>
+      <path d="M292 412 L274 401"/><path d="M358 412 L376 401"/>
+      <path d="M325 404 L325 386"/><path d="M305 408 L294 392"/><path d="M345 408 L356 392"/>
     </g>
   </g>
 
-  <!-- ================= coins thrown up by the strike ================= -->
   <g id="nk-coins">
-    <g class="nk-coin" transform="translate(381 424) scale(0)" opacity="0">
+    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
       <circle r="20" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="13.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.967) translate(-12 -12)" fill="#ffe9fa">
         <use class="nk-glyph" href="#gl-AAPL"/>
       </g>
     </g>
-    <g class="nk-coin" transform="translate(381 424) scale(0)" opacity="0">
+    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
       <circle r="17" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="10.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.822) translate(-12 -12)" fill="#ffe9fa">
         <use class="nk-glyph" href="#gl-AMD"/>
       </g>
     </g>
-    <g class="nk-coin" transform="translate(381 424) scale(0)" opacity="0">
+    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
       <circle r="21" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="14.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(1.015) translate(-12 -12)" fill="#ffe9fa">
         <use class="nk-glyph" href="#gl-AMZN"/>
       </g>
     </g>
-    <g class="nk-coin" transform="translate(381 424) scale(0)" opacity="0">
+    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
       <circle r="16" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="9.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.773) translate(-12 -12)" fill="#ffe9fa">
         <use class="nk-glyph" href="#gl-BTC"/>
       </g>
     </g>
-    <g class="nk-coin" transform="translate(381 424) scale(0)" opacity="0">
+    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
       <circle r="18" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="11.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.870) translate(-12 -12)" fill="#ffe9fa">
         <use class="nk-glyph" href="#gl-COIN"/>
       </g>
     </g>
-    <g class="nk-coin" transform="translate(381 424) scale(0)" opacity="0">
+    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
       <circle r="15" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="8.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.725) translate(-12 -12)" fill="#ffe9fa">
