@@ -111,6 +111,21 @@
 
     var shape = svg.querySelector('#nk-leg .nk-leg-shape');
     var capG  = svg.querySelector('#nk-leg .nk-leg-caps');
+    // Build the joint caps once. Rewriting innerHTML each frame reparsed
+    // markup and rebuilt four nodes sixty times a second for nothing.
+    var caps = [];
+    if (capG) {
+      for (var ci = 0; ci < LEG_W.length; ci++) {
+        var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('r', LEG_W[ci] / 2);
+        c.setAttribute('fill', '#6b4f95');
+        capG.appendChild(c);
+        caps.push(c);
+      }
+    }
+    // scratch buffers, reused so the loop allocates nothing per frame
+    var pts = [ELBOW, [0, 0], [0, 0], [0, 0]];
+    var prev = {};
     var hoof  = svg.querySelector('#nk-hoof');
     var rig   = svg.querySelector('#nk-rig');
     var dust  = svg.querySelector('#nk-dust');
@@ -129,11 +144,12 @@
       cut = 0;
     }
     function deal() {
-      for (var i = 0; i < glyphs.length; i++) {
-        if (cut + i >= deck.length) shuffle();       // deck spent, cut a new one
-        glyphs[i].setAttribute('href', '#gl-' + deck[(cut + i) % deck.length]);
-      }
-      cut = (cut + glyphs.length) % deck.length;
+      // Reshuffle before dealing, never during: cutting mid-hand reset the
+      // pointer and could hand out the same mark twice in one burst.
+      if (cut + glyphs.length > deck.length) shuffle();
+      for (var i = 0; i < glyphs.length; i++)
+        glyphs[i].setAttribute('href', '#gl-' + deck[cut + i]);
+      cut += glyphs.length;
     }
 
     function place(t) {
@@ -142,20 +158,20 @@
       if (t < T_RISE)      lift = easeOut(t / T_RISE);              // draw it up
       else if (t < T_HIT)  lift = 1 - easeIn((t - T_RISE) / (T_HIT - T_RISE));  // snap down
       else                 lift = 0;                                // planted
-      function mix(a, b) { return b + (a - b) * lift; }
-      var pts = [ELBOW,
-                 [mix(UP.kx, DOWN.kx), mix(UP.ky, DOWN.ky)],
-                 [mix(UP.fx, DOWN.fx), mix(UP.fy, DOWN.fy)],
-                 [mix(UP.hx, DOWN.hx), mix(UP.hy, DOWN.hy)]];
-      if (shape) shape.setAttribute('d', ribbon(pts, LEG_W));
-      if (capG) {
-        var cd = '';
-        for (var q = 0; q < pts.length; q++)
-          cd += '<circle cx="' + pts[q][0].toFixed(1) + '" cy="' + pts[q][1].toFixed(1) +
-                '" r="' + (LEG_W[q] / 2).toFixed(1) + '" fill="#6b4f95"/>';
-        capG.innerHTML = cd;
+      // the limb only needs rebuilding while it is actually moving; lift sits
+      // at 0 for well over half the cycle
+      if (lift !== prev.lift) {
+        prev.lift = lift;
+        pts[1][0] = DOWN.kx + (UP.kx - DOWN.kx) * lift; pts[1][1] = DOWN.ky + (UP.ky - DOWN.ky) * lift;
+        pts[2][0] = DOWN.fx + (UP.fx - DOWN.fx) * lift; pts[2][1] = DOWN.fy + (UP.fy - DOWN.fy) * lift;
+        pts[3][0] = DOWN.hx + (UP.hx - DOWN.hx) * lift; pts[3][1] = DOWN.hy + (UP.hy - DOWN.hy) * lift;
+        if (shape) shape.setAttribute('d', ribbon(pts, LEG_W));
+        for (var q = 0; q < caps.length; q++) {
+          caps[q].setAttribute('cx', pts[q][0].toFixed(1));
+          caps[q].setAttribute('cy', pts[q][1].toFixed(1));
+        }
+        if (hoof) hoof.setAttribute('transform', 'translate(' + pts[3][0].toFixed(1) + ' ' + (pts[3][1] - 5).toFixed(1) + ')');
       }
-      if (hoof) hoof.setAttribute('transform', 'translate(' + pts[3][0].toFixed(1) + ' ' + (pts[3][1] - 5).toFixed(1) + ')');
 
       // ---- the body answers the blow: a short dip, then it springs back ----
       var jolt = 0;
@@ -165,13 +181,14 @@
       } else if (t < T_HIT && t > T_RISE) {
         jolt = -1.5 * ((t - T_RISE) / (T_HIT - T_RISE));   // a touch of lift on the wind-up
       }
-      if (rig) rig.setAttribute('transform', 'translate(0 ' + jolt.toFixed(2) + ')');
+      if (rig && jolt !== prev.jolt) { prev.jolt = jolt; rig.setAttribute('transform', 'translate(0 ' + jolt.toFixed(2) + ')'); }
 
       // ---- contact: flash and a ring of dust ----
       var hit = (t < T_HIT) ? 0 : Math.max(0, 1 - (t - T_HIT) / 0.14);
-      if (flash) flash.setAttribute('opacity', (hit * 0.95).toFixed(3));
-      if (dust) {
-        var dt = (t < T_HIT) ? 0 : Math.min(1, (t - T_HIT) / 0.30);
+      if (flash && hit !== prev.hit) { prev.hit = hit; flash.setAttribute('opacity', (hit * 0.95).toFixed(3)); }
+      var dt = (t < T_HIT) ? 0 : Math.min(1, (t - T_HIT) / 0.30);
+      if (dust && dt !== prev.dt) {
+        prev.dt = dt;
         dust.setAttribute('rx', (30 + dt * 62).toFixed(1));
         dust.setAttribute('ry', (8 + dt * 12).toFixed(1));
         dust.setAttribute('opacity', (dt > 0 ? (1 - dt) * 0.55 : 0).toFixed(3));
@@ -180,6 +197,8 @@
       // ---- coins: a real throw, up and back down, fading as they drop ----
       var ct = (t - T_HIT) / (T_COINS_END - T_HIT);
       ct = Math.max(0, Math.min(1, ct));
+      if (ct === prev.ct) return;          // burst not running — nothing to move
+      prev.ct = ct;
       for (var i = 0; i < coins.length; i++) {
         var c = COINS[i % COINS.length];
         var rad = c.a * Math.PI / 180;
