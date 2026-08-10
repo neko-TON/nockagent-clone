@@ -399,22 +399,23 @@
   </g>
 
   <g id="nk-halos" style="mix-blend-mode:screen">
-    <circle class="nk-halo" r="40.0" fill="url(#pool)" opacity="0"
+    <circle class="nk-halo" r="46.0" fill="url(#pool)" opacity="0"
             transform="translate(325 410) scale(0)"/>
-    <circle class="nk-halo" r="34.0" fill="url(#pool)" opacity="0"
+    <circle class="nk-halo" r="39.1" fill="url(#pool)" opacity="0"
             transform="translate(325 410) scale(0)"/>
-    <circle class="nk-halo" r="42.0" fill="url(#pool)" opacity="0"
+    <circle class="nk-halo" r="48.3" fill="url(#pool)" opacity="0"
             transform="translate(325 410) scale(0)"/>
-    <circle class="nk-halo" r="32.0" fill="url(#pool)" opacity="0"
+    <circle class="nk-halo" r="36.8" fill="url(#pool)" opacity="0"
             transform="translate(325 410) scale(0)"/>
-    <circle class="nk-halo" r="36.0" fill="url(#pool)" opacity="0"
+    <circle class="nk-halo" r="41.4" fill="url(#pool)" opacity="0"
             transform="translate(325 410) scale(0)"/>
-    <circle class="nk-halo" r="30.0" fill="url(#pool)" opacity="0"
+    <circle class="nk-halo" r="34.5" fill="url(#pool)" opacity="0"
             transform="translate(325 410) scale(0)"/>
   </g>
 
   <g id="nk-coins">
     <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
+      <circle r="22.9" fill="none" stroke="#141018" stroke-width="3.6"/>
       <circle r="20" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="13.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.967) translate(-12 -12)" fill="#ffe9fa">
@@ -422,6 +423,7 @@
       </g>
     </g>
     <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
+      <circle r="19.9" fill="none" stroke="#141018" stroke-width="3.6"/>
       <circle r="17" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="10.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.822) translate(-12 -12)" fill="#ffe9fa">
@@ -429,6 +431,7 @@
       </g>
     </g>
     <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
+      <circle r="23.9" fill="none" stroke="#141018" stroke-width="3.6"/>
       <circle r="21" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="14.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(1.015) translate(-12 -12)" fill="#ffe9fa">
@@ -436,6 +439,7 @@
       </g>
     </g>
     <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
+      <circle r="18.9" fill="none" stroke="#141018" stroke-width="3.6"/>
       <circle r="16" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="9.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.773) translate(-12 -12)" fill="#ffe9fa">
@@ -443,6 +447,7 @@
       </g>
     </g>
     <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
+      <circle r="20.9" fill="none" stroke="#141018" stroke-width="3.6"/>
       <circle r="18" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="11.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.870) translate(-12 -12)" fill="#ffe9fa">
@@ -450,6 +455,7 @@
       </g>
     </g>
     <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">
+      <circle r="17.9" fill="none" stroke="#141018" stroke-width="3.6"/>
       <circle r="15" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>
       <circle r="8.5" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>
       <g transform="scale(0.725) translate(-12 -12)" fill="#ffe9fa">

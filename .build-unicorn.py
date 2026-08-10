@@ -109,17 +109,23 @@ RADII = [20, 17, 21, 16, 18, 15]
 # which is where a glowing disc actually shows it.
 halos = "\n".join(
     '    <circle class="nk-halo" r="%.1f" fill="url(#pool)" opacity="0"\n'
-    '            transform="translate(325 410) scale(0)"/>' % (r * 2.0)
+    '            transform="translate(325 410) scale(0)"/>' % (r * 2.3)
     for r in RADII)
 
+# A dark ring outside the pink rim. The coins are dark discs and the unicorn
+# is now bright pink, so wherever a coin crossed the body it stopped reading as
+# an object in front of the horse and started reading as a hole punched in it.
+# On the black background the ring costs nothing — it is the same value as the
+# page. On the horse it is the whole difference between a coin and a wound.
 coins = "\n".join(
     '    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">\n'
+    '      <circle r="%.1f" fill="none" stroke="#141018" stroke-width="3.6"/>\n'
     '      <circle r="%d" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>\n'
     '      <circle r="%.1f" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>\n'
     '      <g transform="scale(%.3f) translate(-12 -12)" fill="#ffe9fa">\n'
     '        <use class="nk-glyph" href="#gl-%s"/>\n'
     '      </g>\n'
-    '    </g>' % (r, r - 6.5, (r * 1.16) / 24, POOL[i % len(POOL)][0])
+    '    </g>' % (r + 2.9, r, r - 6.5, (r * 1.16) / 24, POOL[i % len(POOL)][0])
     for i, r in enumerate(RADII))
 
 # The frame used to end at y=-30, twelve pixels above the horn tip. Any halo

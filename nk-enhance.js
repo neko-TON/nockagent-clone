@@ -108,7 +108,11 @@
   var POOL = ['NVDA','AAPL','TSLA','COIN','AMZN','GOOGL','META','ETH','BTC','NFLX','AMD'];
 
   // beats of one cycle, as fractions
-  var T_RISE = 0.30, T_HIT = 0.38, T_SETTLE = 0.52, T_COINS_END = 0.94;
+  // Coins used to exist from 0.38 to 0.94 of the cycle and start fading at
+  // 0.72, so they were strongly visible for about 40% of it — glance at the
+  // hero during the other 60% and there is no burst to see at all. The
+  // wind-up is shorter now and the coins hang on longer: 0.28 to 0.97.
+  var T_RISE = 0.22, T_HIT = 0.28, T_SETTLE = 0.44, T_COINS_END = 0.97;
 
   function easeOut(x){ return 1 - Math.pow(1 - x, 3); }
   function easeIn(x){ return x * x * x; }
@@ -219,7 +223,7 @@
         var x = HOOF_X + Math.cos(rad) * c.d * out;
         var y = HOOF_Y + Math.sin(rad) * c.d * out * 0.5 - c.rise * (4 * ct * (1 - ct));
         var sc = Math.min(1, ct * 6);
-        var op = ct <= 0 ? 0 : Math.min(1, ct * 8) * (ct > 0.72 ? Math.max(0, 1 - (ct - 0.72) / 0.28) : 1);
+        var op = ct <= 0 ? 0 : Math.min(1, ct * 8) * (ct > 0.80 ? Math.max(0, 1 - (ct - 0.80) / 0.20) : 1);
         var move = 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') ';
         coins[i].setAttribute('transform',
           move + 'rotate(' + (ct * c.spin).toFixed(0) + ') scale(' + sc.toFixed(3) + ')');
