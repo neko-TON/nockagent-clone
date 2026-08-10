@@ -55,8 +55,26 @@ def hoof(x, y, w=22, h=19, light=None):
     """One flat shape, held off the cannon by a hair. Uniswap's drawing has no
     outlines anywhere — where it needs an edge it leaves a gap instead, and the
     gap is real transparency so whatever is behind shows through."""
-    return ('<path d="M%.1f %.1f h%.1f l%.1f %.1f q0 5 -5 5 h-%.1f q-5 0 -5 -5 z" '
-            'fill="%s"/>' % (x - w / 2, y + 2.5, w, 2.0, h, w - 4, PINK))
+    # The coronet — the band where hoof meets pastern — as an even-odd hole in
+    # the same path. A separate element would need positioning every frame on
+    # the one hoof that moves; a subpath rides along for free.
+    return ('<path fill-rule="evenodd" d="M%.1f %.1f h%.1f l%.1f %.1f q0 5 -5 5 h-%.1f q-5 0 -5 -5 z'
+            'M%.1f %.1f h%.1f v2.1 h-%.1f z" fill="%s"/>'
+            % (x - w / 2, y + 2.5, w, 2.0, h, w - 4,
+               x - w / 2 + 3, y + 7.4, w - 5, w - 5, PINK))
+
+
+def sliver(a, b, c1, c2):
+    """A tapered gap: two quadratic arcs sharing endpoints, so it is widest in
+    the middle and comes to a point at both ends.
+
+    This is the whole difference between anatomy and a scratch. The pass that
+    scored constant-width strokes across the girth and haunch had to be pulled
+    out because at size they read as damage to the drawing. A muscle boundary
+    on a real animal is deepest at its middle and vanishes at both ends, and a
+    lens does that. Width at the midpoint is |c1 - c2| / 2."""
+    return ("M%.1f %.1f Q%.1f %.1f %.1f %.1f Q%.1f %.1f %.1f %.1f Z"
+            % (a[0], a[1], c1[0], c1[1], b[0], b[1], c2[0], c2[1], a[0], a[1]))
 
 # ---------------------------------------------------------------- skeleton
 # near fore: elbow, knee, fetlock, pastern
@@ -177,6 +195,17 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
         <path d="M338 222 C 344 272, 342 336, 341 400" stroke-width="5"/>
         <path d="M206 200 C 186 262, 197 336, 200 400" stroke-width="5"/>
       </g>
+      <!-- Muscle. Every one of these is a tapered lens, not a stroke, and
+           none of them sits on the near foreleg — that limb is rebuilt every
+           frame by the page and a fixed cut would slide off it. -->
+      <g fill="#000">
+        <path d="{sliver((337,146), (325,238), (347,192), (337,192))}"/>
+        <path d="{sliver((317,192), (330,242), (327,217), (318,217))}"/>
+        <path d="{sliver((150,148), (178,234), (139,191), (150,191))}"/>
+        <path d="{sliver((171,240), (152,292), (167,266), (158,266))}"/>
+        <path d="{sliver((400,124), (366,166), (380,150), (386,144))}"/>
+        <path d="{sliver((197,231), (208,257), (206,244), (199,244))}"/>
+      </g>
     </mask>
     <mask id="headCut" maskUnits="userSpaceOnUse" x="396" y="-4" width="112" height="146">
       <rect x="396" y="-4" width="112" height="146" fill="#fff"/>
@@ -194,6 +223,8 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
            follows the head. -->
       <path d="M424 60 C 431 84, 445 104, 466 116" stroke="#000" stroke-width="5"
             fill="none" stroke-linecap="round"/>
+      <!-- lip line, in this mask rather than #bodyCut so it nods with the head -->
+      <path d="{sliver((470,120), (490,125), (480,127.4), (480,123.4))}" fill="#000"/>
     </mask>
     <!-- Two notches, each biting in from the trailing edge and stopping short
          of the leading one. Cut all the way across — as the first pass did —
@@ -491,7 +522,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
     <g id="nk-leg">
       <path class="nk-leg-shape" d="{ribbon(FORE, FORE_W)}" fill="{PINK}"/>
       <g id="nk-hoof" transform="translate(325 391)">
-        <path d="M-11 2.5 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 z" fill="{PINK}"/>
+        <path fill-rule="evenodd" d="M-11 2.5 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 zM-8 7.4 h17 v2.1 h-17 z" fill="{PINK}"/>
       </g>
     </g>
   </g>
