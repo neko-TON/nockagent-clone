@@ -53,15 +53,21 @@ def hoof(x, y, w=22, h=19, light=None):
 
 # ---------------------------------------------------------------- skeleton
 # near fore: elbow, knee, fetlock, pastern
-FORE   = [(322, 244), (328, 312), (326, 372), (325, 396)]
-FORE_W = [36, 21, 15, 13]
+# Stylised, not anatomical. Five rounds of trying to draw a correct horse in
+# flat colour produced five chunky horses: realism is what the reference is
+# NOT doing, and a naturalistic body carries no elegance once the shading that
+# was describing it comes off. So the proportions are pushed instead —
+# legs at 61% of total height against a real horse's ~52%, and a barrel 39%
+# deep against ~48%. Exaggeration is what makes a flat mark read as graceful.
+FORE   = [(322, 196), (330, 290), (326, 368), (325, 396)]
+FORE_W = [34, 17, 12, 10]
 # near hind: stifle, hock, fetlock, pastern — the hock kicks back, and that
 # zig-zag is the single strongest "this is a horse" signal in a silhouette
-HIND   = [(190, 240), (156, 312), (176, 374), (178, 396)]
-HIND_W = [50, 24, 15, 13]
-# off-side pair, held back in tone so the near legs read first
-FORE_O   = [(348, 246), (352, 314), (350, 374), (349, 396)]
-HIND_O   = [(224, 244), (196, 314), (214, 374), (216, 396)]
+HIND   = [(185, 190), (150, 285), (172, 368), (176, 396)]
+HIND_W = [46, 20, 13, 11]
+# off-side pair, separated from the near pair by a gap rather than by tone
+FORE_O   = [(346, 198), (352, 292), (350, 369), (349, 396)]
+HIND_O   = [(215, 194), (190, 288), (208, 369), (211, 396)]
 
 # The Uniswap unicorn is drawn in exactly one colour — #FF37C7, the same pink
 # this site already uses for --accent — with no gradient, no stroke and no
@@ -146,40 +152,36 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          less brittle than trying to author forty non-overlapping outlines. -->
     <mask id="bodyCut" maskUnits="userSpaceOnUse" x="50" y="-60" width="490" height="500">
       <rect x="50" y="-60" width="490" height="500" fill="#fff"/>
-      <g stroke="#000" stroke-width="5.5" fill="none" stroke-linecap="round">
-        <!-- under each mane strand, so the strands read as strands -->
-        <path d="M431 62 C 403 62, 373 83, 349 113 C 329 139, 313 173, 303 207"/>
-        <path d="M421 87 C 399 101, 375 129, 357 161 C 343 187, 333 213, 329 235"/>
-        <path d="M401 131 C 381 151, 363 179, 351 207 C 343 229, 337 249, 335 265"/>
-        <path d="M375 189 C 359 209, 345 233, 337 257 C 332 273, 330 287, 330 297"/>
-        <!-- shoulder, girth and haunch: without these the near foreleg and the
-             barrel are one shape and the horse loses its legs -->
-        <path d="M320 170 C 330 196, 330 222, 320 246"/>
-        <path d="M154 246 C 192 265, 250 271, 312 259"/>
-        <path d="M198 238 C 190 258, 186 278, 188 296"/>
-        <!-- jaw -->
-        <path d="M429 86 C 437 111, 453 131, 475 143"/>
+      <g stroke="#000" fill="none" stroke-linecap="round">
+        <!-- Only three gaps now, and each one separates two whole masses.
+             The previous pass ran a thin stroke under every mane strand and
+             across the girth and haunch, and at size those read as scratches
+             scribbled on the animal rather than as drawing. Where the mane and
+             the tail needed to read, the answer was to reshape them so they
+             overhang the silhouette — not to score lines into it. -->
+        <path d="M152 158 C 138 186, 134 218, 142 246" stroke-width="8"/>
+        <path d="M424 60 C 431 84, 445 104, 466 116" stroke-width="5"/>
         <!-- and between each near leg and the far one behind it -->
-        <path d="M338 252 C 344 292, 342 344, 341 400"/>
-        <path d="M206 250 C 186 290, 200 346, 202 400"/>
+        <path d="M338 222 C 344 272, 342 336, 341 400" stroke-width="5"/>
+        <path d="M206 200 C 186 262, 197 336, 200 400" stroke-width="5"/>
       </g>
     </mask>
-    <mask id="headCut" maskUnits="userSpaceOnUse" x="398" y="14" width="122" height="170">
-      <rect x="398" y="14" width="122" height="170" fill="#fff"/>
+    <mask id="headCut" maskUnits="userSpaceOnUse" x="396" y="-4" width="112" height="146">
+      <rect x="396" y="-4" width="112" height="146" fill="#fff"/>
       <!-- The eye is a hole, and it has to be a big one. In the reference the
            eye is the largest piece of negative space on the head — it is what
            makes the thing a character rather than a silhouette. -->
-      <ellipse id="eye" cx="447" cy="92" rx="10.5" ry="12" transform="rotate(-16 447 92)" fill="#000"/>
-      <circle cx="487" cy="152.5" r="4.2" fill="#000"/>
-      <path d="M419 52 L413 30 L431 47 Z" fill="#000"/>
+      <ellipse id="eye" cx="446" cy="66" rx="9" ry="10.5" transform="rotate(-16 446 66)" fill="#000"/>
+      <circle cx="484" cy="118" r="3.8" fill="#000"/>
+      <path d="M418 28 L411 6 L430 25 Z" fill="#000"/>
     </mask>
     <!-- Two notches, each biting in from the trailing edge and stopping short
          of the leading one. Cut all the way across — as the first pass did —
          and the horn stops being a horn and becomes three floating shards. -->
-    <mask id="hornCut" maskUnits="userSpaceOnUse" x="420" y="-28" width="64" height="90">
-      <rect x="420" y="-28" width="64" height="90" fill="#fff"/>
-      <path d="M458 30 L446.5 34.5 L448.5 38.5 L459 34 Z" fill="#000"/>
-      <path d="M465 10 L455.5 14 L457.5 18 L466 14 Z" fill="#000"/>
+    <mask id="hornCut" maskUnits="userSpaceOnUse" x="414" y="-52" width="70" height="96">
+      <rect x="414" y="-52" width="70" height="96" fill="#fff"/>
+      <path d="M452 8 L440.5 12.5 L442.5 16.5 L453 12 Z" fill="#000"/>
+      <path d="M460 -12 L450.5 -8 L452.5 -4 L461 -8 Z" fill="#000"/>
     </mask>
 {glyph_defs}
   </defs>
@@ -226,12 +228,15 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          the shading; strip the shading and it is one blob. In the reference
          every hair group is its own ribbon and the gaps are the drawing. -->
     <g>
-      <path d="M128 158 C 98 174, 72 214, 62 260 C 52 306, 58 352, 78 380
-               C 74 340, 78 296, 96 258 C 112 224, 126 194, 136 178 Z" fill="{PINK}"/>
-      <path d="M142 172 C 118 194, 98 232, 92 274 C 86 314, 90 350, 104 372
-               C 102 334, 108 298, 122 266 C 134 238, 146 216, 152 198 Z" fill="{PINK}"/>
-      <path d="M156 190 C 138 214, 126 246, 122 282 C 118 312, 122 338, 132 356
-               C 130 324, 136 296, 146 270 C 156 246, 164 226, 168 210 Z" fill="{PINK}"/>
+      <path d="M146 146
+               C 122 168, 100 208, 88 254
+               C 76 300, 74 342, 84 372
+               C 86 336, 94 300, 106 270
+               C 98 302, 96 332, 100 356
+               C 110 320, 122 288, 134 262
+               C 130 292, 130 316, 134 336
+               C 142 300, 152 264, 158 232
+               C 164 200, 166 170, 162 152 Z" fill="{PINK}"/>
     </g>
 
     <!-- ================= off-side legs ================= -->
@@ -246,32 +251,41 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
 {leg(HIND, HIND_W, LIMB, CAP)}
       {hoof(178, 391)}
 
-    <!-- ================= barrel: shoulder, girth, flank and croup all in one
-         outline, so the masses belong to the body instead of sitting on it -->
-    <path d="M120 176
-             C 118 148, 140 128, 172 126
-             C 206 124, 244 132, 274 138
-             C 298 143, 318 152, 332 172
-             C 344 189, 350 208, 348 226
-             C 346 246, 334 260, 314 266
-             C 292 273, 262 276, 232 272
-             C 200 268, 170 260, 150 244
-             C 130 228, 122 202, 120 176 Z"
+    <!-- ================= barrel =================
+         The old one was 232 long by 152 deep sitting on 139 of visible leg:
+         a ratio of 1.5 on a body that should be nearer 1.8, standing on legs
+         shorter than it was deep. That is the whole reason it read as a blob
+         on sticks, and no amount of colour was going to fix it.
+
+         This one is 248 by 148 with 152 of leg under it — leg length about
+         equal to barrel depth, which is what a horse actually is. The
+         underline is deliberately not a symmetric arc: deepest at the girth
+         a third back from the chest, then rising to a tucked flank. That
+         slant is most of what makes a horse look like a horse. -->
+    <path d="M336 172
+             C 334 150, 320 136, 296 131
+             C 262 124, 210 126, 178 136
+             C 156 143, 142 154, 138 172
+             C 134 190, 140 208, 152 220
+             C 174 234, 214 240, 254 238
+             C 288 236, 318 230, 330 220
+             C 338 212, 340 192, 336 172 Z"
           fill="{PINK}"/>
     <!-- The shading, the muscle highlights and the two contour grooves that
          used to live here are gone. Flat means flat: one tone, and the
          silhouette carries the form. Where an edge is genuinely needed it is
          cut as a gap in #bodyCut, not drawn as a line on top. -->
 
-    <!-- ================= neck: crest above, throat hollow below ========== -->
-    <path d="M312 146
-             C 330 114, 358 86, 394 70
-             C 408 64, 420 61, 428 62
-             L 432 104
-             C 420 108, 404 118, 390 130
-             C 372 145, 356 166, 344 188
-             C 338 200, 334 210, 332 218
-             C 330 194, 322 168, 312 146 Z"
+    <!-- ================= neck =================
+         Convex along the crest, concave under the throat. The old one was
+         near-parallel top and bottom, which is why it read as a tube. -->
+    <path d="M300 146
+             C 312 108, 340 72, 378 50
+             C 394 41, 412 35, 426 36
+             L 432 78
+             C 418 82, 402 92, 388 106
+             C 370 124, 356 146, 348 170
+             C 338 162, 318 152, 300 146 Z"
           fill="{PINK}"/>
 
     <!-- ================= head =================
@@ -281,27 +295,27 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          transform. The skull has to be inside the masked group with the rest —
          left outside it, the eye punched a hole in nothing. -->
     <g mask="url(#headCut)">
-      <path d="M424 56
-               C 444 52, 460 62, 468 80
-               C 476 100, 486 124, 494 142
-               C 499 154, 495 164, 484 166
-               C 472 168, 459 160, 451 148
-               C 438 130, 426 110, 420 92
-               C 415 78, 416 62, 424 56 Z"
+      <path d="M424 32
+               C 441 28, 454 38, 460 53
+               C 466 69, 474 89, 480 105
+               C 485 116, 480 126, 469 128
+               C 458 130, 448 122, 442 110
+               C 433 93, 425 76, 420 61
+               C 416 48, 417 36, 424 32 Z"
             fill="{PINK}"/>
-      <path d="M472 138 C 486 138, 496 146, 496 155 C 496 164, 486 168, 475 166
-               C 466 164, 460 157, 462 149 C 464 142, 467 139, 472 138 Z" fill="{PINK}"/>
-      <path d="M418 58 L410 24 L436 50 Z" fill="{PINK}"/>
-      <path d="M439 54 L442 26 L456 50 Z" fill="{PINK}"/>
+      <path d="M470 104 C 483 104, 492 111, 492 119 C 492 127, 483 131, 473 129
+               C 465 127, 459 121, 461 114 C 463 107, 466 105, 470 104 Z" fill="{PINK}"/>
+      <path d="M417 34 L408 2 L434 28 Z" fill="{PINK}"/>
+      <path d="M438 30 L442 4 L455 28 Z" fill="{PINK}"/>
     </g>
     <!-- the glint, sitting inside the eye hole -->
-    <circle cx="450" cy="87" r="3" fill="{PINK}"/>
+    <circle cx="449" cy="61" r="2.7" fill="{PINK}"/>
 
     <!-- ================= horn =================
          Longer and thinner than a real horn, which is how the reference draws
          it, and the spiral is three notches cut out of the pink rather than
          four lines ruled across it. -->
-    <path d="M426 56 L452 48 L477 -22 Z" fill="{PINK}" mask="url(#hornCut)"/>
+    <path d="M421 33 L447 24 L474 -46 Z" fill="{PINK}" mask="url(#hornCut)"/>
     <!-- The horn tip is the one true point source in the drawing, so it gets
          what a point source gives you: a tight core over a long halo, plus the
          two streaks the eye reads as "too bright to look at". Screen-blended,
@@ -323,19 +337,30 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          most recognisable thing about the reference mascot — its mane is a
          set of brush strokes, not a shaded mass — and it is the reason the
          logo still reads as a unicorn at 20px. -->
+    <!-- A mane drawn on the neck is a mane you cannot see: same colour, inside
+         the same outline. It has to leave the silhouette. These three sweep
+         back off the crest into the open dark above the withers, which is the
+         only empty space adjacent to the neck — and a mane blown back happens
+         to be what the reference does with its own strands. -->
     <g>
-      <path d="M430 60 C 402 58, 372 78, 348 108 C 326 136, 310 170, 300 204
-               C 314 186, 330 168, 346 156 C 362 128, 388 92, 412 72
-               C 421 65, 427 61, 430 60 Z" fill="{PINK}"/>
-      <path d="M420 84 C 398 96, 374 124, 356 156 C 340 184, 330 210, 326 232
-               C 336 212, 350 190, 364 174 C 372 148, 390 116, 406 96
-               C 411 90, 416 86, 420 84 Z" fill="{PINK}"/>
-      <path d="M400 128 C 380 146, 362 174, 350 202 C 340 226, 334 246, 332 262
-               C 340 244, 352 224, 364 210 C 370 188, 382 162, 394 142
-               C 397 136, 399 130, 400 128 Z" fill="{PINK}"/>
-      <path d="M374 186 C 358 204, 344 228, 336 252 C 330 270, 328 284, 328 294
-               C 334 278, 342 262, 350 250 C 355 232, 364 210, 372 194
-               C 373 191, 374 187, 374 186 Z" fill="{PINK}"/>
+      <path d="M416 36
+               C 360 30, 258 44, 188 66
+               C 168 73, 154 78, 148 82
+               C 168 79, 198 74, 224 71
+               C 300 62, 380 50, 412 44
+               C 416 41, 417 38, 416 36 Z" fill="{PINK}"/>
+      <path d="M392 58
+               C 342 58, 262 78, 200 104
+               C 182 112, 170 118, 166 122
+               C 184 118, 208 112, 230 107
+               C 292 93, 356 74, 386 66
+               C 391 62, 392 60, 392 58 Z" fill="{PINK}"/>
+      <path d="M356 90
+               C 320 92, 280 102, 250 112
+               C 242 115, 236 118, 234 119
+               C 248 116, 264 112, 278 109
+               C 312 101, 342 94, 353 92
+               C 356 91, 357 90, 356 90 Z" fill="{PINK}"/>
     </g>
 
     <!-- ================= near fore leg, planted ================= -->

@@ -82,11 +82,11 @@
     { a: -138, d: 122, rise: 128, spin:  360 }, { a: -160, d: 156, rise: 96, spin: -300 }
   ];
   var HOOF_X = 325, HOOF_Y = 410;
-  var ELBOW = [322, 244];
-  var LEG_W = [36, 21, 15, 13];          // forearm, knee, fetlock, pastern
+  var ELBOW = [322, 196];
+  var LEG_W = [34, 17, 12, 10];          // forearm, knee, fetlock, pastern
   // Gathered, the cannon folds up and forward; planted, the column is straight.
-  var UP   = { kx: 344, ky: 286, fx: 358, fy: 322, hx: 358, hy: 344 };
-  var DOWN = { kx: 328, ky: 312, fx: 326, fy: 372, hx: 325, hy: 396 };
+  var UP   = { kx: 346, ky: 266, fx: 360, fy: 312, hx: 360, hy: 336 };
+  var DOWN = { kx: 330, ky: 290, fx: 326, fy: 368, hx: 325, hy: 396 };
 
   // Same ribbon the static legs are built from, so the pawing limb keeps its
   // taper through the whole stroke instead of flattening to a constant bar.
