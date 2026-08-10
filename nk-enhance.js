@@ -81,7 +81,7 @@
     { a: -78, d: 74,  rise: 172, spin:  460 }, { a: -108, d: 86, rise: 158, spin: -420 },
     { a: -138, d: 122, rise: 128, spin:  360 }, { a: -160, d: 156, rise: 96, spin: -300 }
   ];
-  var HOOF_X = 325, HOOF_Y = 410;
+  var HOOF_X, HOOF_Y;   // set from the paw path once it is defined
   var ELBOW = [322, 196];
   var LEG_W = [46, 25, 18, 15];          // forearm, knee, fetlock, pastern
 
@@ -128,6 +128,15 @@
     }
     return [cr(k0[1], k1[1], k2[1], k3[1]), cr(k0[2], k1[2], k2[2], k3[2])];
   }
+
+  /* Where the hoof actually meets the ground, taken from the path rather than
+     written down separately. The coins, the flash and the dust all used to
+     fire at a hard-coded 325,410 while the hoof landed at 345 and then
+     scraped away to 291 — the impact was happening 20 units from the foot
+     that was supposed to be causing it. The hoof shape hangs about 20 below
+     the pastern point, which is where the ground is. */
+  HOOF_X = PAW[3][1];
+  HOOF_Y = PAW[3][2] + 20;
 
   /* Two-link IK, elbow to fetlock. Of the two knee solutions this takes the
      one bulging forward, because a horse's carpus folds backward — the knee
@@ -199,6 +208,7 @@
     var prev = {};
     var hoof  = svg.querySelector('#nk-hoof');
     var rig   = svg.querySelector('#nk-rig');
+    var head  = svg.querySelector('#nk-head');
     var dust  = svg.querySelector('#nk-dust');
     var flash = svg.querySelector('#nk-impact');
     var coins = svg.querySelectorAll('#nk-coins .nk-coin');
@@ -285,7 +295,31 @@
       }
       if (rig && jolt !== prev.jolt) { prev.jolt = jolt; rig.setAttribute('transform', 'translate(0 ' + jolt.toFixed(2) + ')'); }
 
-      // ---- contact: flash and a ring of dust ----
+      // ---- the head answers the blow ----
+      // It lifts a little over the wind-up and drops through the strike and
+      // the scrape, which is what a horse pawing actually does with its head.
+      // Positive rotation is clockwise on screen, and the muzzle sits below
+      // and right of the poll, so positive drops the nose.
+      var nod = 0;
+      if (t >= 0.16 && t < T_HIT) nod = -2.4 * ((t - 0.16) / (T_HIT - 0.16));
+      else if (t >= T_HIT && t < 0.74) nod = Math.sin(((t - T_HIT) / (0.74 - T_HIT)) * Math.PI) * 7.5;
+      if (head && nod !== prev.nod) {
+        prev.nod = nod;
+        head.setAttribute('transform', 'rotate(' + nod.toFixed(2) + ' 428 44)');
+      }
+
+      // ---- contact: flash and a ring of dust, both carried on the hoof ----
+      // Authored at 325,418 and 325,420; offset each frame to wherever the
+      // foot is, so the dust trails along the scrape instead of sitting in
+      // one spot while the hoof walks away from it.
+      var offX = (H[0] - 325).toFixed(1), offY = (H[1] - 398).toFixed(1);
+      var off = 'translate(' + offX + ' ' + offY + ')';
+      if (off !== prev.off) {
+        prev.off = off;
+        if (flash) flash.setAttribute('transform', off);
+        if (dust) dust.setAttribute('transform', off);
+      }
+
       var hit = (t < T_HIT) ? 0 : Math.max(0, 1 - (t - T_HIT) / 0.14);
       if (flash && hit !== prev.hit) { prev.hit = hit; flash.setAttribute('opacity', (hit * 0.95).toFixed(3)); }
       var dt = (t < T_HIT) ? 0 : Math.min(1, (t - T_HIT) / (T_DRAG_END - T_HIT));

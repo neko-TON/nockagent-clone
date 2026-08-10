@@ -166,7 +166,6 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
              the tail needed to read, the answer was to reshape them so they
              overhang the silhouette — not to score lines into it. -->
         <path d="M152 158 C 138 186, 134 218, 142 246" stroke-width="8"/>
-        <path d="M424 60 C 431 84, 445 104, 466 116" stroke-width="5"/>
         <!-- and between each near leg and the far one behind it -->
         <path d="M338 222 C 344 272, 342 336, 341 400" stroke-width="5"/>
         <path d="M206 200 C 186 262, 197 336, 200 400" stroke-width="5"/>
@@ -180,6 +179,14 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
       <ellipse id="eye" cx="446" cy="66" rx="9" ry="10.5" transform="rotate(-16 446 66)" fill="#000"/>
       <circle cx="484" cy="118" r="3.8" fill="#000"/>
       <path d="M418 28 L411 6 L430 25 Z" fill="#000"/>
+      <!-- The jaw gap belongs here, not in #bodyCut. #bodyCut sits on an
+           ancestor that does not rotate, so with the head nodding the gap
+           stayed put while the jaw swung through it — cutting the cheek in
+           the wrong place at one end of the nod and not at all at the other.
+           #headCut is referenced from inside the rotating group, so it
+           follows the head. -->
+      <path d="M424 60 C 431 84, 445 104, 466 116" stroke="#000" stroke-width="5"
+            fill="none" stroke-linecap="round"/>
     </mask>
     <!-- Two notches, each biting in from the trailing edge and stopping short
          of the leading one. Cut all the way across — as the first pass did —
@@ -374,6 +381,13 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          the eye still has to blink and a mask lets that one shape keep its own
          transform. The skull has to be inside the masked group with the rest —
          left outside it, the eye punched a hole in nothing. -->
+    <!-- head, horn and the horn's light in one group so the nod carries all
+         three. The eye/nostril/ear cuts live in a userSpaceOnUse mask on the
+         inner group, and a userSpaceOnUse mask resolves in the coordinate
+         system the referencing element sits in — so it rotates with an
+         ancestor transform and the eye stays in the skull. Verified rather
+         than assumed. -->
+    <g id="nk-head">
     <g mask="url(#headCut)">
       <path d="M424 32
                C 441 28, 454 38, 460 53
@@ -410,6 +424,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
             transform="rotate(90 474 -18)"/>
       <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.9"/>
     </g>
+    </g><!-- /nk-head -->
 
   </g><!-- /masked body -->
 
