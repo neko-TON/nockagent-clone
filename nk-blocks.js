@@ -182,6 +182,47 @@
     '@keyframes nkOk{0%,23%{opacity:0}28%,44%{opacity:1}46%,100%{opacity:0}}',
     '@keyframes nkNo{0%,69%{opacity:0}74%,90%{opacity:1}92%,100%{opacity:0}}',
 
+    /* ---- pipeline ----
+       Default is every stage complete, because that is the true resting
+       state of a finished sequence; the animation only walks a highlight
+       across it. One duration with the delay staggered by a quarter, so the
+       lit stage travels rather than four stages blinking together. */
+    '.nk-art .pl-box{fill:#1a1a1a;stroke:#5b2b4c;stroke-width:1.2}',
+    '.nk-art .pl-n{fill:#6e6e6e;font-size:10px;letter-spacing:.14em;text-transform:uppercase}',
+    '.nk-art .pl-v{fill:#e8e8e8;font-size:11px}',
+    '.nk-art .pl-s{fill:#6e6e6e;font-size:10px}',
+    '.nk-art .pl-w{stroke:#3a2b40;stroke-width:1.4}',
+    '.nk-art .pl-d{fill:#ff37c7;opacity:0}',
+    '@media (prefers-reduced-motion:no-preference){',
+    '  .nk-art.on .pl-box{animation:nkStage 7.2s linear infinite}',
+    '  .nk-art.on .pl-v{animation:nkStageT 7.2s linear infinite}',
+    '  .nk-art.on .pl-d{animation:nkHop 7.2s linear infinite}',
+    '  .nk-art.on .p1{animation-delay:1.8s}.nk-art.on .p2{animation-delay:3.6s}',
+    '  .nk-art.on .p3{animation-delay:5.4s}',
+    '  .nk-art.on .d0{animation-delay:1.35s}.nk-art.on .d1{animation-delay:3.15s}',
+    '  .nk-art.on .d2{animation-delay:4.95s}',
+    '}',
+    '@keyframes nkStage{0%,4%{stroke:#5b2b4c;fill:#1a1a1a}' +
+      '10%,26%{stroke:#ff37c7;fill:rgba(255,55,199,.09)}32%,100%{stroke:#5b2b4c;fill:#1a1a1a}}',
+    '@keyframes nkStageT{0%,4%{fill:#e8e8e8}10%,26%{fill:#ffe9fa}32%,100%{fill:#e8e8e8}}',
+    '@keyframes nkHop{0%,2%{opacity:0;transform:translateX(0)}' +
+      '5%{opacity:1}9%{opacity:1;transform:translateX(14px)}12%,100%{opacity:0;transform:translateX(14px)}}',
+
+    /* ---- steps to trade ---- */
+    '.nk-art .st-lbl{fill:#9b9b9b;font-size:12.5px}',
+    '.nk-art .st-lbl.win{fill:#fc72ff}',
+    '.nk-art .st-pill{fill:#191919;stroke:#3a2b40;stroke-width:1.2}',
+    '.nk-art .st-t{fill:#9b9b9b;font-size:10px}',
+    '@media (prefers-reduced-motion:no-preference){',
+    '  .nk-art.on .st-pill{animation:nkFill2 8s linear infinite}',
+    '  .nk-art.on .st-t{animation:nkFillT 8s linear infinite}',
+    '  .nk-art.on .s1{animation-delay:.5s}.nk-art.on .s2{animation-delay:1s}',
+    '  .nk-art.on .s3{animation-delay:1.5s}.nk-art.on .s4{animation-delay:2s}',
+    '}',
+    '@keyframes nkFill2{0%,3%{fill:#191919;stroke:#3a2b40}' +
+      '8%,80%{fill:rgba(255,55,199,.10);stroke:#ff37c7}88%,100%{fill:#191919;stroke:#3a2b40}}',
+    '@keyframes nkFillT{0%,3%{fill:#9b9b9b}8%,80%{fill:#ffe9fa}88%,100%{fill:#9b9b9b}}',
+
     /* the calculator sparkline */
     '.nk-spark{margin-top:1.3rem;border-top:1px solid var(--border);padding-top:1.1rem}',
     '.nk-spark svg{display:block;width:100%;height:auto;overflow:visible}',
@@ -680,6 +721,85 @@
     sec.appendChild(el(svg));
   }
 
+  /* ============================================================
+     6. The pipeline, for "Four steps from sentence to settled".
+     That section was four text cards describing a sequence, which is
+     the one thing a sequence should not have to be described as. The
+     highlight walks the four stages so the order is the picture.
+     ============================================================ */
+  var STAGES = [
+    ['Sentence', 'Buy $5,000 of NVDA', 'what you type'],
+    ['Intent',   'BUY · 5000 · NVDA',  'parsed, not guessed'],
+    ['Route',    'USDG → WETH → NVDA', 'best net output'],
+    ['Settled',  '0x7c4e…a41 ✓',       'one signature']
+  ];
+
+  function pipelineArt() {
+    var sec = document.getElementById('how');
+    if (!sec || $('#nk-art-pipe')) return;
+    var boxes = '', links = '';
+    STAGES.forEach(function (s, i) {
+      var x = 8 + i * 163, mid = x + 78;
+      boxes +=
+        '<rect class="pl-box p' + i + '" x="' + x + '" y="34" width="156" height="72" rx="14"/>' +
+        '<text class="pl-n" x="' + mid + '" y="26" text-anchor="middle">' + (i + 1) + ' · ' + s[0] + '</text>' +
+        '<text class="pl-v p' + i + '" x="' + mid + '" y="68" text-anchor="middle">' + s[1] + '</text>' +
+        '<text class="pl-s" x="' + mid + '" y="90" text-anchor="middle">' + s[2] + '</text>';
+      if (i < STAGES.length - 1) {
+        var a = x + 156, b = a + 7;
+        links += '<path class="pl-w" d="M' + a + ' 70 H' + b + '"/>' +
+                 '<circle class="pl-d d' + i + '" cx="' + a + '" cy="70" r="3.2"/>';
+      }
+    });
+    sec.appendChild(el(
+      '<div class="nk-art nk-rise" id="nk-art-pipe">' +
+      '<div class="cap">Sentence to settled</div>' +
+      '<svg viewBox="0 0 660 116" fill="none" xmlns="http://www.w3.org/2000/svg" ' +
+        'role="img" aria-label="Four stages: the sentence you type is parsed into an ' +
+        'intent, routed for best net output, and settled in one signature.">' +
+        links + boxes +
+      '</svg></div>'));
+  }
+
+  /* ============================================================
+     7. Steps to trade, for the comparison section.
+     The table already says all of this in ticks and dashes. Counting
+     the actual steps says it faster, and naming each one keeps it
+     checkable rather than a bare number in our favour.
+     ============================================================ */
+  var FLOWS = [
+    ['None', ['connect', 'sign'], 1],
+    ['DEX interface', ['connect', 'find token', 'set slippage', 'approve', 'sign'], 0],
+    ['Centralized app', ['sign up', 'verify ID', 'deposit', 'trade', 'withdraw'], 0]
+  ];
+
+  function stepsArt() {
+    var sec = document.getElementById('compare');
+    if (!sec || $('#nk-art-steps')) return;
+    var rows = '';
+    FLOWS.forEach(function (f, r) {
+      var y = 34 + r * 52;
+      rows += '<text class="st-lbl' + (f[2] ? ' win' : '') + '" x="8" y="' + (y + 17) + '">' + f[0] + '</text>';
+      f[1].forEach(function (label, i) {
+        var x = 156 + i * 100;
+        rows +=
+          '<rect class="st-pill s' + i + (f[2] ? ' win' : '') + '" x="' + x + '" y="' + y +
+            '" width="92" height="26" rx="13"/>' +
+          '<text class="st-t s' + i + '" x="' + (x + 46) + '" y="' + (y + 17) + '" text-anchor="middle">' +
+            label + '</text>';
+      });
+    });
+    sec.appendChild(el(
+      '<div class="nk-art nk-rise" id="nk-art-steps">' +
+      '<div class="cap">Steps between wanting the trade and having it</div>' +
+      '<svg viewBox="0 0 660 190" fill="none" xmlns="http://www.w3.org/2000/svg" ' +
+        'role="img" aria-label="None takes two steps, connect and sign. A DEX interface ' +
+        'and a centralized app typically take five each.">' + rows +
+      '<text class="foot" x="8" y="182">Typical flows, not any single named product — ' +
+      'the same caveat as the table above.</text>' +
+      '</svg></div>'));
+  }
+
   /* Animation runs only while the diagram is on screen — same rule the
      mascot loop follows. */
   var artIO = null;
@@ -703,7 +823,7 @@
       document.addEventListener('click', dispatch, true);
     }
     T(liveTerminal); T(feeCalculator); T(marketFilter); T(roadmapRail);
-    T(fanoutArt); T(guardArt); T(watchArt);
+    T(fanoutArt); T(guardArt); T(pipelineArt); T(stepsArt); T(watchArt);
     // the new cards join the page's own reveal pass
     $$('.nk-rise:not(.nk-in)').forEach(function (n) {
       if (/^nk-(calc|mkt|art-)/.test(n.id)) n.classList.add('nk-in');
