@@ -100,17 +100,27 @@ work = os.path.join(HERE, ".og-tmp")
 os.makedirs(work, exist_ok=True)
 page = os.path.join(work, "card.html")
 open(page, "w", encoding="utf-8").write(HTML)
-out = os.path.join(HERE, "og.png")
+shot = os.path.join(work, "shot.png")
 
 subprocess.run([BROWSER, "--headless", "--no-remote",
                 "--profile", os.path.join(work, "prof"),
-                "--window-size=1200,630", "--screenshot", out,
+                "--window-size=1200,630", "--screenshot", shot,
                 "file://" + page], capture_output=True)
+
+if not os.path.exists(shot):
+    shutil.rmtree(work, ignore_errors=True)
+    sys.exit("render produced nothing")
+
+# JPEG, not PNG. This is a big smooth gradient with some text on it — the
+# worst case for PNG's lossless run-length model and a good one for a DCT.
+# 340 KB becomes 114 KB, and at q86 there is no ringing on the type. It is
+# fetched by every crawler and chat client that ever sees the link.
+out = os.path.join(HERE, "og.jpg")
+subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "86",
+                shot, "--out", out], check=True, capture_output=True)
 shutil.rmtree(work, ignore_errors=True)
 
-if not os.path.exists(out):
-    sys.exit("render produced nothing")
 dims = subprocess.run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", out],
                       capture_output=True, text=True).stdout
-print("wrote og.png", os.path.getsize(out), "bytes")
+print("wrote og.jpg %.1f KB" % (os.path.getsize(out) / 1024))
 print(" ".join(dims.split()[-4:]))
