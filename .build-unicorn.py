@@ -44,11 +44,12 @@ def leg(pts, widths, fill, cap):
     return ('    <path d="%s" fill="%s"/>\n      %s'
             % (ribbon(pts, widths), fill, caps(pts, widths, cap)))
 
-def hoof(x, y, w=22, h=19, light="#e3b4f0"):
-    """Hooves flare toward the ground and sit slightly forward of the pastern."""
+def hoof(x, y, w=22, h=19, light=None):
+    """One flat shape, held off the cannon by a hair. Uniswap's drawing has no
+    outlines anywhere — where it needs an edge it leaves a gap instead, and the
+    gap is real transparency so whatever is behind shows through."""
     return ('<path d="M%.1f %.1f h%.1f l%.1f %.1f q0 5 -5 5 h-%.1f q-5 0 -5 -5 z" '
-            'fill="#2b1d42" stroke="%s" stroke-width="1.4"/>'
-            % (x - w / 2, y, w, 2.0, h, w - 4, light))
+            'fill="%s"/>' % (x - w / 2, y + 2.5, w, 2.0, h, w - 4, PINK))
 
 # ---------------------------------------------------------------- skeleton
 # near fore: elbow, knee, fetlock, pastern
@@ -62,7 +63,19 @@ HIND_W = [50, 24, 15, 13]
 FORE_O   = [(348, 246), (352, 314), (350, 374), (349, 396)]
 HIND_O   = [(224, 244), (196, 314), (214, 374), (216, 396)]
 
-LIMB, CAP, DARK = "url(#limbG)", "#6b4f95", "#4a3568"
+# The Uniswap unicorn is drawn in exactly one colour — #FF37C7, the same pink
+# this site already uses for --accent — with no gradient, no stroke and no
+# second tone anywhere. All of its detail is negative space: the eye, the jaw,
+# the gaps between mane strands are holes in the pink, not marks on top of it.
+# So the whole palette here collapses to one value, and the only tonal move
+# left is opacity on the off-side legs, without which the far pair merges into
+# the near pair and the horse loses its legs.
+PINK = "#ff37c7"
+# The far pair was held back with opacity, which on a near-black page turns
+# pink into a muddy maroon — the one thing the reference palette never does.
+# So they stay full-strength and a gap separates them instead, which is how
+# the reference separates everything else.
+LIMB, CAP, DARK, FAR = PINK, PINK, PINK, "1"
 
 # ---------------------------------------------------------------- glyphs
 POOL = []
@@ -111,38 +124,6 @@ coins = "\n".join(
 SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill="none" role="img" aria-label="Unicorn pawing the ground, asset coins scattering from the hoof">
   <defs>
 {glowkit.svg("aura", glowkit.area, 0.17, extra=' fx="68%" fy="30%"')}
-    <linearGradient id="hide" x1="0.25" y1="0" x2="0.6" y2="1">
-      <stop offset="0%" stop-color="#a07dc0"/>
-      <stop offset="40%" stop-color="#6b4f95"/>
-      <stop offset="100%" stop-color="#3a285c"/>
-    </linearGradient>
-    <linearGradient id="hideLit" x1="0.15" y1="0" x2="0.8" y2="1">
-      <stop offset="0%" stop-color="#ac8acb"/>
-      <stop offset="55%" stop-color="#70529b"/>
-      <stop offset="100%" stop-color="#412c66"/>
-    </linearGradient>
-    <linearGradient id="limbG" x1="0" y1="0" x2="0.3" y2="1">
-      <stop offset="0%" stop-color="#8462a8"/>
-      <stop offset="60%" stop-color="#553d7c"/>
-      <stop offset="100%" stop-color="#3c2a5a"/>
-    </linearGradient>
-    <linearGradient id="mane1" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#ffe9fa"/><stop offset="100%" stop-color="#ff6ad9"/>
-    </linearGradient>
-    <linearGradient id="mane2" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#ff7ae0"/><stop offset="100%" stop-color="#ff37c7"/>
-    </linearGradient>
-    <linearGradient id="mane3" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#e857ee"/><stop offset="100%" stop-color="#a24bff"/>
-    </linearGradient>
-    <linearGradient id="mane4" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#b757ff"/><stop offset="100%" stop-color="#6f39c9"/>
-    </linearGradient>
-    <linearGradient id="hornG" x1="0" y1="1" x2="0.7" y2="0">
-      <stop offset="0%" stop-color="#ff6ad9"/>
-      <stop offset="50%" stop-color="#ffd9f4"/>
-      <stop offset="100%" stop-color="#ffffff"/>
-    </linearGradient>
     <radialGradient id="coinFace" cx="38%" cy="32%" r="72%">
       <stop offset="0%" stop-color="#4a3552"/>
       <stop offset="68%" stop-color="#271d31"/>
@@ -157,6 +138,49 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
       <stop offset="70%" stop-color="#ffbdee" stop-opacity="0.30"/>
       <stop offset="100%" stop-color="#ffe9fa" stop-opacity="0"/>
     </linearGradient>
+    <!-- The whole horse is one colour, so anything that overlaps anything else
+         simply disappears — the mane sank into the neck the moment the
+         gradients came off. The reference solves this the same way every flat
+         mark does: it does not overlap, it leaves air. These are those gaps,
+         cut as black strokes through the finished silhouette, which is far
+         less brittle than trying to author forty non-overlapping outlines. -->
+    <mask id="bodyCut" maskUnits="userSpaceOnUse" x="50" y="-60" width="490" height="500">
+      <rect x="50" y="-60" width="490" height="500" fill="#fff"/>
+      <g stroke="#000" stroke-width="5.5" fill="none" stroke-linecap="round">
+        <!-- under each mane strand, so the strands read as strands -->
+        <path d="M431 62 C 403 62, 373 83, 349 113 C 329 139, 313 173, 303 207"/>
+        <path d="M421 87 C 399 101, 375 129, 357 161 C 343 187, 333 213, 329 235"/>
+        <path d="M401 131 C 381 151, 363 179, 351 207 C 343 229, 337 249, 335 265"/>
+        <path d="M375 189 C 359 209, 345 233, 337 257 C 332 273, 330 287, 330 297"/>
+        <!-- shoulder, girth and haunch: without these the near foreleg and the
+             barrel are one shape and the horse loses its legs -->
+        <path d="M320 170 C 330 196, 330 222, 320 246"/>
+        <path d="M154 246 C 192 265, 250 271, 312 259"/>
+        <path d="M198 238 C 190 258, 186 278, 188 296"/>
+        <!-- jaw -->
+        <path d="M429 86 C 437 111, 453 131, 475 143"/>
+        <!-- and between each near leg and the far one behind it -->
+        <path d="M338 252 C 344 292, 342 344, 341 400"/>
+        <path d="M206 250 C 186 290, 200 346, 202 400"/>
+      </g>
+    </mask>
+    <mask id="headCut" maskUnits="userSpaceOnUse" x="398" y="14" width="122" height="170">
+      <rect x="398" y="14" width="122" height="170" fill="#fff"/>
+      <!-- The eye is a hole, and it has to be a big one. In the reference the
+           eye is the largest piece of negative space on the head — it is what
+           makes the thing a character rather than a silhouette. -->
+      <ellipse id="eye" cx="447" cy="92" rx="10.5" ry="12" transform="rotate(-16 447 92)" fill="#000"/>
+      <circle cx="487" cy="152.5" r="4.2" fill="#000"/>
+      <path d="M419 52 L413 30 L431 47 Z" fill="#000"/>
+    </mask>
+    <!-- Two notches, each biting in from the trailing edge and stopping short
+         of the leading one. Cut all the way across — as the first pass did —
+         and the horn stops being a horn and becomes three floating shards. -->
+    <mask id="hornCut" maskUnits="userSpaceOnUse" x="420" y="-28" width="64" height="90">
+      <rect x="420" y="-28" width="64" height="90" fill="#fff"/>
+      <path d="M458 30 L446.5 34.5 L448.5 38.5 L459 34 Z" fill="#000"/>
+      <path d="M465 10 L455.5 14 L457.5 18 L466 14 Z" fill="#000"/>
+    </mask>
 {glyph_defs}
   </defs>
 
@@ -193,25 +217,29 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
     <path d="M232 22 l2.6 6.5 l6.5 2.6 l-6.5 2.6 l-2.6 6.5 l-2.6 -6.5 l-6.5 -2.6 l6.5 -2.6 z" opacity="0.4"/>
   </g>
 
-  <g id="nk-rig">
+  <g id="nk-rig" mask="url(#bodyCut)">
 
-    <!-- ================= tail, set on at the dock ================= -->
+    <!-- ================= tail =================
+         Three separate strands with air between them, each wide at the dock
+         and tapering to a point. The old tail was three near-identical shapes
+         stacked with a gradient each, which only reads as a tail because of
+         the shading; strip the shading and it is one blob. In the reference
+         every hair group is its own ribbon and the gaps are the drawing. -->
     <g>
-      <path d="M126 158 C 96 172, 70 212, 60 258 C 50 304, 56 350, 76 378
-               C 70 338, 76 294, 94 256 C 110 222, 124 194, 134 178 Z" fill="url(#mane4)"/>
-      <path d="M132 166 C 106 186, 84 224, 76 268 C 68 308, 72 348, 88 372
-               C 84 334, 90 296, 106 262 C 120 232, 134 208, 142 190 Z" fill="url(#mane3)"/>
-      <path d="M138 176 C 118 198, 102 232, 96 272 C 90 306, 94 338, 106 358
-               C 102 326, 108 294, 120 266 C 132 238, 142 218, 148 202 Z" fill="url(#mane2)"/>
-      <path d="M130 186 C 110 212, 96 246, 90 282" stroke="#ffe9fa" stroke-width="2" fill="none" opacity="0.32"/>
+      <path d="M128 158 C 98 174, 72 214, 62 260 C 52 306, 58 352, 78 380
+               C 74 340, 78 296, 96 258 C 112 224, 126 194, 136 178 Z" fill="{PINK}"/>
+      <path d="M142 172 C 118 194, 98 232, 92 274 C 86 314, 90 350, 104 372
+               C 102 334, 108 298, 122 266 C 134 238, 146 216, 152 198 Z" fill="{PINK}"/>
+      <path d="M156 190 C 138 214, 126 246, 122 282 C 118 312, 122 338, 132 356
+               C 130 324, 136 296, 146 270 C 156 246, 164 226, 168 210 Z" fill="{PINK}"/>
     </g>
 
     <!-- ================= off-side legs ================= -->
-    <g opacity="0.55">
+    <g opacity="{FAR}">
 {leg(HIND_O, HIND_W, DARK, DARK)}
-      {hoof(216, 391, 20, 17, "#6b4f95")}
+      {hoof(216, 391, 20, 17)}
 {leg(FORE_O, FORE_W, DARK, DARK)}
-      {hoof(349, 391, 20, 17, "#6b4f95")}
+      {hoof(349, 391, 20, 17)}
     </g>
 
     <!-- ================= near hind leg ================= -->
@@ -229,15 +257,11 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
              C 292 273, 262 276, 232 272
              C 200 268, 170 260, 150 244
              C 130 228, 122 202, 120 176 Z"
-          fill="url(#hide)"/>
-    <!-- muscle, drawn as light along the form rather than blobs laid over it -->
-    <path d="M138 168 C 158 140, 200 132, 246 140" stroke="#cfb0e4" stroke-width="3" fill="none" opacity="0.4" stroke-linecap="round"/>
-    <path d="M262 142 C 292 148, 314 158, 330 176" stroke="#cfb0e4" stroke-width="2.4" fill="none" opacity="0.3" stroke-linecap="round"/>
-    <path d="M156 246 C 190 264, 246 270, 306 262" stroke="#2a1a3f" stroke-width="11" fill="none" opacity="0.4" stroke-linecap="round"/>
-    <!-- shoulder blade and the stifle groove -->
-    <path d="M318 176 C 326 196, 326 220, 316 240" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.45"/>
-    <path d="M186 158 C 176 186, 174 218, 182 246" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.35"/>
-    <path d="M232 268 C 228 250, 228 228, 234 210" stroke="#3c2a5a" stroke-width="1.8" fill="none" opacity="0.3"/>
+          fill="{PINK}"/>
+    <!-- The shading, the muscle highlights and the two contour grooves that
+         used to live here are gone. Flat means flat: one tone, and the
+         silhouette carries the form. Where an edge is genuinely needed it is
+         cut as a gap in #bodyCut, not drawn as a line on top. -->
 
     <!-- ================= neck: crest above, throat hollow below ========== -->
     <path d="M312 146
@@ -248,41 +272,36 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
              C 372 145, 356 166, 344 188
              C 338 200, 334 210, 332 218
              C 330 194, 322 168, 312 146 Z"
-          fill="url(#hideLit)"/>
-    <path d="M322 142 C 344 110, 374 84, 404 70" stroke="#cfb0e4" stroke-width="2.4" fill="none" opacity="0.35"/>
+          fill="{PINK}"/>
 
-    <!-- ================= head: forehead, the dish of the nasal bone, muzzle -->
-    <path d="M424 56
-             C 444 52, 460 62, 468 80
-             C 476 100, 486 124, 494 142
-             C 499 154, 495 164, 484 166
-             C 472 168, 459 160, 451 148
-             C 438 130, 426 110, 420 92
-             C 415 78, 416 62, 424 56 Z"
-          fill="url(#hideLit)"/>
-    <!-- cheekbone, then the jaw beneath it -->
-    <path d="M428 86 C 436 110, 452 130, 474 142" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.45"/>
-    <path d="M472 138 C 486 138, 496 146, 496 155 C 496 164, 486 168, 475 166
-             C 466 164, 460 157, 462 149 C 464 142, 467 139, 472 138 Z" fill="#4c3670"/>
-    <circle cx="486" cy="152" r="3.4" fill="#180f22"/>
-    <path d="M472 163 C 480 167, 490 166, 495 161" stroke="#180f22" stroke-width="1.7" fill="none" opacity="0.7"/>
-    <!-- ears -->
-    <path d="M418 58 L412 28 L434 50 Z" fill="#70529b"/>
-    <path d="M417 54 L414 35 L427 48 Z" fill="#3a285c"/>
-    <path d="M438 54 L440 28 L454 50 Z" fill="#5a3f85" opacity="0.85"/>
-    <path d="M434 76 C 442 72, 452 73, 458 79" stroke="#3a285c" stroke-width="2.4" fill="none" opacity="0.7" stroke-linecap="round"/>
-    <g id="eye">
-      <ellipse cx="446" cy="90" rx="7.5" ry="9" fill="#150d1d"/>
-      <circle cx="449" cy="86" r="2.7" fill="#ffe9fa"/>
-      <circle cx="443" cy="94" r="1.4" fill="#ff9ae8" opacity="0.8"/>
+    <!-- ================= head =================
+         Everything that used to be a dark mark here is a hole now: eye,
+         nostril, inner ear. A mask rather than an even-odd subpath, because
+         the eye still has to blink and a mask lets that one shape keep its own
+         transform. The skull has to be inside the masked group with the rest —
+         left outside it, the eye punched a hole in nothing. -->
+    <g mask="url(#headCut)">
+      <path d="M424 56
+               C 444 52, 460 62, 468 80
+               C 476 100, 486 124, 494 142
+               C 499 154, 495 164, 484 166
+               C 472 168, 459 160, 451 148
+               C 438 130, 426 110, 420 92
+               C 415 78, 416 62, 424 56 Z"
+            fill="{PINK}"/>
+      <path d="M472 138 C 486 138, 496 146, 496 155 C 496 164, 486 168, 475 166
+               C 466 164, 460 157, 462 149 C 464 142, 467 139, 472 138 Z" fill="{PINK}"/>
+      <path d="M418 58 L410 24 L436 50 Z" fill="{PINK}"/>
+      <path d="M439 54 L442 26 L456 50 Z" fill="{PINK}"/>
     </g>
+    <!-- the glint, sitting inside the eye hole -->
+    <circle cx="450" cy="87" r="3" fill="{PINK}"/>
 
-    <!-- ================= horn ================= -->
-    <path d="M430 52 L446 48 L474 -18 Z" fill="url(#hornG)"/>
-    <g stroke="#3a285c" stroke-width="1.6" opacity="0.38" stroke-linecap="round">
-      <path d="M435 40 L449 36"/><path d="M441 24 L453 21"/>
-      <path d="M447 8 L457 6"/><path d="M453 -6 L461 -8"/>
-    </g>
+    <!-- ================= horn =================
+         Longer and thinner than a real horn, which is how the reference draws
+         it, and the spiral is three notches cut out of the pink rather than
+         four lines ruled across it. -->
+    <path d="M426 56 L452 48 L477 -22 Z" fill="{PINK}" mask="url(#hornCut)"/>
     <!-- The horn tip is the one true point source in the drawing, so it gets
          what a point source gives you: a tight core over a long halo, plus the
          two streaks the eye reads as "too bright to look at". Screen-blended,
@@ -298,25 +317,25 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
       <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.9"/>
     </g>
 
-    <!-- ================= mane, laid along the crest ================= -->
+    <!-- ================= mane =================
+         Four calligraphic strands off the crest, each thick at the root and
+         run out to a point, with real gaps between them. This is the single
+         most recognisable thing about the reference mascot — its mane is a
+         set of brush strokes, not a shaded mass — and it is the reason the
+         logo still reads as a unicorn at 20px. -->
     <g>
-      <path d="M430 60 C 404 56, 374 74, 350 102 C 324 132, 306 170, 296 208
-               C 308 198, 318 190, 328 184 C 316 214, 308 242, 304 266
-               C 320 238, 336 212, 350 196 C 344 220, 340 238, 338 254
-               C 354 222, 376 184, 392 150 C 408 116, 432 82, 430 60 Z" fill="url(#mane4)"/>
-      <path d="M428 62 C 404 60, 377 78, 355 105 C 331 134, 315 169, 306 203
-               C 317 194, 326 187, 335 182 C 324 209, 316 236, 313 256
-               C 327 231, 341 208, 353 194 C 349 216, 346 232, 344 244
-               C 358 216, 378 181, 392 152 C 407 120, 428 84, 428 62 Z" fill="url(#mane3)"/>
-      <path d="M426 64 C 404 64, 380 82, 360 108 C 338 136, 324 168, 316 199
-               C 326 191, 334 185, 342 181 C 332 205, 325 227, 322 247
-               C 334 224, 346 204, 357 192 C 354 212, 351 226, 350 237
-               C 362 212, 379 180, 393 154 C 406 126, 426 84, 426 64 Z" fill="url(#mane2)"/>
-      <path d="M424 66 C 404 68, 383 86, 365 111 C 345 138, 332 167, 325 195
-               C 334 188, 342 183, 349 180 C 340 201, 334 221, 332 239
-               C 342 218, 352 200, 361 190 C 359 208, 357 220, 356 230
-               C 366 208, 380 179, 394 156 C 406 132, 424 84, 424 66 Z" fill="url(#mane1)" opacity="0.9"/>
-      <path d="M416 80 C 396 100, 374 132, 360 166" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.38"/>
+      <path d="M430 60 C 402 58, 372 78, 348 108 C 326 136, 310 170, 300 204
+               C 314 186, 330 168, 346 156 C 362 128, 388 92, 412 72
+               C 421 65, 427 61, 430 60 Z" fill="{PINK}"/>
+      <path d="M420 84 C 398 96, 374 124, 356 156 C 340 184, 330 210, 326 232
+               C 336 212, 350 190, 364 174 C 372 148, 390 116, 406 96
+               C 411 90, 416 86, 420 84 Z" fill="{PINK}"/>
+      <path d="M400 128 C 380 146, 362 174, 350 202 C 340 226, 334 246, 332 262
+               C 340 244, 352 224, 364 210 C 370 188, 382 162, 394 142
+               C 397 136, 399 130, 400 128 Z" fill="{PINK}"/>
+      <path d="M374 186 C 358 204, 344 228, 336 252 C 330 270, 328 284, 328 294
+               C 334 278, 342 262, 350 250 C 355 232, 364 210, 372 194
+               C 373 191, 374 187, 374 186 Z" fill="{PINK}"/>
     </g>
 
     <!-- ================= near fore leg, planted ================= -->
@@ -325,11 +344,10 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
 
     <!-- ================= pawing fore leg — the page rebuilds this shape ==== -->
     <g id="nk-leg">
-      <path class="nk-leg-shape" d="{ribbon(FORE, FORE_W)}" fill="url(#limbG)"/>
+      <path class="nk-leg-shape" d="{ribbon(FORE, FORE_W)}" fill="{PINK}"/>
       <g class="nk-leg-caps"></g>
       <g id="nk-hoof" transform="translate(325 391)">
-        <path d="M-11 0 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.5"/>
-        <path d="M-11 0 h22 l1 5 h-24 z" fill="#fc72ff" opacity="0.45"/>
+        <path d="M-11 2.5 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 z" fill="{PINK}"/>
       </g>
     </g>
   </g>

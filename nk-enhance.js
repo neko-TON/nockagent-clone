@@ -127,7 +127,10 @@
       for (var ci = 0; ci < LEG_W.length; ci++) {
         var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         c.setAttribute('r', LEG_W[ci] / 2);
-        c.setAttribute('fill', '#6b4f95');
+        // The mascot is one flat colour now, so the caps have to be that same
+        // colour — they exist to round the limb's silhouette, not to be seen.
+        // Left on the old violet they read as three grey beads on a pink leg.
+        c.setAttribute('fill', '#ff37c7');
         capG.appendChild(c);
         caps.push(c);
       }

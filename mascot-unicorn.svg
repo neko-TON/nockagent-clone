@@ -14,38 +14,6 @@
       <stop offset="90.9%" stop-color="#8b4df7" stop-opacity="0.0009"/>
       <stop offset="100.0%" stop-color="#7850ff" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="hide" x1="0.25" y1="0" x2="0.6" y2="1">
-      <stop offset="0%" stop-color="#a07dc0"/>
-      <stop offset="40%" stop-color="#6b4f95"/>
-      <stop offset="100%" stop-color="#3a285c"/>
-    </linearGradient>
-    <linearGradient id="hideLit" x1="0.15" y1="0" x2="0.8" y2="1">
-      <stop offset="0%" stop-color="#ac8acb"/>
-      <stop offset="55%" stop-color="#70529b"/>
-      <stop offset="100%" stop-color="#412c66"/>
-    </linearGradient>
-    <linearGradient id="limbG" x1="0" y1="0" x2="0.3" y2="1">
-      <stop offset="0%" stop-color="#8462a8"/>
-      <stop offset="60%" stop-color="#553d7c"/>
-      <stop offset="100%" stop-color="#3c2a5a"/>
-    </linearGradient>
-    <linearGradient id="mane1" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#ffe9fa"/><stop offset="100%" stop-color="#ff6ad9"/>
-    </linearGradient>
-    <linearGradient id="mane2" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#ff7ae0"/><stop offset="100%" stop-color="#ff37c7"/>
-    </linearGradient>
-    <linearGradient id="mane3" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#e857ee"/><stop offset="100%" stop-color="#a24bff"/>
-    </linearGradient>
-    <linearGradient id="mane4" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="#b757ff"/><stop offset="100%" stop-color="#6f39c9"/>
-    </linearGradient>
-    <linearGradient id="hornG" x1="0" y1="1" x2="0.7" y2="0">
-      <stop offset="0%" stop-color="#ff6ad9"/>
-      <stop offset="50%" stop-color="#ffd9f4"/>
-      <stop offset="100%" stop-color="#ffffff"/>
-    </linearGradient>
     <radialGradient id="coinFace" cx="38%" cy="32%" r="72%">
       <stop offset="0%" stop-color="#4a3552"/>
       <stop offset="68%" stop-color="#271d31"/>
@@ -86,6 +54,49 @@
       <stop offset="70%" stop-color="#ffbdee" stop-opacity="0.30"/>
       <stop offset="100%" stop-color="#ffe9fa" stop-opacity="0"/>
     </linearGradient>
+    <!-- The whole horse is one colour, so anything that overlaps anything else
+         simply disappears — the mane sank into the neck the moment the
+         gradients came off. The reference solves this the same way every flat
+         mark does: it does not overlap, it leaves air. These are those gaps,
+         cut as black strokes through the finished silhouette, which is far
+         less brittle than trying to author forty non-overlapping outlines. -->
+    <mask id="bodyCut" maskUnits="userSpaceOnUse" x="50" y="-60" width="490" height="500">
+      <rect x="50" y="-60" width="490" height="500" fill="#fff"/>
+      <g stroke="#000" stroke-width="5.5" fill="none" stroke-linecap="round">
+        <!-- under each mane strand, so the strands read as strands -->
+        <path d="M431 62 C 403 62, 373 83, 349 113 C 329 139, 313 173, 303 207"/>
+        <path d="M421 87 C 399 101, 375 129, 357 161 C 343 187, 333 213, 329 235"/>
+        <path d="M401 131 C 381 151, 363 179, 351 207 C 343 229, 337 249, 335 265"/>
+        <path d="M375 189 C 359 209, 345 233, 337 257 C 332 273, 330 287, 330 297"/>
+        <!-- shoulder, girth and haunch: without these the near foreleg and the
+             barrel are one shape and the horse loses its legs -->
+        <path d="M320 170 C 330 196, 330 222, 320 246"/>
+        <path d="M154 246 C 192 265, 250 271, 312 259"/>
+        <path d="M198 238 C 190 258, 186 278, 188 296"/>
+        <!-- jaw -->
+        <path d="M429 86 C 437 111, 453 131, 475 143"/>
+        <!-- and between each near leg and the far one behind it -->
+        <path d="M338 252 C 344 292, 342 344, 341 400"/>
+        <path d="M206 250 C 186 290, 200 346, 202 400"/>
+      </g>
+    </mask>
+    <mask id="headCut" maskUnits="userSpaceOnUse" x="398" y="14" width="122" height="170">
+      <rect x="398" y="14" width="122" height="170" fill="#fff"/>
+      <!-- The eye is a hole, and it has to be a big one. In the reference the
+           eye is the largest piece of negative space on the head — it is what
+           makes the thing a character rather than a silhouette. -->
+      <ellipse id="eye" cx="447" cy="92" rx="10.5" ry="12" transform="rotate(-16 447 92)" fill="#000"/>
+      <circle cx="487" cy="152.5" r="4.2" fill="#000"/>
+      <path d="M419 52 L413 30 L431 47 Z" fill="#000"/>
+    </mask>
+    <!-- Two notches, each biting in from the trailing edge and stopping short
+         of the leading one. Cut all the way across — as the first pass did —
+         and the horn stops being a horn and becomes three floating shards. -->
+    <mask id="hornCut" maskUnits="userSpaceOnUse" x="420" y="-28" width="64" height="90">
+      <rect x="420" y="-28" width="64" height="90" fill="#fff"/>
+      <path d="M458 30 L446.5 34.5 L448.5 38.5 L459 34 Z" fill="#000"/>
+      <path d="M465 10 L455.5 14 L457.5 18 L466 14 Z" fill="#000"/>
+    </mask>
     <g id="gl-AAPL"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></g>
     <g id="gl-AMD"><path d="M18.324 9.137l1.559 1.56h2.556v2.557L24 14.814V9.137zM2 9.52l-2 4.96h1.309l.37-.982H3.9l.408.982h1.338L3.432 9.52zm4.209 0v4.955h1.238v-3.092l1.338 1.562h.188l1.338-1.556v3.091h1.238V9.52H10.47l-1.592 1.845L7.287 9.52zm6.283 0v4.96h2.057c1.979 0 2.88-1.046 2.88-2.472 0-1.36-.937-2.488-2.747-2.488zm1.237.91h.792c1.17 0 1.63.711 1.63 1.57 0 .728-.372 1.572-1.616 1.572h-.806zm-10.985.273l.791 1.932H2.008zm17.137.307l-1.604 1.603v2.25h2.246l1.604-1.607h-2.246z"/></g>
     <g id="gl-AMZN"><path d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726a17.617 17.617 0 01-10.951-.577 17.88 17.88 0 01-5.43-3.35c-.1-.074-.151-.15-.151-.22 0-.047.021-.09.051-.13zm6.565-6.218c0-1.005.247-1.863.743-2.577.495-.71 1.17-1.25 2.04-1.615.796-.335 1.756-.575 2.912-.72.39-.046 1.033-.103 1.92-.174v-.37c0-.93-.105-1.558-.3-1.875-.302-.43-.78-.65-1.44-.65h-.182c-.48.046-.896.196-1.246.46-.35.27-.575.63-.675 1.096-.06.3-.206.465-.435.51l-2.52-.315c-.248-.06-.372-.18-.372-.39 0-.046.007-.09.022-.15.247-1.29.855-2.25 1.82-2.88.976-.616 2.1-.975 3.39-1.05h.54c1.65 0 2.957.434 3.888 1.29.135.15.27.3.405.48.12.165.224.314.283.45.075.134.15.33.195.57.06.254.105.42.135.51.03.104.062.3.076.615.01.313.02.493.02.553v5.28c0 .376.06.72.165 1.036.105.313.21.54.315.674l.51.674c.09.136.136.256.136.36 0 .12-.06.226-.18.314-1.2 1.05-1.86 1.62-1.963 1.71-.165.135-.375.15-.63.045a6.062 6.062 0 01-.526-.496l-.31-.347a9.391 9.391 0 01-.317-.42l-.3-.435c-.81.886-1.603 1.44-2.4 1.665-.494.15-1.093.227-1.83.227-1.11 0-2.04-.343-2.76-1.034-.72-.69-1.08-1.665-1.08-2.94l-.05-.076zm3.753-.438c0 .566.14 1.02.425 1.364.285.34.675.512 1.155.512.045 0 .106-.007.195-.02.09-.016.134-.023.166-.023.614-.16 1.08-.553 1.424-1.178.165-.28.285-.58.36-.91.09-.32.12-.59.135-.8.015-.195.015-.54.015-1.005v-.54c-.84 0-1.484.06-1.92.18-1.275.36-1.92 1.17-1.92 2.43l-.035-.02zm9.162 7.027c.03-.06.075-.11.132-.17.362-.243.714-.41 1.05-.5a8.094 8.094 0 011.612-.24c.14-.012.28 0 .41.03.65.06 1.05.168 1.172.33.063.09.099.228.099.39v.15c0 .51-.149 1.11-.424 1.8-.278.69-.664 1.248-1.156 1.68-.073.06-.14.09-.197.09-.03 0-.06 0-.09-.012-.09-.044-.107-.12-.064-.24.54-1.26.806-2.143.806-2.64 0-.15-.03-.27-.087-.344-.145-.166-.55-.257-1.224-.257-.243 0-.533.016-.87.046-.363.045-.7.09-1 .135-.09 0-.148-.014-.18-.044-.03-.03-.036-.047-.02-.077 0-.017.006-.03.02-.063v-.06z"/></g>
@@ -132,42 +143,46 @@
     <path d="M232 22 l2.6 6.5 l6.5 2.6 l-6.5 2.6 l-2.6 6.5 l-2.6 -6.5 l-6.5 -2.6 l6.5 -2.6 z" opacity="0.4"/>
   </g>
 
-  <g id="nk-rig">
+  <g id="nk-rig" mask="url(#bodyCut)">
 
-    <!-- ================= tail, set on at the dock ================= -->
+    <!-- ================= tail =================
+         Three separate strands with air between them, each wide at the dock
+         and tapering to a point. The old tail was three near-identical shapes
+         stacked with a gradient each, which only reads as a tail because of
+         the shading; strip the shading and it is one blob. In the reference
+         every hair group is its own ribbon and the gaps are the drawing. -->
     <g>
-      <path d="M126 158 C 96 172, 70 212, 60 258 C 50 304, 56 350, 76 378
-               C 70 338, 76 294, 94 256 C 110 222, 124 194, 134 178 Z" fill="url(#mane4)"/>
-      <path d="M132 166 C 106 186, 84 224, 76 268 C 68 308, 72 348, 88 372
-               C 84 334, 90 296, 106 262 C 120 232, 134 208, 142 190 Z" fill="url(#mane3)"/>
-      <path d="M138 176 C 118 198, 102 232, 96 272 C 90 306, 94 338, 106 358
-               C 102 326, 108 294, 120 266 C 132 238, 142 218, 148 202 Z" fill="url(#mane2)"/>
-      <path d="M130 186 C 110 212, 96 246, 90 282" stroke="#ffe9fa" stroke-width="2" fill="none" opacity="0.32"/>
+      <path d="M128 158 C 98 174, 72 214, 62 260 C 52 306, 58 352, 78 380
+               C 74 340, 78 296, 96 258 C 112 224, 126 194, 136 178 Z" fill="#ff37c7"/>
+      <path d="M142 172 C 118 194, 98 232, 92 274 C 86 314, 90 350, 104 372
+               C 102 334, 108 298, 122 266 C 134 238, 146 216, 152 198 Z" fill="#ff37c7"/>
+      <path d="M156 190 C 138 214, 126 246, 122 282 C 118 312, 122 338, 132 356
+               C 130 324, 136 296, 146 270 C 156 246, 164 226, 168 210 Z" fill="#ff37c7"/>
     </g>
 
     <!-- ================= off-side legs ================= -->
-    <g opacity="0.55">
-    <path d="M200.8 234.7 L184.0 313.1 L206.7 375.8 L209.5 396.6 L222.5 395.4 L221.3 372.2 L208.0 314.9 L247.2 253.3 Z" fill="#4a3568"/>
-      <circle cx="224.0" cy="244.0" r="25.0" fill="#4a3568"/>
-      <circle cx="196.0" cy="314.0" r="12.0" fill="#4a3568"/>
-      <circle cx="214.0" cy="374.0" r="7.5" fill="#4a3568"/>
-      <circle cx="216.0" cy="396.0" r="6.5" fill="#4a3568"/>
-      <path d="M206.0 391.0 h20.0 l2.0 17.0 q0 5 -5 5 h-16.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#6b4f95" stroke-width="1.4"/>
-    <path d="M330.0 247.1 L341.5 314.2 L342.5 373.7 L342.5 395.7 L355.5 396.3 L357.5 374.3 L362.5 313.8 L366.0 244.9 Z" fill="#4a3568"/>
-      <circle cx="348.0" cy="246.0" r="18.0" fill="#4a3568"/>
-      <circle cx="352.0" cy="314.0" r="10.5" fill="#4a3568"/>
-      <circle cx="350.0" cy="374.0" r="7.5" fill="#4a3568"/>
-      <circle cx="349.0" cy="396.0" r="6.5" fill="#4a3568"/>
-      <path d="M339.0 391.0 h20.0 l2.0 17.0 q0 5 -5 5 h-16.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#6b4f95" stroke-width="1.4"/>
+    <g opacity="1">
+    <path d="M200.8 234.7 L184.0 313.1 L206.7 375.8 L209.5 396.6 L222.5 395.4 L221.3 372.2 L208.0 314.9 L247.2 253.3 Z" fill="#ff37c7"/>
+      <circle cx="224.0" cy="244.0" r="25.0" fill="#ff37c7"/>
+      <circle cx="196.0" cy="314.0" r="12.0" fill="#ff37c7"/>
+      <circle cx="214.0" cy="374.0" r="7.5" fill="#ff37c7"/>
+      <circle cx="216.0" cy="396.0" r="6.5" fill="#ff37c7"/>
+      <path d="M206.0 393.5 h20.0 l2.0 17.0 q0 5 -5 5 h-16.0 q-5 0 -5 -5 z" fill="#ff37c7"/>
+    <path d="M330.0 247.1 L341.5 314.2 L342.5 373.7 L342.5 395.7 L355.5 396.3 L357.5 374.3 L362.5 313.8 L366.0 244.9 Z" fill="#ff37c7"/>
+      <circle cx="348.0" cy="246.0" r="18.0" fill="#ff37c7"/>
+      <circle cx="352.0" cy="314.0" r="10.5" fill="#ff37c7"/>
+      <circle cx="350.0" cy="374.0" r="7.5" fill="#ff37c7"/>
+      <circle cx="349.0" cy="396.0" r="6.5" fill="#ff37c7"/>
+      <path d="M339.0 393.5 h20.0 l2.0 17.0 q0 5 -5 5 h-16.0 q-5 0 -5 -5 z" fill="#ff37c7"/>
     </g>
 
     <!-- ================= near hind leg ================= -->
-    <path d="M167.4 229.3 L144.1 310.8 L168.7 375.9 L171.5 396.6 L184.5 395.4 L183.3 372.1 L167.9 313.2 L212.6 250.7 Z" fill="url(#limbG)"/>
-      <circle cx="190.0" cy="240.0" r="25.0" fill="#6b4f95"/>
-      <circle cx="156.0" cy="312.0" r="12.0" fill="#6b4f95"/>
-      <circle cx="176.0" cy="374.0" r="7.5" fill="#6b4f95"/>
-      <circle cx="178.0" cy="396.0" r="6.5" fill="#6b4f95"/>
-      <path d="M167.0 391.0 h22.0 l2.0 19.0 q0 5 -5 5 h-18.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.4"/>
+    <path d="M167.4 229.3 L144.1 310.8 L168.7 375.9 L171.5 396.6 L184.5 395.4 L183.3 372.1 L167.9 313.2 L212.6 250.7 Z" fill="#ff37c7"/>
+      <circle cx="190.0" cy="240.0" r="25.0" fill="#ff37c7"/>
+      <circle cx="156.0" cy="312.0" r="12.0" fill="#ff37c7"/>
+      <circle cx="176.0" cy="374.0" r="7.5" fill="#ff37c7"/>
+      <circle cx="178.0" cy="396.0" r="6.5" fill="#ff37c7"/>
+      <path d="M167.0 393.5 h22.0 l2.0 19.0 q0 5 -5 5 h-18.0 q-5 0 -5 -5 z" fill="#ff37c7"/>
 
     <!-- ================= barrel: shoulder, girth, flank and croup all in one
          outline, so the masses belong to the body instead of sitting on it -->
@@ -180,15 +195,11 @@
              C 292 273, 262 276, 232 272
              C 200 268, 170 260, 150 244
              C 130 228, 122 202, 120 176 Z"
-          fill="url(#hide)"/>
-    <!-- muscle, drawn as light along the form rather than blobs laid over it -->
-    <path d="M138 168 C 158 140, 200 132, 246 140" stroke="#cfb0e4" stroke-width="3" fill="none" opacity="0.4" stroke-linecap="round"/>
-    <path d="M262 142 C 292 148, 314 158, 330 176" stroke="#cfb0e4" stroke-width="2.4" fill="none" opacity="0.3" stroke-linecap="round"/>
-    <path d="M156 246 C 190 264, 246 270, 306 262" stroke="#2a1a3f" stroke-width="11" fill="none" opacity="0.4" stroke-linecap="round"/>
-    <!-- shoulder blade and the stifle groove -->
-    <path d="M318 176 C 326 196, 326 220, 316 240" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.45"/>
-    <path d="M186 158 C 176 186, 174 218, 182 246" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.35"/>
-    <path d="M232 268 C 228 250, 228 228, 234 210" stroke="#3c2a5a" stroke-width="1.8" fill="none" opacity="0.3"/>
+          fill="#ff37c7"/>
+    <!-- The shading, the muscle highlights and the two contour grooves that
+         used to live here are gone. Flat means flat: one tone, and the
+         silhouette carries the form. Where an edge is genuinely needed it is
+         cut as a gap in #bodyCut, not drawn as a line on top. -->
 
     <!-- ================= neck: crest above, throat hollow below ========== -->
     <path d="M312 146
@@ -199,41 +210,36 @@
              C 372 145, 356 166, 344 188
              C 338 200, 334 210, 332 218
              C 330 194, 322 168, 312 146 Z"
-          fill="url(#hideLit)"/>
-    <path d="M322 142 C 344 110, 374 84, 404 70" stroke="#cfb0e4" stroke-width="2.4" fill="none" opacity="0.35"/>
+          fill="#ff37c7"/>
 
-    <!-- ================= head: forehead, the dish of the nasal bone, muzzle -->
-    <path d="M424 56
-             C 444 52, 460 62, 468 80
-             C 476 100, 486 124, 494 142
-             C 499 154, 495 164, 484 166
-             C 472 168, 459 160, 451 148
-             C 438 130, 426 110, 420 92
-             C 415 78, 416 62, 424 56 Z"
-          fill="url(#hideLit)"/>
-    <!-- cheekbone, then the jaw beneath it -->
-    <path d="M428 86 C 436 110, 452 130, 474 142" stroke="#3c2a5a" stroke-width="2.4" fill="none" opacity="0.45"/>
-    <path d="M472 138 C 486 138, 496 146, 496 155 C 496 164, 486 168, 475 166
-             C 466 164, 460 157, 462 149 C 464 142, 467 139, 472 138 Z" fill="#4c3670"/>
-    <circle cx="486" cy="152" r="3.4" fill="#180f22"/>
-    <path d="M472 163 C 480 167, 490 166, 495 161" stroke="#180f22" stroke-width="1.7" fill="none" opacity="0.7"/>
-    <!-- ears -->
-    <path d="M418 58 L412 28 L434 50 Z" fill="#70529b"/>
-    <path d="M417 54 L414 35 L427 48 Z" fill="#3a285c"/>
-    <path d="M438 54 L440 28 L454 50 Z" fill="#5a3f85" opacity="0.85"/>
-    <path d="M434 76 C 442 72, 452 73, 458 79" stroke="#3a285c" stroke-width="2.4" fill="none" opacity="0.7" stroke-linecap="round"/>
-    <g id="eye">
-      <ellipse cx="446" cy="90" rx="7.5" ry="9" fill="#150d1d"/>
-      <circle cx="449" cy="86" r="2.7" fill="#ffe9fa"/>
-      <circle cx="443" cy="94" r="1.4" fill="#ff9ae8" opacity="0.8"/>
+    <!-- ================= head =================
+         Everything that used to be a dark mark here is a hole now: eye,
+         nostril, inner ear. A mask rather than an even-odd subpath, because
+         the eye still has to blink and a mask lets that one shape keep its own
+         transform. The skull has to be inside the masked group with the rest —
+         left outside it, the eye punched a hole in nothing. -->
+    <g mask="url(#headCut)">
+      <path d="M424 56
+               C 444 52, 460 62, 468 80
+               C 476 100, 486 124, 494 142
+               C 499 154, 495 164, 484 166
+               C 472 168, 459 160, 451 148
+               C 438 130, 426 110, 420 92
+               C 415 78, 416 62, 424 56 Z"
+            fill="#ff37c7"/>
+      <path d="M472 138 C 486 138, 496 146, 496 155 C 496 164, 486 168, 475 166
+               C 466 164, 460 157, 462 149 C 464 142, 467 139, 472 138 Z" fill="#ff37c7"/>
+      <path d="M418 58 L410 24 L436 50 Z" fill="#ff37c7"/>
+      <path d="M439 54 L442 26 L456 50 Z" fill="#ff37c7"/>
     </g>
+    <!-- the glint, sitting inside the eye hole -->
+    <circle cx="450" cy="87" r="3" fill="#ff37c7"/>
 
-    <!-- ================= horn ================= -->
-    <path d="M430 52 L446 48 L474 -18 Z" fill="url(#hornG)"/>
-    <g stroke="#3a285c" stroke-width="1.6" opacity="0.38" stroke-linecap="round">
-      <path d="M435 40 L449 36"/><path d="M441 24 L453 21"/>
-      <path d="M447 8 L457 6"/><path d="M453 -6 L461 -8"/>
-    </g>
+    <!-- ================= horn =================
+         Longer and thinner than a real horn, which is how the reference draws
+         it, and the spiral is three notches cut out of the pink rather than
+         four lines ruled across it. -->
+    <path d="M426 56 L452 48 L477 -22 Z" fill="#ff37c7" mask="url(#hornCut)"/>
     <!-- The horn tip is the one true point source in the drawing, so it gets
          what a point source gives you: a tight core over a long halo, plus the
          two streaks the eye reads as "too bright to look at". Screen-blended,
@@ -249,42 +255,41 @@
       <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.9"/>
     </g>
 
-    <!-- ================= mane, laid along the crest ================= -->
+    <!-- ================= mane =================
+         Four calligraphic strands off the crest, each thick at the root and
+         run out to a point, with real gaps between them. This is the single
+         most recognisable thing about the reference mascot — its mane is a
+         set of brush strokes, not a shaded mass — and it is the reason the
+         logo still reads as a unicorn at 20px. -->
     <g>
-      <path d="M430 60 C 404 56, 374 74, 350 102 C 324 132, 306 170, 296 208
-               C 308 198, 318 190, 328 184 C 316 214, 308 242, 304 266
-               C 320 238, 336 212, 350 196 C 344 220, 340 238, 338 254
-               C 354 222, 376 184, 392 150 C 408 116, 432 82, 430 60 Z" fill="url(#mane4)"/>
-      <path d="M428 62 C 404 60, 377 78, 355 105 C 331 134, 315 169, 306 203
-               C 317 194, 326 187, 335 182 C 324 209, 316 236, 313 256
-               C 327 231, 341 208, 353 194 C 349 216, 346 232, 344 244
-               C 358 216, 378 181, 392 152 C 407 120, 428 84, 428 62 Z" fill="url(#mane3)"/>
-      <path d="M426 64 C 404 64, 380 82, 360 108 C 338 136, 324 168, 316 199
-               C 326 191, 334 185, 342 181 C 332 205, 325 227, 322 247
-               C 334 224, 346 204, 357 192 C 354 212, 351 226, 350 237
-               C 362 212, 379 180, 393 154 C 406 126, 426 84, 426 64 Z" fill="url(#mane2)"/>
-      <path d="M424 66 C 404 68, 383 86, 365 111 C 345 138, 332 167, 325 195
-               C 334 188, 342 183, 349 180 C 340 201, 334 221, 332 239
-               C 342 218, 352 200, 361 190 C 359 208, 357 220, 356 230
-               C 366 208, 380 179, 394 156 C 406 132, 424 84, 424 66 Z" fill="url(#mane1)" opacity="0.9"/>
-      <path d="M416 80 C 396 100, 374 132, 360 166" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.38"/>
+      <path d="M430 60 C 402 58, 372 78, 348 108 C 326 136, 310 170, 300 204
+               C 314 186, 330 168, 346 156 C 362 128, 388 92, 412 72
+               C 421 65, 427 61, 430 60 Z" fill="#ff37c7"/>
+      <path d="M420 84 C 398 96, 374 124, 356 156 C 340 184, 330 210, 326 232
+               C 336 212, 350 190, 364 174 C 372 148, 390 116, 406 96
+               C 411 90, 416 86, 420 84 Z" fill="#ff37c7"/>
+      <path d="M400 128 C 380 146, 362 174, 350 202 C 340 226, 334 246, 332 262
+               C 340 244, 352 224, 364 210 C 370 188, 382 162, 394 142
+               C 397 136, 399 130, 400 128 Z" fill="#ff37c7"/>
+      <path d="M374 186 C 358 204, 344 228, 336 252 C 330 270, 328 284, 328 294
+               C 334 278, 342 262, 350 250 C 355 232, 364 210, 372 194
+               C 373 191, 374 187, 374 186 Z" fill="#ff37c7"/>
     </g>
 
     <!-- ================= near fore leg, planted ================= -->
-    <path d="M304.1 245.6 L317.5 312.3 L318.5 371.7 L318.5 395.7 L331.5 396.3 L333.5 372.3 L338.5 311.7 L339.9 242.4 Z" fill="url(#limbG)"/>
-      <circle cx="322.0" cy="244.0" r="18.0" fill="#6b4f95"/>
-      <circle cx="328.0" cy="312.0" r="10.5" fill="#6b4f95"/>
-      <circle cx="326.0" cy="372.0" r="7.5" fill="#6b4f95"/>
-      <circle cx="325.0" cy="396.0" r="6.5" fill="#6b4f95"/>
-      <path d="M314.0 391.0 h22.0 l2.0 19.0 q0 5 -5 5 h-18.0 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.4"/>
+    <path d="M304.1 245.6 L317.5 312.3 L318.5 371.7 L318.5 395.7 L331.5 396.3 L333.5 372.3 L338.5 311.7 L339.9 242.4 Z" fill="#ff37c7"/>
+      <circle cx="322.0" cy="244.0" r="18.0" fill="#ff37c7"/>
+      <circle cx="328.0" cy="312.0" r="10.5" fill="#ff37c7"/>
+      <circle cx="326.0" cy="372.0" r="7.5" fill="#ff37c7"/>
+      <circle cx="325.0" cy="396.0" r="6.5" fill="#ff37c7"/>
+      <path d="M314.0 393.5 h22.0 l2.0 19.0 q0 5 -5 5 h-18.0 q-5 0 -5 -5 z" fill="#ff37c7"/>
 
     <!-- ================= pawing fore leg — the page rebuilds this shape ==== -->
     <g id="nk-leg">
-      <path class="nk-leg-shape" d="M304.1 245.6 L317.5 312.3 L318.5 371.7 L318.5 395.7 L331.5 396.3 L333.5 372.3 L338.5 311.7 L339.9 242.4 Z" fill="url(#limbG)"/>
+      <path class="nk-leg-shape" d="M304.1 245.6 L317.5 312.3 L318.5 371.7 L318.5 395.7 L331.5 396.3 L333.5 372.3 L338.5 311.7 L339.9 242.4 Z" fill="#ff37c7"/>
       <g class="nk-leg-caps"></g>
       <g id="nk-hoof" transform="translate(325 391)">
-        <path d="M-11 0 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 z" fill="#2b1d42" stroke="#e3b4f0" stroke-width="1.5"/>
-        <path d="M-11 0 h22 l1 5 h-24 z" fill="#fc72ff" opacity="0.45"/>
+        <path d="M-11 2.5 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 z" fill="#ff37c7"/>
       </g>
     </g>
   </g>
