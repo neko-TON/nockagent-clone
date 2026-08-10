@@ -33,7 +33,16 @@
     if (!revealIO) revealIO = new IntersectionObserver(function (ents) {
       ents.forEach(function (en) { if (en.isIntersecting) { show(en.target); revealIO.unobserve(en.target); } });
     }, { threshold: 0.06, rootMargin: '0px 0px -4% 0px' });
-    [].forEach.call(els, function (el) { if (!el.__nkRev) { el.__nkRev = 1; revealIO.observe(el); } });
+    [].forEach.call(els, function (el) {
+      if (el.__nkRev) return;
+      el.__nkRev = 1;
+      // The stock reveal fades in from blur(10px). A filter is a separate
+      // raster pass per element, and there are ~30 of them down the page —
+      // pure cost for an effect opacity and translate already carry. Drop the
+      // blur up front and let the other two do the reveal.
+      el.style.filter = 'none';
+      revealIO.observe(el);
+    });
   }
 
   /* 2. inline the mascot ---------------------------------------------- */

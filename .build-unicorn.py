@@ -125,8 +125,16 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
       <stop offset="68%" stop-color="#271d31"/>
       <stop offset="100%" stop-color="#181022"/>
     </radialGradient>
-    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>
-    <filter id="tiny" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6"/></filter>
+    <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff37c7" stop-opacity="1"/>
+      <stop offset="55%" stop-color="#ff37c7" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ff37c7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fc72ff" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#fc72ff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#fc72ff" stop-opacity="0"/>
+    </radialGradient>
 {glyph_defs}
   </defs>
 
@@ -137,8 +145,8 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
   </style>
 
   <ellipse cx="292" cy="200" rx="222" ry="228" fill="url(#aura)"/>
-  <ellipse cx="262" cy="422" rx="158" ry="13" fill="#ff37c7" opacity="0.10" filter="url(#soft)"/>
-  <ellipse cx="262" cy="422" rx="78" ry="6" fill="#fc72ff" opacity="0.13" filter="url(#tiny)"/>
+  <ellipse cx="262" cy="422" rx="176" ry="22" fill="url(#glowA)" opacity="0.16"/>
+  <ellipse cx="262" cy="422" rx="92" ry="11" fill="url(#glowB)" opacity="0.2"/>
 
   <!-- sparks, kept off the main read -->
   <g fill="#ffd9f4">
@@ -239,7 +247,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
       <path d="M435 40 L449 36"/><path d="M441 24 L453 21"/>
       <path d="M447 8 L457 6"/><path d="M453 -6 L461 -8"/>
     </g>
-    <circle cx="474" cy="-18" r="10" fill="#fc72ff" opacity="0.4" filter="url(#tiny)"/>
+    <circle cx="474" cy="-18" r="14" fill="url(#glowB)" opacity="0.5"/>
     <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.85"/>
 
     <!-- ================= mane, laid along the crest ================= -->
@@ -282,7 +290,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
            stroke="#ffd9f4" stroke-width="2.5" opacity="0"/>
 
   <g id="nk-impact" opacity="0">
-    <ellipse cx="325" cy="418" rx="42" ry="9" fill="#fc72ff" opacity="0.55" filter="url(#tiny)"/>
+    <ellipse cx="325" cy="418" rx="52" ry="15" fill="url(#glowB)" opacity="0.6"/>
     <g stroke="#ffe9fa" stroke-width="2.6" stroke-linecap="round" opacity="0.9">
       <path d="M292 412 L274 401"/><path d="M358 412 L376 401"/>
       <path d="M325 404 L325 386"/><path d="M305 408 L294 392"/><path d="M345 408 L356 392"/>
