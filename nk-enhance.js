@@ -83,7 +83,7 @@
   ];
   var HOOF_X = 325, HOOF_Y = 410;
   var ELBOW = [322, 196];
-  var LEG_W = [34, 17, 12, 10];          // forearm, knee, fetlock, pastern
+  var LEG_W = [46, 25, 18, 15];          // forearm, knee, fetlock, pastern
   // Gathered, the cannon folds up and forward; planted, the column is straight.
   var UP   = { kx: 346, ky: 266, fx: 360, fy: 312, hx: 360, hy: 336 };
   var DOWN = { kx: 330, ky: 290, fx: 326, fy: 368, hx: 325, hy: 396 };
@@ -251,6 +251,9 @@
     function run(on) {
       if (on === running) return;
       running = on;
+      // the CSS wind on the mane and tail is gated off the same observer:
+      // keyframes keep ticking off screen otherwise
+      svg.classList.toggle('nk-live', on);
       if (on) { t0 = null; raf = requestAnimationFrame(frame); }
       else if (raf) { cancelAnimationFrame(raf); raf = null; }
     }

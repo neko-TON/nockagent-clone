@@ -60,11 +60,11 @@ def hoof(x, y, w=22, h=19, light=None):
 # legs at 61% of total height against a real horse's ~52%, and a barrel 39%
 # deep against ~48%. Exaggeration is what makes a flat mark read as graceful.
 FORE   = [(322, 196), (330, 290), (326, 368), (325, 396)]
-FORE_W = [34, 17, 12, 10]
+FORE_W = [46, 25, 18, 15]
 # near hind: stifle, hock, fetlock, pastern — the hock kicks back, and that
 # zig-zag is the single strongest "this is a horse" signal in a silhouette
 HIND   = [(185, 190), (150, 285), (172, 368), (176, 396)]
-HIND_W = [46, 20, 13, 11]
+HIND_W = [60, 29, 20, 17]
 # off-side pair, separated from the near pair by a gap rather than by tone
 FORE_O   = [(346, 198), (352, 292), (350, 369), (349, 396)]
 HIND_O   = [(215, 194), (190, 288), (208, 369), (211, 396)]
@@ -189,7 +189,48 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
   <style>
     @keyframes blink{{0%,95%,100%{{transform:scaleY(1)}}97.5%{{transform:scaleY(.08)}}}}
     #eye{{transform-box:fill-box;transform-origin:center;animation:blink 6.5s ease-in-out infinite}}
-    @media (prefers-reduced-motion:reduce){{#eye{{animation:none}}}}
+
+    /* Wind. Each strand pivots about its own root on the crest, so the hair
+       swings from where it is attached instead of sliding around — which is
+       what the alternative, morphing the path data, would have looked like,
+       at the price of re-tessellating four paths sixty times a second.
+
+       A rotation about an arbitrary point without touching transform-origin:
+       translate to the pivot, rotate, translate back. On an SVG element a CSS
+       px is one user unit, so these are the same numbers as the path data.
+
+       One duration for all four with the delay staggered down the neck, which
+       is what makes it a travelling wave rather than four strands flapping in
+       unison. Amplitude falls off toward the shoulder, where a real mane is
+       shorter and heavier. */
+    @keyframes w1{{0%,100%{{transform:translate(420px,34px) rotate(-2.1deg) translate(-420px,-34px)}}
+                   50%{{transform:translate(420px,34px) rotate(2.3deg) translate(-420px,-34px)}}}}
+    @keyframes w2{{0%,100%{{transform:translate(400px,50px) rotate(-1.8deg) translate(-400px,-50px)}}
+                   50%{{transform:translate(400px,50px) rotate(2deg) translate(-400px,-50px)}}}}
+    @keyframes w3{{0%,100%{{transform:translate(376px,70px) rotate(-1.5deg) translate(-376px,-70px)}}
+                   50%{{transform:translate(376px,70px) rotate(1.7deg) translate(-376px,-70px)}}}}
+    @keyframes w4{{0%,100%{{transform:translate(350px,92px) rotate(-1.1deg) translate(-350px,-92px)}}
+                   50%{{transform:translate(350px,92px) rotate(1.3deg) translate(-350px,-92px)}}}}
+    /* the tail answers the same wind, at half the amplitude and off-tempo —
+       a still tail beside a moving mane looks broken */
+    @keyframes wt{{0%,100%{{transform:translate(152px,150px) rotate(-1.2deg) translate(-152px,-150px)}}
+                   50%{{transform:translate(152px,150px) rotate(1.2deg) translate(-152px,-150px)}}}}
+
+    #nk-mane path,#nk-tail{{animation-duration:6.4s;animation-timing-function:cubic-bezier(.45,0,.55,1);
+      animation-iteration-count:infinite;animation-direction:alternate;animation-play-state:paused}}
+    .w1{{animation-name:w1;animation-delay:0s}}
+    .w2{{animation-name:w2;animation-delay:-.4s}}
+    .w3{{animation-name:w3;animation-delay:-.8s}}
+    .w4{{animation-name:w4;animation-delay:-1.2s}}
+    #nk-tail{{animation-name:wt;animation-duration:8.2s;animation-delay:-2s}}
+    /* only while the mascot is actually on screen — the strike loop already
+       gates itself the same way and toggles this class */
+    svg.nk-live #nk-mane path,svg.nk-live #nk-tail{{animation-play-state:running}}
+
+    @media (prefers-reduced-motion:reduce){{
+      #eye{{animation:none}}
+      #nk-mane path,#nk-tail{{animation:none}}
+    }}
   </style>
 
   <!-- Ambient: one wide pool, reaching zero exactly at its own rim. The old
@@ -219,7 +260,8 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
     <path d="M232 22 l2.6 6.5 l6.5 2.6 l-6.5 2.6 l-2.6 6.5 l-2.6 -6.5 l-6.5 -2.6 l6.5 -2.6 z" opacity="0.4"/>
   </g>
 
-  <g id="nk-rig" mask="url(#bodyCut)">
+  <g id="nk-rig">
+  <g mask="url(#bodyCut)">
 
     <!-- ================= tail =================
          Three separate strands with air between them, each wide at the dock
@@ -227,7 +269,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          stacked with a gradient each, which only reads as a tail because of
          the shading; strip the shading and it is one blob. In the reference
          every hair group is its own ribbon and the gaps are the drawing. -->
-    <g>
+    <g id="nk-tail">
       <path d="M146 146
                C 122 168, 100 208, 88 254
                C 76 300, 74 342, 84 372
@@ -279,13 +321,17 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
     <!-- ================= neck =================
          Convex along the crest, concave under the throat. The old one was
          near-parallel top and bottom, which is why it read as a tube. -->
-    <path d="M300 146
-             C 312 108, 340 72, 378 50
-             C 394 41, 412 35, 426 36
-             L 432 78
-             C 418 82, 402 92, 388 106
-             C 370 124, 356 146, 348 170
-             C 338 162, 318 152, 300 146 Z"
+    <!-- Two edges doing opposite things, which is the whole of a horse's neck:
+         the crest bows out over the top, and the throat bows *in* below the
+         jaw. The previous version had both edges running roughly parallel, so
+         it read as a tube with a head on it. -->
+    <path d="M294 154
+             C 304 112, 332 74, 372 50
+             C 390 39, 410 33, 428 34
+             L 434 78
+             C 416 88, 396 108, 382 124
+             C 366 144, 352 164, 344 182
+             C 334 172, 314 160, 294 154 Z"
           fill="{PINK}"/>
 
     <!-- ================= head =================
@@ -331,36 +377,52 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
       <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.9"/>
     </g>
 
+  </g><!-- /masked body -->
+
     <!-- ================= mane =================
          Four calligraphic strands off the crest, each thick at the root and
          run out to a point, with real gaps between them. This is the single
          most recognisable thing about the reference mascot — its mane is a
          set of brush strokes, not a shaded mass — and it is the reason the
-         logo still reads as a unicorn at 20px. -->
+         logo still reads as a unicorn at 20px.
+
+         Deliberately OUTSIDE the mask. No gap in #bodyCut touches the mane,
+         and a child animating inside a masked group makes the browser redo
+         the mask every frame — the wind would have been charging the whole
+         body for something only four paths are doing. -->
     <!-- A mane drawn on the neck is a mane you cannot see: same colour, inside
          the same outline. It has to leave the silhouette. These three sweep
          back off the crest into the open dark above the withers, which is the
          only empty space adjacent to the neck — and a mane blown back happens
          to be what the reference does with its own strands. -->
-    <g>
-      <path d="M416 36
-               C 360 30, 258 44, 188 66
-               C 168 73, 154 78, 148 82
-               C 168 79, 198 74, 224 71
-               C 300 62, 380 50, 412 44
-               C 416 41, 417 38, 416 36 Z" fill="{PINK}"/>
-      <path d="M392 58
-               C 342 58, 262 78, 200 104
-               C 182 112, 170 118, 166 122
-               C 184 118, 208 112, 230 107
-               C 292 93, 356 74, 386 66
-               C 391 62, 392 60, 392 58 Z" fill="{PINK}"/>
-      <path d="M356 90
-               C 320 92, 280 102, 250 112
-               C 242 115, 236 118, 234 119
-               C 248 116, 264 112, 278 109
-               C 312 101, 342 94, 353 92
-               C 356 91, 357 90, 356 90 Z" fill="{PINK}"/>
+    <g id="nk-mane">
+      <!-- Lengths deliberately uneven and strand 3 crossing under strand 2.
+           Four parallel ribbons ending on one diagonal read as a blade; hair
+           does not do that. -->
+      <path class="w1" d="M420 30
+               C 358 22, 250 36, 180 58
+               C 158 65, 144 70, 138 74
+               C 158 72, 192 67, 222 64
+               C 300 55, 382 43, 414 39
+               C 418 36, 420 32, 420 30 Z" fill="{PINK}"/>
+      <path class="w2" d="M402 46
+               C 352 46, 274 62, 212 86
+               C 192 94, 174 101, 168 106
+               C 188 101, 214 95, 238 90
+               C 300 78, 360 64, 396 56
+               C 400 52, 402 50, 402 46 Z" fill="{PINK}"/>
+      <path class="w3" d="M378 64
+               C 322 68, 244 88, 176 110
+               C 154 117, 138 123, 132 127
+               C 154 122, 184 114, 212 107
+               C 282 90, 346 76, 372 72
+               C 376 70, 378 67, 378 64 Z" fill="{PINK}"/>
+      <path class="w4" d="M352 88
+               C 312 92, 262 106, 224 120
+               C 212 124, 204 127, 200 129
+               C 216 125, 236 120, 254 116
+               C 296 106, 336 96, 348 93
+               C 351 91, 352 90, 352 88 Z" fill="{PINK}"/>
     </g>
 
     <!-- ================= near fore leg, planted ================= -->
