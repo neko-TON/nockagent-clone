@@ -84,9 +84,65 @@
   var HOOF_X = 325, HOOF_Y = 410;
   var ELBOW = [322, 196];
   var LEG_W = [46, 25, 18, 15];          // forearm, knee, fetlock, pastern
-  // Gathered, the cannon folds up and forward; planted, the column is straight.
-  var UP   = { kx: 346, ky: 266, fx: 360, fy: 312, hx: 360, hy: 336 };
-  var DOWN = { kx: 330, ky: 290, fx: 326, fy: 368, hx: 325, hy: 396 };
+
+  /* The limb used to be a straight lerp between a planted pose and a lifted
+     one, both written out as raw joint coordinates. Measured, that made the
+     forearm 22% shorter at the top of the lift, the cannon 38% shorter and the
+     pastern 14%: the leg telescoped instead of folding. Bones do not do that,
+     and it is most of why the movement read as wrong.
+
+     So the hoof follows a path and the joints are solved to it, which keeps
+     every segment exactly its own length no matter where the hoof is. */
+  var L1 = 94.3, L2 = 78.1, L3 = 28.0;   // forearm, cannon, pastern
+
+  /* The paw itself. A horse pawing the ground does not stamp — it reaches
+     forward, sets the hoof down, and DRAGS it back toward itself, and that
+     drag is the whole gesture. The old cycle had no drag at all: it snapped
+     down at 0.28 and then held one pose for the remaining 72%, which is
+     exactly the "leg stays put at the moment of impact" that it looked like.
+
+     Keys are (phase, hoof x, hoof y). Everything is inside the 200-unit reach
+     from the elbow, so nothing has to be clamped. */
+  var PAW = [
+    [0.00, 325, 395],   // stood
+    [0.16, 292, 344],   // folded up and back under the body
+    [0.30, 368, 350],   // swung forward, still clear of the ground
+    [0.37, 346, 394],   // contact, forward of vertical
+    [0.60, 302, 394],   // scraped back along the ground, past vertical
+    [0.74, 296, 372],   // unweighted and lifting
+    [1.00, 325, 395]    // stood
+  ];
+
+  // Catmull-Rom through the keys rather than straight lines between them:
+  // a lerp gives the hoof a new direction at every key, which reads as six
+  // little jerks per cycle.
+  function pawAt(t) {
+    var i = 0;
+    while (i < PAW.length - 2 && t >= PAW[i + 1][0]) i++;
+    var k0 = PAW[i > 0 ? i - 1 : PAW.length - 2], k1 = PAW[i],
+        k2 = PAW[i + 1], k3 = PAW[i + 2 < PAW.length ? i + 2 : 1];
+    var u = (t - k1[0]) / (k2[0] - k1[0] || 1), u2 = u * u, u3 = u2 * u;
+    function cr(a, b, c, d) {
+      return 0.5 * ((2 * b) + (-a + c) * u + (2 * a - 5 * b + 4 * c - d) * u2 +
+                    (-a + 3 * b - 3 * c + d) * u3);
+    }
+    return [cr(k0[1], k1[1], k2[1], k3[1]), cr(k0[2], k1[2], k2[2], k3[2])];
+  }
+
+  /* Two-link IK, elbow to fetlock. Of the two knee solutions this takes the
+     one bulging forward, because a horse's carpus folds backward — the knee
+     leads and the cannon swings back under. Picking the other root gives you
+     a leg that bends like a human's, which is the single most obvious way to
+     draw a horse wrong. */
+  function solveKnee(fx, fy, out) {
+    var dx = fx - ELBOW[0], dy = fy - ELBOW[1];
+    var d = Math.sqrt(dx * dx + dy * dy) || 1;
+    var a = (L1 * L1 - L2 * L2 + d * d) / (2 * d);
+    var h = Math.sqrt(Math.max(0, L1 * L1 - a * a));
+    var ux = dx / d, uy = dy / d;
+    out[0] = ELBOW[0] + a * ux + h * uy;      // -h * perp, perp = (-uy, ux)
+    out[1] = ELBOW[1] + a * uy - h * ux;
+  }
 
   // Same ribbon the static legs are built from, so the pawing limb keeps its
   // taper through the whole stroke instead of flattening to a constant bar.
@@ -108,11 +164,10 @@
   var POOL = ['NVDA','AAPL','TSLA','COIN','AMZN','GOOGL','META','ETH','BTC','NFLX','AMD'];
 
   // beats of one cycle, as fractions
-  // Coins used to exist from 0.38 to 0.94 of the cycle and start fading at
-  // 0.72, so they were strongly visible for about 40% of it — glance at the
-  // hero during the other 60% and there is no burst to see at all. The
-  // wind-up is shorter now and the coins hang on longer: 0.28 to 0.97.
-  var T_RISE = 0.22, T_HIT = 0.28, T_SETTLE = 0.44, T_COINS_END = 0.97;
+  // Beats of one cycle. T_HIT is the moment the hoof reaches the ground on
+  // the PAW path above; the drag runs from there to T_DRAG_END, and the coins
+  // are thrown across the whole of it rather than at one instant.
+  var T_HIT = 0.37, T_DRAG_END = 0.60, T_SETTLE = 0.52, T_COINS_END = 0.97;
 
   function easeOut(x){ return 1 - Math.pow(1 - x, 3); }
   function easeIn(x){ return x * x * x; }
@@ -170,40 +225,70 @@
     }
 
     function place(t) {
-      // ---- the limb: gather slowly, strike fast ----
-      var lift;
-      if (t < T_RISE)      lift = easeOut(t / T_RISE);              // draw it up
-      else if (t < T_HIT)  lift = 1 - easeIn((t - T_RISE) / (T_HIT - T_RISE));  // snap down
-      else                 lift = 0;                                // planted
-      // the limb only needs rebuilding while it is actually moving; lift sits
-      // at 0 for well over half the cycle
-      if (lift !== prev.lift) {
-        prev.lift = lift;
-        pts[1][0] = DOWN.kx + (UP.kx - DOWN.kx) * lift; pts[1][1] = DOWN.ky + (UP.ky - DOWN.ky) * lift;
-        pts[2][0] = DOWN.fx + (UP.fx - DOWN.fx) * lift; pts[2][1] = DOWN.fy + (UP.fy - DOWN.fy) * lift;
-        pts[3][0] = DOWN.hx + (UP.hx - DOWN.hx) * lift; pts[3][1] = DOWN.hy + (UP.hy - DOWN.hy) * lift;
+      // ---- the limb: hoof on its path, joints solved to it ----
+      var H = pawAt(t);
+      // How folded the leg is, from how far the hoof is from the elbow. The
+      // pastern breaks over as it gathers and straightens as it reaches, which
+      // is what a fetlock does.
+      var dx0 = H[0] - ELBOW[0], dy0 = H[1] - ELBOW[1];
+      var reach = Math.sqrt(dx0 * dx0 + dy0 * dy0);
+      var fold = Math.max(0, Math.min(1, (196 - reach) / 46));
+      var tilt = fold * 0.62;                       // radians, pastern breaks back
+      var ux = -dx0 / (reach || 1), uy = -dy0 / (reach || 1);   // hoof -> elbow
+      var cs = Math.cos(tilt), sn = Math.sin(tilt);
+      pts[2][0] = H[0] + L3 * (ux * cs - uy * sn);
+      pts[2][1] = H[1] + L3 * (ux * sn + uy * cs);
+      // Catmull-Rom overshoots its keys, and near the ground the leg is
+      // already almost straight, so a couple of units of overshoot asks the
+      // hoof to go further than the bones can reach. Pull the hoof in to the
+      // limit rather than clamping inside the solver — clamping there moved
+      // the target the knee was solved against but left the fetlock where it
+      // was, which quietly stretched the cannon on 79 frames of 400.
+      var fdx = pts[2][0] - ELBOW[0], fdy = pts[2][1] - ELBOW[1];
+      var fd = Math.sqrt(fdx * fdx + fdy * fdy);
+      var lim = L1 + L2 - 0.4;
+      if (fd > lim) {
+        var pull = fd - lim;
+        H[0] -= (fdx / fd) * pull; H[1] -= (fdy / fd) * pull;
+        pts[2][0] -= (fdx / fd) * pull; pts[2][1] -= (fdy / fd) * pull;
+      }
+      solveKnee(pts[2][0], pts[2][1], pts[1]);
+      pts[3][0] = H[0]; pts[3][1] = H[1];
+
+      // The leg is in motion for three quarters of the cycle now, so there is
+      // no point gating the rebuild on a pose change the way the two-pose
+      // version could — it is six attribute writes a frame while it moves.
+      var key = (H[0] * 4 | 0) + ':' + (H[1] * 4 | 0);
+      if (key !== prev.leg) {
+        prev.leg = key;
         if (shape) shape.setAttribute('d', ribbon(pts, LEG_W));
         for (var q = 0; q < caps.length; q++) {
           caps[q].setAttribute('cx', pts[q][0].toFixed(1));
           caps[q].setAttribute('cy', pts[q][1].toFixed(1));
         }
-        if (hoof) hoof.setAttribute('transform', 'translate(' + pts[3][0].toFixed(1) + ' ' + (pts[3][1] - 5).toFixed(1) + ')');
+        if (hoof) {
+          // the hoof follows the pastern instead of staying bolt upright
+          var ang = Math.atan2(H[0] - pts[2][0], -(H[1] - pts[2][1])) * 180 / Math.PI;
+          hoof.setAttribute('transform',
+            'translate(' + H[0].toFixed(1) + ' ' + (H[1] - 5).toFixed(1) + ') rotate(' + (-ang).toFixed(1) + ')');
+        }
       }
 
       // ---- the body answers the blow: a short dip, then it springs back ----
       var jolt = 0;
-      if (t >= T_HIT && t < T_SETTLE) {
-        var j = (t - T_HIT) / (T_SETTLE - T_HIT);
-        jolt = Math.sin(j * Math.PI) * 5;              // down and back in one arc
-      } else if (t < T_HIT && t > T_RISE) {
-        jolt = -1.5 * ((t - T_RISE) / (T_HIT - T_RISE));   // a touch of lift on the wind-up
+      if (t >= T_HIT && t < T_DRAG_END) {
+        // takes the weight on contact, then rides up as the hoof scrapes back
+        var j = (t - T_HIT) / (T_DRAG_END - T_HIT);
+        jolt = Math.sin(j * Math.PI) * 4.5;
+      } else if (t < T_HIT && t > 0.16) {
+        jolt = -1.6 * ((t - 0.16) / (T_HIT - 0.16));   // rocks back over the wind-up
       }
       if (rig && jolt !== prev.jolt) { prev.jolt = jolt; rig.setAttribute('transform', 'translate(0 ' + jolt.toFixed(2) + ')'); }
 
       // ---- contact: flash and a ring of dust ----
       var hit = (t < T_HIT) ? 0 : Math.max(0, 1 - (t - T_HIT) / 0.14);
       if (flash && hit !== prev.hit) { prev.hit = hit; flash.setAttribute('opacity', (hit * 0.95).toFixed(3)); }
-      var dt = (t < T_HIT) ? 0 : Math.min(1, (t - T_HIT) / 0.30);
+      var dt = (t < T_HIT) ? 0 : Math.min(1, (t - T_HIT) / (T_DRAG_END - T_HIT));
       if (dust && dt !== prev.dt) {
         prev.dt = dt;
         dust.setAttribute('rx', (30 + dt * 62).toFixed(1));

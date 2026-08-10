@@ -222,6 +222,22 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
     @keyframes wt{{0%,100%{{transform:translate(152px,150px) rotate(-1.2deg) translate(-152px,-150px)}}
                    50%{{transform:translate(152px,150px) rotate(1.2deg) translate(-152px,-150px)}}}}
 
+    /* Standing dead still between paws is the other half of looking fake.
+       This is a breath and a weight shift, nothing more: a fraction of a
+       percent of vertical scale about the ground line, and a pixel of sway,
+       on two periods that do not divide into each other so the pair never
+       repeats the same combination twice in a row.
+
+       It lives on a wrapper because the strike writes its own transform
+       attribute to #nk-rig for the impact dip — a CSS transform on the same
+       element would silently win and the dip would vanish. */
+    @keyframes idle{{0%{{transform:translate(0,0) scaleY(1)}}
+                     50%{{transform:translate(-1.1px,-0.6px) scaleY(1.006)}}
+                     100%{{transform:translate(0,0) scaleY(1)}}}}
+    #nk-idle{{transform-origin:296px 420px;transform-box:view-box;
+      animation:idle 5.3s cubic-bezier(.45,0,.55,1) infinite;animation-play-state:paused}}
+    svg.nk-live #nk-idle{{animation-play-state:running}}
+
     #nk-mane path,#nk-tail{{animation-duration:6.4s;animation-timing-function:cubic-bezier(.45,0,.55,1);
       animation-iteration-count:infinite;animation-direction:alternate;animation-play-state:paused}}
     .w1{{animation-name:w1;animation-delay:0s}}
@@ -235,7 +251,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
 
     @media (prefers-reduced-motion:reduce){{
       #eye{{animation:none}}
-      #nk-mane path,#nk-tail{{animation:none}}
+      #nk-mane path,#nk-tail,#nk-idle{{animation:none}}
     }}
   </style>
 
@@ -266,6 +282,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
     <path d="M232 22 l2.6 6.5 l6.5 2.6 l-6.5 2.6 l-2.6 6.5 l-2.6 -6.5 l-6.5 -2.6 l6.5 -2.6 z" opacity="0.4"/>
   </g>
 
+  <g id="nk-idle">
   <g id="nk-rig">
   <g mask="url(#bodyCut)">
 
@@ -442,11 +459,13 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
                C 351 91, 352 90, 352 88 Z" fill="{PINK}"/>
     </g>
 
-    <!-- ================= near fore leg, planted ================= -->
-{leg(FORE, FORE_W, LIMB, CAP)}
-      {hoof(325, 391)}
-
-    <!-- ================= pawing fore leg — the page rebuilds this shape ==== -->
+    <!-- ================= pawing fore leg — the page rebuilds this shape ====
+         There used to be a second, static copy of this same leg drawn right
+         here, from the same FORE skeleton, and it never moved. So the horse
+         always had a foreleg standing on the ground: when the pawing limb
+         lifted, the copy stayed behind. That is the leg that "stays put at
+         the moment of impact" — not a fault in the animation, a duplicate
+         underneath it. The animated one is the near fore; four legs total. -->
     <g id="nk-leg">
       <path class="nk-leg-shape" d="{ribbon(FORE, FORE_W)}" fill="{PINK}"/>
       <g class="nk-leg-caps"></g>
@@ -467,6 +486,8 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
       <path d="M325 404 L325 386"/><path d="M305 408 L294 392"/><path d="M345 408 L356 392"/>
     </g>
   </g>
+
+  </g><!-- /nk-idle -->
 
   <g id="nk-halos" style="mix-blend-mode:screen">
 {halos}
