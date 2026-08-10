@@ -15,49 +15,49 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* Same three-layer background as the landing page: washes fixed to the
-   viewport, a fine dot lattice over the document, a vignette to hold the
-   centre. All gradients — no filters, so it costs one paint.
-
-   The stop tables come from .glowkit.py, for the reasons written out over the
-   matching rule in index.html: a two-stop ramp reaches its rim with the slope
-   still falling, and that slope step is seen as a ring. */
+/* Same system as the landing page, after gitequity.xyz: the colour lives in
+   one band at the top and dissolves out, the body of the page is flat, and a
+   tonal arc interpolated in oklab carries the middle. See the long note over
+   the matching rule in index.html for why the reference's near-white band is
+   not reproduced literally. */
 body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  content:"";position:absolute;top:0;left:0;right:0;height:1500px;
+  z-index:0;pointer-events:none;
   background:
-    radial-gradient(44vw 44vw at 12% 2%,
+    radial-gradient(44vw 44vw at 12% 8%,
       rgba(255,233,250,0.115) 0%, rgba(255,176,234,0.1108) 11.1%, rgba(255,120,218,0.0988) 22.2%,
       rgba(255,63,201,0.0808) 33.3%, rgba(235,59,207,0.0594) 44.4%, rgba(212,63,217,0.038) 55.6%,
       rgba(189,67,226,0.0197) 66.7%, rgba(166,71,236,0.0071) 77.8%, rgba(143,76,245,0.0011) 88.9%,
       rgba(120,80,255,0) 100%),
-    radial-gradient(40vw 40vw at 90% 26%,
+    radial-gradient(40vw 40vw at 90% 30%,
       rgba(239,228,255,0.085) 0%, rgba(201,181,255,0.0819) 11.1%, rgba(163,134,255,0.073) 22.2%,
       rgba(126,87,255,0.0597) 33.3%, rgba(112,73,242,0.0439) 44.4%, rgba(103,65,227,0.0281) 55.6%,
       rgba(94,58,213,0.0146) 66.7%, rgba(85,50,198,0.0052) 77.8%, rgba(76,42,183,0.0008) 88.9%,
       rgba(67,34,168,0) 100%),
-    radial-gradient(120% 85% at 50% 42%, transparent 54%, rgba(0,0,0,.4) 100%);
+    radial-gradient(rgba(255,255,255,.075) 1px, transparent 1px) 0 0 / 26px 26px;
+  -webkit-mask-image:linear-gradient(#000 50%, rgba(0,0,0,.3) 78%, transparent 100%);
+  mask-image:linear-gradient(#000 50%, rgba(0,0,0,.3) 78%, transparent 100%);
 }
-/* Two surfaces, each where it belongs.
-
-   The network is a hero idea: it says "these are the venues the router walks".
-   Left running the full page it cut lines straight through the cards and
-   across body copy — exactly the noise it was meant to avoid. So it lives at
-   the top of the document, scrolls away with the hero, and fades out before
-   the reading starts.
-
-   Below that, only the fine dot lattice remains: a surface, not a picture. */
-body::after{
-  content:"";position:absolute;top:0;left:0;right:0;height:1000px;
-  z-index:0;pointer-events:none;
-  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1000' fill='none'><g stroke='%23ffffff' stroke-width='1' opacity='0.30'><line x1='92.8' y1='454.3' x2='50.8' y2='690.8'/><line x1='92.8' y1='454.3' x2='358.3' y2='550.4'/><line x1='50.8' y1='690.8' x2='328.8' y2='749.4'/><line x1='383.8' y1='265.4' x2='358.3' y2='550.4'/><line x1='383.8' y1='265.4' x2='547.1' y2='71.6'/><line x1='358.3' y1='550.4' x2='328.8' y2='749.4'/><line x1='358.3' y1='550.4' x2='591.8' y2='684.2'/><line x1='328.8' y1='749.4' x2='518.0' y2='846.4'/><line x1='614.5' y1='467.5' x2='591.8' y2='684.2'/><line x1='614.5' y1='467.5' x2='800.0' y2='480.4'/><line x1='591.8' y1='684.2' x2='518.0' y2='846.4'/><line x1='796.7' y1='285.9' x2='800.0' y2='480.4'/><line x1='796.7' y1='285.9' x2='1010.9' y2='161.9'/><line x1='800.0' y1='480.4' x2='831.5' y2='670.4'/><line x1='831.5' y1='670.4' x2='809.2' y2='934.5'/><line x1='831.5' y1='670.4' x2='979.0' y2='716.2'/><line x1='809.2' y1='934.5' x2='1047.3' y2='934.6'/><line x1='1010.9' y1='161.9' x2='1295.0' y2='120.2'/><line x1='1070.9' y1='464.4' x2='1264.4' y2='342.7'/><line x1='1070.9' y1='464.4' x2='1266.7' y2='519.7'/><line x1='979.0' y1='716.2' x2='1047.3' y2='934.6'/><line x1='1047.3' y1='934.6' x2='1288.8' y2='947.3'/><line x1='1295.0' y1='120.2' x2='1264.4' y2='342.7'/><line x1='1295.0' y1='120.2' x2='1474.4' y2='97.7'/><line x1='1264.4' y1='342.7' x2='1266.7' y2='519.7'/><line x1='1264.4' y1='342.7' x2='1440.9' y2='301.9'/><line x1='1474.4' y1='97.7' x2='1440.9' y2='301.9'/></g><g opacity='0.55'><circle cx='65.3' cy='126.3' r='2.0' fill='%23ffffff'/><circle cx='92.8' cy='454.3' r='2.0' fill='%23ffffff'/><circle cx='50.8' cy='690.8' r='2.0' fill='%23ffffff'/><circle cx='383.8' cy='265.4' r='2.0' fill='%23ffffff'/><circle cx='358.3' cy='550.4' r='3.4' fill='%23ff8fe0'/><circle cx='328.8' cy='749.4' r='2.0' fill='%23ffffff'/><circle cx='547.1' cy='71.6' r='2.0' fill='%23ffffff'/><circle cx='614.5' cy='467.5' r='3.4' fill='%23ff8fe0'/><circle cx='591.8' cy='684.2' r='2.0' fill='%23ffffff'/><circle cx='518.0' cy='846.4' r='3.4' fill='%23ff8fe0'/><circle cx='796.7' cy='285.9' r='2.0' fill='%23ffffff'/><circle cx='800.0' cy='480.4' r='2.0' fill='%23ffffff'/><circle cx='831.5' cy='670.4' r='3.4' fill='%23ff8fe0'/><circle cx='809.2' cy='934.5' r='2.0' fill='%23ffffff'/><circle cx='1010.9' cy='161.9' r='2.0' fill='%23ffffff'/><circle cx='1070.9' cy='464.4' r='2.0' fill='%23ffffff'/><circle cx='979.0' cy='716.2' r='2.0' fill='%23ffffff'/><circle cx='1047.3' cy='934.6' r='2.0' fill='%23ffffff'/><circle cx='1295.0' cy='120.2' r='2.0' fill='%23ffffff'/><circle cx='1264.4' cy='342.7' r='2.0' fill='%23ffffff'/><circle cx='1266.7' cy='519.7' r='2.0' fill='%23ffffff'/><circle cx='1288.8' cy='947.3' r='2.0' fill='%23ffffff'/><circle cx='1474.4' cy='97.7' r='2.0' fill='%23ffffff'/><circle cx='1440.9' cy='301.9' r='3.4' fill='%23ff8fe0'/></g></svg>") top center / 1600px 1000px no-repeat;
-  opacity:.62;
-  -webkit-mask-image:linear-gradient(#000 42%, transparent 92%);
-  mask-image:linear-gradient(#000 42%, transparent 92%);
+body{
+  background-image:linear-gradient(
+    rgba(34,22,31,0) 0%, rgba(34,22,31,0) 18%,
+    rgba(34,22,31,.55) 40%, rgba(34,22,31,.55) 66%,
+    rgba(34,22,31,0) 88%, rgba(34,22,31,0) 100%);
+  background-image:linear-gradient(in oklab,
+    rgba(34,22,31,0) 0%, rgba(34,22,31,0) 18%,
+    rgba(34,22,31,.55) 40%, rgba(34,22,31,.55) 66%,
+    rgba(34,22,31,0) 88%, rgba(34,22,31,0) 100%);
+  background-repeat:no-repeat;
 }
+/* The landing page carries a network graph behind its hero. These two pages
+   have no hero — the nav is followed immediately by body copy — so the graph
+   was drawing diagonals straight across the text it was meant to sit behind.
+   The reference concentrates its imagery in one block and leaves the reading
+   flat; here that means no graph at all. */
+
 html::after{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(rgba(255,255,255,.075) 1px, transparent 1px);
-  background-size:26px 26px;
+  background:radial-gradient(120% 85% at 50% 42%, transparent 54%, rgba(0,0,0,.4) 100%);
 }
 body>*{position:relative;z-index:1}
 .mono{font-family:var(--font-geist-mono),ui-monospace,monospace}

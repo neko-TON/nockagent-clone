@@ -29,59 +29,70 @@ a.bg-accent,button.bg-accent{border-radius:9999px!important;font-weight:535}
 
 /* Soft colour bleeding through a near-black page is the other half of the
    Uniswap look. Two fixed, heavily blurred washes — no animation. */
-/* Background in three quiet layers, none of them a filter.
+/* Background, after gitequity.xyz.
 
-   1. Colour: three broad washes, fixed to the viewport so the page reads as
-      moving through a lit space rather than dragging its own lighting along.
-   2. Surface: a fine dot lattice across the whole document. The hero already
-      carries a 46px line grid; dots are set at 28px so the two never beat
-      against each other, and the change of texture marks the hero as the one
-      structured area rather than looking accidental.
-   3. Depth: a vignette that pulls the corners down and keeps the eye centred.
+   What that reference actually does, read off the live page rather than
+   guessed at: a near-black base (#0a0a0a), one full-bleed hero video with a
+   bottom-up scrim dissolving it into that base, and then — its signature —
+   long tonal blocks, a linear-gradient `in oklab` climbing from black to
+   #e8e8e4 across one section and dropping back over 260px in the next.
+   Everything below the hero is flat. No texture anywhere.
 
-   Everything is a gradient, so the whole background costs one paint and no
-   raster passes. */
-/* Each wash is a stop table from .glowkit.py rather than `colour -> transparent`.
-   Two things come out of that, and both are why light on this page used to read
-   as a pasted disc:
+   Two of those three transfer directly. The third does not: a near-white band
+   works there because the content is neutral, and ours is white and pink type
+   on #1b1b1b panels. Inverting a section would mean re-treating every card and
+   every text colour inside it, and pink on white is a harsher identity than
+   the one this site has. So the structure is taken and the value is not.
 
-   1. A two-stop ramp is linear, so alpha arrives at the rim still falling and
-      then stops. The value is continuous, the slope is not, and the eye
-      differentiates edges — that slope step is seen as a faint ring (a Mach
-      band). These follow (1-t^2)^3, which lands at zero with zero slope: the
-      last segment is 17x shallower than the linear ramp it replaces.
-   2. A single colour fading out is not what light does. Each wash runs
-      near-white at the core through its own hue to a cooler rim, so the
-      falloff carries a temperature and not just an alpha. */
+   1. Colour and texture concentrated in the hero. They used to run the whole
+      document — three fixed washes plus a dot lattice over 15,000px, which is
+      more texture everywhere than the reference has anywhere. Now they live
+      in one band at the top and dissolve out, which is the reference's whole
+      compositional idea: interest in one place, calm underneath.
+   2. A tonal arc through the middle of the page, interpolated in oklab. Same
+      rhythm as the reference's black-to-light climb, in this site's colour.
+      It peaks under the card fill so panels still read as raised — lift the
+      ground past #1b1b1b and the cards start reading as holes.
+   3. The vignette stays fixed to the viewport, so the centre is held on every
+      screen rather than only near the top. */
 body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  content:"";position:absolute;top:0;left:0;right:0;height:2000px;
+  z-index:0;pointer-events:none;
   background:
-    radial-gradient(44vw 44vw at 14% 4%,
+    radial-gradient(44vw 44vw at 14% 10%,
       rgba(255,233,250,0.115) 0%, rgba(255,176,234,0.1108) 11.1%, rgba(255,120,218,0.0988) 22.2%,
       rgba(255,63,201,0.0808) 33.3%, rgba(235,59,207,0.0594) 44.4%, rgba(212,63,217,0.038) 55.6%,
       rgba(189,67,226,0.0197) 66.7%, rgba(166,71,236,0.0071) 77.8%, rgba(143,76,245,0.0011) 88.9%,
       rgba(120,80,255,0) 100%),
-    radial-gradient(40vw 40vw at 88% 22%,
+    radial-gradient(40vw 40vw at 88% 26%,
       rgba(239,228,255,0.085) 0%, rgba(201,181,255,0.0819) 11.1%, rgba(163,134,255,0.073) 22.2%,
       rgba(126,87,255,0.0597) 33.3%, rgba(112,73,242,0.0439) 44.4%, rgba(103,65,227,0.0281) 55.6%,
       rgba(94,58,213,0.0146) 66.7%, rgba(85,50,198,0.0052) 77.8%, rgba(76,42,183,0.0008) 88.9%,
       rgba(67,34,168,0) 100%),
-    radial-gradient(36vw 36vw at 72% 94%,
+    radial-gradient(36vw 36vw at 70% 58%,
       rgba(255,240,244,0.062) 0%, rgba(255,192,211,0.0597) 11.1%, rgba(255,145,178,0.0533) 22.2%,
       rgba(255,97,145,0.0435) 33.3%, rgba(244,86,151,0.032) 44.4%, rgba(230,81,164,0.0205) 55.6%,
       rgba(217,75,177,0.0106) 66.7%, rgba(203,70,190,0.0038) 77.8%, rgba(190,65,203,0.0006) 88.9%,
       rgba(176,60,216,0) 100%),
-    radial-gradient(120% 85% at 50% 42%, transparent 52%, rgba(0,0,0,.42) 100%);
+    radial-gradient(rgba(255,255,255,.075) 1px, transparent 1px) 0 0 / 26px 26px;
+  -webkit-mask-image:linear-gradient(#000 54%, rgba(0,0,0,.35) 80%, transparent 100%);
+  mask-image:linear-gradient(#000 54%, rgba(0,0,0,.35) 80%, transparent 100%);
 }
-/* Two surfaces, each where it belongs.
-
-   The network is a hero idea: it says "these are the venues the router walks".
-   Left running the full page it cut lines straight through the cards and
-   across body copy — exactly the noise it was meant to avoid. So it lives at
-   the top of the document, scrolls away with the hero, and fades out before
-   the reading starts.
-
-   Below that, only the fine dot lattice remains: a surface, not a picture. */
+/* The arc. Fading to `transparent` would interpolate towards transparent
+   BLACK and grey the midpoint out; fading to the same colour at zero alpha
+   keeps the hue all the way down, which is the whole reason to specify a
+   colour space here at all. */
+body{
+  background-image:linear-gradient(
+    rgba(34,22,31,0) 0%, rgba(34,22,31,0) 20%,
+    rgba(34,22,31,.62) 38%, rgba(34,22,31,.62) 64%,
+    rgba(34,22,31,0) 84%, rgba(34,22,31,0) 100%);
+  background-image:linear-gradient(in oklab,
+    rgba(34,22,31,0) 0%, rgba(34,22,31,0) 20%,
+    rgba(34,22,31,.62) 38%, rgba(34,22,31,.62) 64%,
+    rgba(34,22,31,0) 84%, rgba(34,22,31,0) 100%);
+  background-repeat:no-repeat;
+}
 body::after{
   content:"";position:absolute;top:0;left:0;right:0;height:1000px;
   z-index:0;pointer-events:none;
@@ -92,8 +103,7 @@ body::after{
 }
 html::after{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(rgba(255,255,255,.075) 1px, transparent 1px);
-  background-size:26px 26px;
+  background:radial-gradient(120% 85% at 50% 42%, transparent 54%, rgba(0,0,0,.42) 100%);
 }
 body>*{position:relative;z-index:1}
 
