@@ -298,21 +298,32 @@
     addNav();
   }
 
-  /* ---------------- FAQ behaviour ---------------- */
+  /* ---------------- FAQ behaviour ----------------
+     Delegated on document, in the CAPTURE phase, and that is not a style
+     choice. Next's App Router hydrates the whole document, so React's own
+     listeners sit on `document`; while hydration is incomplete React calls
+     stopPropagation() on discrete events to hold them for replay. This clone
+     has no Next server behind it, so hydration never completes and that hold
+     is permanent: a click never reaches its own target, and every listener
+     bound to a button — as this accordion's was — silently does nothing.
+     Document capture runs before React's handler on the same node, which is
+     the one place a click can still be caught. */
   function bindFAQ() {
-    [].forEach.call(document.querySelectorAll('.nk-q'), function (q) {
-      if (q.__nk) return; q.__nk = 1;
-      var head = q.querySelector('.nk-qh'), body = q.querySelector('.nk-qb');
-      head.addEventListener('click', function () {
-        var open = q.classList.contains('open');
-        // close siblings for an accordion feel
-        [].forEach.call(document.querySelectorAll('.nk-q.open'), function (o) {
-          if (o !== q) { o.classList.remove('open'); o.querySelector('.nk-qb').style.maxHeight = '0px'; o.querySelector('.nk-qh').setAttribute('aria-expanded', 'false'); }
-        });
-        if (open) { q.classList.remove('open'); body.style.maxHeight = '0px'; head.setAttribute('aria-expanded', 'false'); }
-        else { q.classList.add('open'); body.style.maxHeight = (body.scrollHeight + 24) + 'px'; head.setAttribute('aria-expanded', 'true'); }
+    if (document.__nkFAQDoc) return;
+    document.__nkFAQDoc = 1;
+    document.addEventListener('click', function (e) {
+      var head = e.target.closest && e.target.closest('.nk-qh');
+      if (!head) return;
+      var q = head.closest('.nk-q'), body = q.querySelector('.nk-qb');
+      e.preventDefault();
+      var open = q.classList.contains('open');
+      // close siblings for an accordion feel
+      [].forEach.call(document.querySelectorAll('.nk-q.open'), function (o) {
+        if (o !== q) { o.classList.remove('open'); o.querySelector('.nk-qb').style.maxHeight = '0px'; o.querySelector('.nk-qh').setAttribute('aria-expanded', 'false'); }
       });
-    });
+      if (open) { q.classList.remove('open'); body.style.maxHeight = '0px'; head.setAttribute('aria-expanded', 'false'); }
+      else { q.classList.add('open'); body.style.maxHeight = (body.scrollHeight + 24) + 'px'; head.setAttribute('aria-expanded', 'true'); }
+    }, true);
   }
 
   /* ---------------- rise-in + counters ---------------- */
@@ -424,7 +435,8 @@
     });
   }
 
-  /* ---------------- smooth in-page anchors ---------------- */
+  /* ---------------- smooth in-page anchors ----------------
+     Capture, for the reason set out over bindFAQ. */
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a[href^="/#"], a[href^="#"]');
     if (!a) return;
@@ -434,7 +446,7 @@
     e.preventDefault();
     t.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'start' });
     if (history.replaceState) history.replaceState(null, '', '#' + id);
-  });
+  }, true);
 
   /* ---------------- mobile burger menu ---------------- */
   function addBurger() {
@@ -493,28 +505,23 @@
       if (!/href="\/app"/.test(html)) html += '<a href="/app" class="cta">Launch app</a>';
       panel.innerHTML = html;
       document.body.appendChild(panel);
-      panel.addEventListener('click', function (ev) { if (ev.target.tagName === 'A') close(); });
     }
-    // Direct binding — safe now that the button lives on <body>, and it works
-    // even if something upstream stops click propagation before <document>.
-    b.addEventListener('click', function (e) {
-      e.preventDefault(); e.stopPropagation();
-      if (document.getElementById('nk-mobile')) close(); else open();
-    });
 
-    // Delegated on document as a backstop for re-created nodes.
+    /* One owner, on document, in the CAPTURE phase — see the note over the
+       FAQ binding. A listener on the button itself never runs on this page. */
     if (!document.__nkBurgerDoc) {
       document.__nkBurgerDoc = 1;
       document.addEventListener('click', function (e) {
-        var hitBurger = e.target.closest && e.target.closest('#nk-burger');
-        if (hitBurger) {
-          e.preventDefault(); e.stopPropagation();
+        if (!e.target.closest) return;
+        if (e.target.closest('#nk-burger')) {
+          e.preventDefault();
           if (document.getElementById('nk-mobile')) close(); else open();
           return;
         }
         var p = document.getElementById('nk-mobile');
-        if (p && !p.contains(e.target)) close();
-      });
+        if (!p) return;
+        if (!p.contains(e.target) || e.target.closest('a')) close();
+      }, true);
       addEventListener('resize', function () { if (innerWidth > 880) close(); });
     }
   }
