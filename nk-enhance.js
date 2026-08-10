@@ -277,10 +277,19 @@
           caps[q].setAttribute('cy', pts[q][1].toFixed(1));
         }
         if (hoof) {
-          // the hoof follows the pastern instead of staying bolt upright
-          var ang = Math.atan2(H[0] - pts[2][0], -(H[1] - pts[2][1])) * 180 / Math.PI;
+          /* The hoof follows the pastern instead of staying bolt upright.
+             The shape is authored pointing down, so rotate(0) is already
+             correct for a straight leg and the angle wanted is just the one
+             that takes (0,1) onto the pastern vector: rotate maps (0,1) to
+             (-sin, cos), so it is atan2(-dx, dy).
+
+             The first version had atan2(dx, -dy) and then negated it, which
+             evaluates to 180 minus the right answer — measured 158-172 where
+             it wanted 8-22. That is a hoof turned upside down, toe to the
+             sky, on the one leg that moves while the other three point down. */
+          var ang = Math.atan2(-(H[0] - pts[2][0]), H[1] - pts[2][1]) * 180 / Math.PI;
           hoof.setAttribute('transform',
-            'translate(' + H[0].toFixed(1) + ' ' + (H[1] - 5).toFixed(1) + ') rotate(' + (-ang).toFixed(1) + ')');
+            'translate(' + H[0].toFixed(1) + ' ' + (H[1] - 5).toFixed(1) + ') rotate(' + ang.toFixed(1) + ')');
         }
       }
 
