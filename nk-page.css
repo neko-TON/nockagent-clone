@@ -17,12 +17,24 @@ body{
 
 /* Same three-layer background as the landing page: washes fixed to the
    viewport, a fine dot lattice over the document, a vignette to hold the
-   centre. All gradients — no filters, so it costs one paint. */
+   centre. All gradients — no filters, so it costs one paint.
+
+   The stop tables come from .glowkit.py, for the reasons written out over the
+   matching rule in index.html: a two-stop ramp reaches its rim with the slope
+   still falling, and that slope step is seen as a ring. */
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(40vw 40vw at 12% 2%, rgba(255,55,199,.07), transparent 64%),
-    radial-gradient(36vw 36vw at 90% 26%, rgba(120,80,255,.05), transparent 66%),
+    radial-gradient(44vw 44vw at 12% 2%,
+      rgba(255,233,250,0.115) 0%, rgba(255,176,234,0.1108) 11.1%, rgba(255,120,218,0.0988) 22.2%,
+      rgba(255,63,201,0.0808) 33.3%, rgba(235,59,207,0.0594) 44.4%, rgba(212,63,217,0.038) 55.6%,
+      rgba(189,67,226,0.0197) 66.7%, rgba(166,71,236,0.0071) 77.8%, rgba(143,76,245,0.0011) 88.9%,
+      rgba(120,80,255,0) 100%),
+    radial-gradient(40vw 40vw at 90% 26%,
+      rgba(239,228,255,0.085) 0%, rgba(201,181,255,0.0819) 11.1%, rgba(163,134,255,0.073) 22.2%,
+      rgba(126,87,255,0.0597) 33.3%, rgba(112,73,242,0.0439) 44.4%, rgba(103,65,227,0.0281) 55.6%,
+      rgba(94,58,213,0.0146) 66.7%, rgba(85,50,198,0.0052) 77.8%, rgba(76,42,183,0.0008) 88.9%,
+      rgba(67,34,168,0) 100%),
     radial-gradient(120% 85% at 50% 42%, transparent 54%, rgba(0,0,0,.4) 100%);
 }
 /* Two surfaces, each where it belongs.

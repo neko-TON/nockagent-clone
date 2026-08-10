@@ -8,6 +8,14 @@ ribbons that carry a width per joint, and the joint caps are drawn in the same
 tone as the limb so they round the silhouette instead of beading it.
 """
 import math, re, glob, os
+from importlib.util import spec_from_file_location, module_from_spec
+
+# .glowkit.py is dot-prefixed like the other build scripts, so it cannot be
+# imported by name — load it by path.
+_here = os.path.dirname(os.path.abspath(__file__))
+_spec = spec_from_file_location("glowkit", os.path.join(_here, ".glowkit.py"))
+glowkit = module_from_spec(_spec)
+_spec.loader.exec_module(glowkit)
 
 # ---------------------------------------------------------------- ribbon
 def ribbon(pts, widths):
@@ -71,6 +79,20 @@ for f in sorted(glob.glob(os.path.join(os.path.dirname(__file__), "logos", "*.sv
 glyph_defs = "\n".join('    <g id="gl-%s">%s</g>' % (s, p) for s, p in POOL)
 
 RADII = [20, 17, 21, 16, 18, 15]
+
+# The coins carry their own light, but the halos live in a sibling group rather
+# than inside each coin: one screen-blended group for all six costs one
+# transparency group per frame instead of six, and the coin faces themselves
+# must stay out of it — screening a dark disc erases it.
+# area, not point: the point kernel keeps its light in a very tight core, and
+# on a coin that core sits behind the opaque face where none of it is visible —
+# all you get is the weak tail. The area kernel puts the light at the rim,
+# which is where a glowing disc actually shows it.
+halos = "\n".join(
+    '    <circle class="nk-halo" r="%.1f" fill="url(#pool)" opacity="0"\n'
+    '            transform="translate(325 410) scale(0)"/>' % (r * 2.0)
+    for r in RADII)
+
 coins = "\n".join(
     '    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">\n'
     '      <circle r="%d" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>\n'
@@ -81,13 +103,14 @@ coins = "\n".join(
     '    </g>' % (r, r - 6.5, (r * 1.16) / 24, POOL[i % len(POOL)][0])
     for i, r in enumerate(RADII))
 
-SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill="none" role="img" aria-label="Unicorn pawing the ground, asset coins scattering from the hoof">
+# The frame used to end at y=-30, twelve pixels above the horn tip. Any halo
+# worth the name reaches past that, and a soft shape crossing a viewBox edge
+# does not fade out — it stops dead in a straight line. Hence 26px of headroom
+# up top; the CSS height is scaled by the same 496/470 so the horse itself does
+# not change size. Anything luminous must stay inside x 58..528, y -56..440.
+SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill="none" role="img" aria-label="Unicorn pawing the ground, asset coins scattering from the hoof">
   <defs>
-    <radialGradient id="aura" cx="50%" cy="50%" r="58%">
-      <stop offset="0%" stop-color="#ff37c7" stop-opacity="0.15"/>
-      <stop offset="60%" stop-color="#7850ff" stop-opacity="0.06"/>
-      <stop offset="100%" stop-color="#ff37c7" stop-opacity="0"/>
-    </radialGradient>
+{glowkit.svg("aura", glowkit.area, 0.17, extra=' fx="68%" fy="30%"')}
     <linearGradient id="hide" x1="0.25" y1="0" x2="0.6" y2="1">
       <stop offset="0%" stop-color="#a07dc0"/>
       <stop offset="40%" stop-color="#6b4f95"/>
@@ -125,16 +148,15 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
       <stop offset="68%" stop-color="#271d31"/>
       <stop offset="100%" stop-color="#181022"/>
     </radialGradient>
-    <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ff37c7" stop-opacity="1"/>
-      <stop offset="55%" stop-color="#ff37c7" stop-opacity="0.45"/>
-      <stop offset="100%" stop-color="#ff37c7" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="glowB" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fc72ff" stop-opacity="1"/>
-      <stop offset="50%" stop-color="#fc72ff" stop-opacity="0.5"/>
-      <stop offset="100%" stop-color="#fc72ff" stop-opacity="0"/>
-    </radialGradient>
+{glowkit.svg("pool", glowkit.area, 1.0)}
+{glowkit.svg("spark", glowkit.point, 1.0)}
+    <linearGradient id="streak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffe9fa" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#ffbdee" stop-opacity="0.30"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="70%" stop-color="#ffbdee" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#ffe9fa" stop-opacity="0"/>
+    </linearGradient>
 {glyph_defs}
   </defs>
 
@@ -144,9 +166,23 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
     @media (prefers-reduced-motion:reduce){{#eye{{animation:none}}}}
   </style>
 
-  <ellipse cx="292" cy="200" rx="222" ry="228" fill="url(#aura)"/>
-  <ellipse cx="262" cy="422" rx="176" ry="22" fill="url(#glowA)" opacity="0.16"/>
-  <ellipse cx="262" cy="422" rx="92" ry="11" fill="url(#glowB)" opacity="0.2"/>
+  <!-- Ambient: one wide pool, reaching zero exactly at its own rim. The old
+       aura ran a 58% gradient inside a 50% ellipse, so it was still at alpha
+       .021 when the shape ended — a visible disc, which is what it looked
+       like.
+
+       Its focal point is pulled up and right (fx/fy on the gradient) so the
+       brightest part of the pool sits under the horn. There is one light in
+       this picture and it is on the horn; ambient centred on the body would
+       contradict it. Using the focus rather than a second ellipse keeps the
+       falloff terminating on the shape, so nothing can reach the frame edge. -->
+  <ellipse cx="292" cy="204" rx="226" ry="230" fill="url(#aura)"/>
+
+  <!-- Ground: light pools on a floor in tiers, widest and faintest first,
+       offset toward the planted hoof rather than centred under nothing. -->
+  <ellipse cx="268" cy="420" rx="196" ry="20" fill="url(#pool)" opacity="0.13"/>
+  <ellipse cx="288" cy="421" rx="116" ry="15" fill="url(#pool)" opacity="0.15"/>
+  <ellipse cx="325" cy="423" rx="58" ry="10" fill="url(#pool)" opacity="0.20"/>
 
   <!-- sparks, kept off the main read -->
   <g fill="#ffd9f4">
@@ -247,8 +283,20 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
       <path d="M435 40 L449 36"/><path d="M441 24 L453 21"/>
       <path d="M447 8 L457 6"/><path d="M453 -6 L461 -8"/>
     </g>
-    <circle cx="474" cy="-18" r="14" fill="url(#glowB)" opacity="0.5"/>
-    <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.85"/>
+    <!-- The horn tip is the one true point source in the drawing, so it gets
+         what a point source gives you: a tight core over a long halo, plus the
+         two streaks the eye reads as "too bright to look at". Screen-blended,
+         so the mane brightens through it instead of being painted over. -->
+    <g style="mix-blend-mode:screen">
+      <circle cx="474" cy="-18" r="34" fill="url(#spark)" opacity="0.55"/>
+      <circle cx="474" cy="-18" r="13" fill="url(#spark)" opacity="0.75"/>
+      <rect x="428" y="-19.1" width="92" height="2.2" rx="1.1" fill="url(#streak)" opacity="0.7"/>
+      <!-- shorter than its horizontal twin: rotated, a 92px streak would reach
+           y=-64 and be sheared off by the frame at -56 -->
+      <rect x="444" y="-19.1" width="60" height="2.2" rx="1.1" fill="url(#streak)" opacity="0.5"
+            transform="rotate(90 474 -18)"/>
+      <circle cx="474" cy="-18" r="3" fill="#ffffff" opacity="0.9"/>
+    </g>
 
     <!-- ================= mane, laid along the crest ================= -->
     <g>
@@ -289,12 +337,17 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -30 470 470" fill=
   <ellipse id="nk-dust" cx="325" cy="420" rx="30" ry="8" fill="none"
            stroke="#ffd9f4" stroke-width="2.5" opacity="0"/>
 
-  <g id="nk-impact" opacity="0">
-    <ellipse cx="325" cy="418" rx="52" ry="15" fill="url(#glowB)" opacity="0.6"/>
+  <g id="nk-impact" opacity="0" style="mix-blend-mode:screen">
+    <ellipse cx="325" cy="418" rx="86" ry="22" fill="url(#pool)" opacity="0.35"/>
+    <ellipse cx="325" cy="418" rx="44" ry="13" fill="url(#spark)" opacity="0.75"/>
     <g stroke="#ffe9fa" stroke-width="2.6" stroke-linecap="round" opacity="0.9">
       <path d="M292 412 L274 401"/><path d="M358 412 L376 401"/>
       <path d="M325 404 L325 386"/><path d="M305 408 L294 392"/><path d="M345 408 L356 392"/>
     </g>
+  </g>
+
+  <g id="nk-halos" style="mix-blend-mode:screen">
+{halos}
   </g>
 
   <g id="nk-coins">

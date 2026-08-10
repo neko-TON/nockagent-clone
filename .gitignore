@@ -9,3 +9,5 @@
 .serve-nocache.py
 *.bluebak
 *.greenbak2
+# python bytecode from the build scripts
+__pycache__/

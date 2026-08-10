@@ -53,6 +53,20 @@ h1 .text-accent,h2 .text-accent,h3 .text-accent,.text-accent,
 .qrow.delta span:last-child,.receipt .g{
   text-shadow:none;
 }
+
+/* One exception, and only the hero line: a saturated colour this large on a
+   near-black field really does bloom in the eye, and rendering none at all is
+   its own kind of wrong. Three shadows rather than one — a real bloom is a
+   sum of lobes at different radii, and a single blur reads as a sticker
+   outline. The widest lobe runs violet, matching the washes behind it.
+   Nowhere else: fourteen glowing headings would be a lighting scheme, and the
+   rule above is still right for the other thirteen. */
+h1 .text-accent{
+  text-shadow:
+    0 0 18px rgba(255,55,199,.26),
+    0 0 46px rgba(255,55,199,.13),
+    0 0 92px rgba(120,80,255,.10);
+}
 .nk-logo{ box-shadow:none; }
 
 /* mono keeps its own job: tickers, addresses, code */

@@ -140,6 +140,7 @@
     var dust  = svg.querySelector('#nk-dust');
     var flash = svg.querySelector('#nk-impact');
     var coins = svg.querySelectorAll('#nk-coins .nk-coin');
+    var halos = svg.querySelectorAll('#nk-halos .nk-halo');
     var glyphs = svg.querySelectorAll('#nk-coins .nk-glyph');
 
     // Deal from a shuffled deck rather than picking at random each time: random
@@ -216,9 +217,16 @@
         var y = HOOF_Y + Math.sin(rad) * c.d * out * 0.5 - c.rise * (4 * ct * (1 - ct));
         var sc = Math.min(1, ct * 6);
         var op = ct <= 0 ? 0 : Math.min(1, ct * 8) * (ct > 0.72 ? Math.max(0, 1 - (ct - 0.72) / 0.28) : 1);
+        var move = 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') ';
         coins[i].setAttribute('transform',
-          'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (ct * c.spin).toFixed(0) + ') scale(' + sc.toFixed(3) + ')');
+          move + 'rotate(' + (ct * c.spin).toFixed(0) + ') scale(' + sc.toFixed(3) + ')');
         coins[i].setAttribute('opacity', op.toFixed(3));
+        // The halo tracks the coin but never spins: a round glow rotating is
+        // work with nothing to show for it.
+        if (halos[i]) {
+          halos[i].setAttribute('transform', move + 'scale(' + sc.toFixed(3) + ')');
+          halos[i].setAttribute('opacity', (op * 0.55).toFixed(3));
+        }
       }
     }
 
