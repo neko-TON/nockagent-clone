@@ -29,12 +29,30 @@ a.bg-accent,button.bg-accent{border-radius:9999px!important;font-weight:535}
 
 /* Soft colour bleeding through a near-black page is the other half of the
    Uniswap look. Two fixed, heavily blurred washes — no animation. */
+/* Background in three quiet layers, none of them a filter.
+
+   1. Colour: three broad washes, fixed to the viewport so the page reads as
+      moving through a lit space rather than dragging its own lighting along.
+   2. Surface: a fine dot lattice across the whole document. The hero already
+      carries a 46px line grid; dots are set at 28px so the two never beat
+      against each other, and the change of texture marks the hero as the one
+      structured area rather than looking accidental.
+   3. Depth: a vignette that pulls the corners down and keeps the eye centred.
+
+   Everything is a gradient, so the whole background costs one paint and no
+   raster passes. */
 body::before{
   content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(40vw 40vw at 14% 4%, rgba(255,55,199,.075), transparent 64%),
     radial-gradient(36vw 36vw at 88% 22%, rgba(120,80,255,.055), transparent 66%),
-    radial-gradient(32vw 32vw at 72% 94%, rgba(255,90,140,.04), transparent 68%);
+    radial-gradient(32vw 32vw at 72% 94%, rgba(255,90,140,.04), transparent 68%),
+    radial-gradient(120% 85% at 50% 42%, transparent 52%, rgba(0,0,0,.42) 100%);
+}
+body::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.085) 1px, transparent 1px);
+  background-size:26px 26px;
 }
 body>*{position:relative;z-index:1}
 

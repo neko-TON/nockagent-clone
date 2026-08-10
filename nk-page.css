@@ -14,6 +14,23 @@ body{
   font-family:var(--font-geist-sans),ui-sans-serif,system-ui,-apple-system,sans-serif;
   -webkit-font-smoothing:antialiased;
 }
+
+/* Same three-layer background as the landing page: washes fixed to the
+   viewport, a fine dot lattice over the document, a vignette to hold the
+   centre. All gradients — no filters, so it costs one paint. */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(40vw 40vw at 12% 2%, rgba(255,55,199,.07), transparent 64%),
+    radial-gradient(36vw 36vw at 90% 26%, rgba(120,80,255,.05), transparent 66%),
+    radial-gradient(120% 85% at 50% 42%, transparent 54%, rgba(0,0,0,.4) 100%);
+}
+body::after{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.085) 1px, transparent 1px);
+  background-size:26px 26px;
+}
+body>*{position:relative;z-index:1}
 .mono{font-family:var(--font-geist-mono),ui-monospace,monospace}
 .accent{color:var(--accent)}
 .muted{color:var(--muted)}
