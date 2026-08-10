@@ -304,14 +304,36 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          underline is deliberately not a symmetric arc: deepest at the girth
          a third back from the chest, then rising to a tucked flank. That
          slant is most of what makes a horse look like a horse. -->
-    <path d="M336 172
-             C 334 150, 320 136, 296 131
-             C 262 124, 210 126, 178 136
-             C 156 143, 142 154, 138 172
-             C 134 190, 140 208, 152 220
-             C 174 234, 214 240, 254 238
-             C 288 236, 318 230, 330 220
-             C 338 212, 340 192, 336 172 Z"
+    <!-- ================= body and neck, one outline =================
+         These used to be two paths that overlapped: the neck's crest cut
+         across the barrel's topline at about seventy degrees and left a hard
+         notch at the withers — visible as a wedge of background bitten out of
+         the shoulder. Two curves can be made to meet tangentially, but it is
+         a fragile thing to hand-tune and it drifts the moment either shape
+         moves.
+
+         So there is no junction any more. One outline runs from the poll,
+         down the throat, along the belly, up over the croup, forward across
+         the back, and up the crest — and the withers is just a place on it.
+         Continuity is a property of the path now rather than something two
+         shapes have to agree about.
+
+         Two edges still do opposite things, which is the whole of a horse's
+         neck: the crest bows out over the top, the throat bows *in* below
+         the jaw. -->
+    <path d="M430 31
+             L 436 76
+             C 418 86, 398 106, 384 122
+             C 368 142, 352 164, 344 186
+             C 342 200, 340 212, 332 220
+             C 318 230, 288 236, 254 238
+             C 214 240, 174 234, 152 220
+             C 140 208, 134 190, 138 172
+             C 142 154, 156 143, 178 136
+             C 212 127, 252 122, 284 118
+             C 302 112, 314 102, 326 90
+             C 344 68, 364 48, 386 37
+             C 402 30, 418 28, 430 31 Z"
           fill="{PINK}"/>
     <!-- The shading, the muscle highlights and the two contour grooves that
          used to live here are gone. Flat means flat: one tone, and the
@@ -321,18 +343,7 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
     <!-- ================= neck =================
          Convex along the crest, concave under the throat. The old one was
          near-parallel top and bottom, which is why it read as a tube. -->
-    <!-- Two edges doing opposite things, which is the whole of a horse's neck:
-         the crest bows out over the top, and the throat bows *in* below the
-         jaw. The previous version had both edges running roughly parallel, so
-         it read as a tube with a head on it. -->
-    <path d="M294 154
-             C 304 112, 332 74, 372 50
-             C 390 39, 410 33, 428 34
-             L 434 78
-             C 416 88, 396 108, 382 124
-             C 366 144, 352 164, 344 182
-             C 334 172, 314 160, 294 154 Z"
-          fill="{PINK}"/>
+
 
     <!-- ================= head =================
          Everything that used to be a dark mark here is a hole now: eye,
