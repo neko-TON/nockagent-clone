@@ -120,7 +120,73 @@
     '.nk-tres .r.win span:last-child{color:#fc72ff}',
     '.nk-note{margin-top:.9rem;font-size:11.5px;line-height:1.6;color:#6e6e6e}',
     '.nk-count{font-family:var(--font-geist-mono),monospace;font-size:11.5px;color:#6e6e6e}',
-    '.nk-empty{padding:2rem .9rem;text-align:center;color:#6e6e6e;font-size:13.5px}'
+    '.nk-empty{padding:2rem .9rem;text-align:center;color:#6e6e6e;font-size:13.5px}',
+
+    /* ---- illustrations ----
+       Not GIFs, and that is a measurement rather than a preference. This
+       palette is near-black under wide low-alpha pink: composited, the hero
+       wash spans 33-35 eight-bit levels per channel. GIF carries 256 colours
+       for the whole frame and one bit of alpha, so those ramps come back as
+       rings with a hard fringe — the exact artefact the glow pass just spent
+       its time removing. Vector also stays sharp at any size, weighs a few
+       KB against megabytes, and can be stopped for prefers-reduced-motion,
+       which a GIF cannot. The static state is the finished state; motion is
+       the enhancement, and it is paused while off screen. */
+    // Scrolls sideways below ~600px rather than shrinking: scaled to a phone
+    // the labels land around 7px, and an unreadable diagram is worse than one
+    // you have to nudge. The data tables on this page already behave this way.
+    '.nk-art{margin-top:2.2rem;border:1px solid var(--border);border-radius:16px;' +
+      'background:rgba(16,16,16,.45);padding:1.1rem 1rem .55rem;overflow-x:auto}',
+    '.nk-art > svg{display:block;width:100%;min-width:600px;height:auto}',
+    '.nk-art .cap{font-family:var(--font-geist-mono),monospace;font-size:10px;letter-spacing:.18em;' +
+      'text-transform:uppercase;color:#6e6e6e;padding:0 .35rem .75rem}',
+    '.nk-art text{font-family:var(--font-geist-mono),monospace}',
+    '.nk-art .lane{stroke:#572040;stroke-width:1.2;fill:none}',
+    '.nk-art .pill{fill:#1a1a1a;stroke:#622a4a;stroke-width:1.2}',
+    '.nk-art .pill-win{fill:rgba(255,55,199,.09);stroke:#ff37c7;stroke-width:1.5}',
+    '.nk-art .lbl{fill:#9b9b9b;font-size:11px}',
+    '.nk-art .num{fill:#6e6e6e;font-size:11px}',
+    '.nk-art .num-win{fill:#fc72ff;font-size:11px}',
+    '.nk-art .node{fill:#1f1f1f;stroke:#622a4a;stroke-width:1.5}',
+    '.nk-art .node-t{fill:#d4d4d4;font-size:11px}',
+    '.nk-art .win-path{stroke:#ff37c7;stroke-width:2;fill:none}',
+    '.nk-art .foot{fill:#6e6e6e;font-size:11px}',   // never animates
+    /* Default = the resolved picture, spelled out rather than left to whatever
+       an un-animated element happens to look like. This is what a
+       reduced-motion reader gets, and what the first paint shows. */
+    '.nk-art .g-fill{transform:scaleX(.896);transform-box:fill-box;transform-origin:left center}',
+    '.nk-art .g-dot{transform:translateX(430px);transform-box:view-box}',
+    '.nk-art .v-no{opacity:0}',
+    '@media (prefers-reduced-motion:no-preference){',
+    '  .nk-art.on .probe{animation:nkProbe 7s linear infinite}',
+    '  .nk-art.on .num,.nk-art.on .num-win{animation:nkNum 7s linear infinite}',
+    '  .nk-art.on .pill-win,.nk-art.on .win-path{animation:nkWin 7s linear infinite}',
+    '  .nk-art.on .probe,.nk-art.on .num,.nk-art.on .num-win,',
+    '  .nk-art.on .pill-win,.nk-art.on .win-path{animation-play-state:running}',
+    '  .nk-art.on .g-fill{animation:nkFill 8s cubic-bezier(.4,0,.2,1) infinite;animation-play-state:running}',
+    '  .nk-art.on .g-dot{animation:nkDot 8s cubic-bezier(.4,0,.2,1) infinite;animation-play-state:running}',
+    '  .nk-art.on .v-ok{animation:nkOk 8s linear infinite;animation-play-state:running}',
+    '  .nk-art.on .v-no{animation:nkNo 8s linear infinite;animation-play-state:running}',
+    '}',
+    '@keyframes nkProbe{0%{stroke-dashoffset:100;opacity:0}4%{opacity:.9}' +
+      '17%,86%{stroke-dashoffset:0;opacity:.9}96%,100%{stroke-dashoffset:0;opacity:0}}',
+    '@keyframes nkNum{0%,18%{opacity:0}27%,88%{opacity:1}97%,100%{opacity:0}}',
+    '@keyframes nkWin{0%,44%{opacity:0}53%,88%{opacity:1}97%,100%{opacity:0}}',
+    // the guard: one fill that clears the floor, then one that does not.
+    // .896 lands at x=520, comfortably above the min-out tick at x=250;
+    // .229 lands at x=200, below it.
+    '@keyframes nkFill{0%{transform:scaleX(0)}22%,44%{transform:scaleX(.896)}' +
+      '46%{transform:scaleX(0)}68%,90%{transform:scaleX(.229)}100%{transform:scaleX(0)}}',
+    '@keyframes nkDot{0%{transform:translateX(0)}22%,44%{transform:translateX(430px)}' +
+      '46%{transform:translateX(0)}68%,90%{transform:translateX(110px)}100%{transform:translateX(0)}}',
+    '@keyframes nkOk{0%,23%{opacity:0}28%,44%{opacity:1}46%,100%{opacity:0}}',
+    '@keyframes nkNo{0%,69%{opacity:0}74%,90%{opacity:1}92%,100%{opacity:0}}',
+
+    /* the calculator sparkline */
+    '.nk-spark{margin-top:1.3rem;border-top:1px solid var(--border);padding-top:1.1rem}',
+    '.nk-spark svg{display:block;width:100%;height:auto;overflow:visible}',
+    '.nk-spark .cap{font-family:var(--font-geist-mono),monospace;font-size:10px;' +
+      'letter-spacing:.16em;text-transform:uppercase;color:#6e6e6e;margin-bottom:.6rem}'
   ].join('\n');
   if (!document.getElementById('nk-blocks-css')) document.head.appendChild(css);
 
@@ -293,6 +359,10 @@
         '<input class="nk-range" id="nk-calc-range" type="range" min="0" max="1000" value="0"' +
         ' aria-label="Trade size in US dollars"/>' +
         '<div class="nk-calc-grid" id="nk-calc-rows"></div>' +
+        '<div class="nk-spark"><div class="cap">Gain vs size</div>' +
+        '<svg id="nk-spark-svg" viewBox="0 0 560 78" fill="none" ' +
+        'role="img" aria-label="The routed gain rises with trade size and levels off ' +
+        'around twenty-five thousand dollars."></svg></div>' +
         '<p class="nk-note">Rates are the ones in the table above; the size is yours. Price impact is ' +
         'modelled, not quoted — a real number comes from the on-chain quoter at a block, which is what ' +
         'the app shows you before you sign.</p>' +
@@ -344,6 +414,43 @@
         return '<div class="nk-calc-row ' + r[2] + '"><span class="k">' + r[0] +
                '</span><span class="v">' + r[1] + '</span></div>';
       }).join('');
+      spark(size, m.gainPct);
+    }
+
+    /* The gain curve. It is the one part of the model you cannot read off a
+       single number: the router's edge climbs steeply through the small
+       sizes and then flattens, because past roughly $25k the deep pool's own
+       impact is what dominates. Drawn straight from quote(), so it can never
+       disagree with the rows above it. */
+    // Zero-based, and the scale is written on it. Cropping the axis to make
+    // the curve look dramatic would be the easy move and a dishonest one —
+    // the gain genuinely only travels from 0.29% to 0.52%.
+    var GMAX = 0.6;
+    function spark(size, gainPct) {
+      var svg = $('#nk-spark-svg', node);
+      if (!svg) return;
+      var x = function (s) { return 8 + (Math.log(s) - SMIN) / (SMAX - SMIN) * 500; };
+      var y = function (g) { return 62 - (g / GMAX) * 54; };
+      var pts = [];
+      for (var i = 0; i <= 56; i++) {
+        var s = Math.exp(SMIN + (SMAX - SMIN) * (i / 56));
+        pts.push(x(s).toFixed(1) + ',' + y(quote(s).gainPct).toFixed(1));
+      }
+      var cx = x(size), cy = y(gainPct);
+      var tick = 'fill="#6e6e6e" font-size="9" font-family="var(--font-geist-mono),monospace"';
+      svg.innerHTML =
+        '<line x1="8" y1="62" x2="508" y2="62" stroke="#242424" stroke-width="1"/>' +
+        '<line x1="8" y1="8" x2="508" y2="8" stroke="#1e1e1e" stroke-width="1" stroke-dasharray="2 4"/>' +
+        '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#622a4a" stroke-width="1.6"/>' +
+        '<polyline points="' + pts.filter(function (p) { return +p.split(',')[0] <= cx; }).join(' ') +
+          '" fill="none" stroke="#ff37c7" stroke-width="2"/>' +
+        '<line x1="' + cx.toFixed(1) + '" y1="' + cy.toFixed(1) + '" x2="' + cx.toFixed(1) +
+          '" y2="62" stroke="#622a4a" stroke-width="1" stroke-dasharray="2 3"/>' +
+        '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="4" fill="#ff37c7"/>' +
+        '<text x="516" y="11" ' + tick + '>0.6%</text>' +
+        '<text x="516" y="65" ' + tick + '>0</text>' +
+        '<text x="8" y="74" ' + tick + '>$250</text>' +
+        '<text x="508" y="74" text-anchor="end" ' + tick + '>$250k</text>';
     }
 
     setSize(5000);
@@ -486,6 +593,109 @@
     pick(0);
   }
 
+  /* ============================================================
+     5. Two diagrams, for the two sections that make a claim words
+        alone cannot show.
+
+     Both are wired to the numbers the rest of the site publishes:
+     41.1176 is the routed figure on /app and in the hero terminal,
+     40.9528 is the naive one, and here you can see which venue each
+     of them came from. A diagram that invented its own numbers would
+     be decoration; this one is the explanation.
+     ============================================================ */
+  var VENUES = [
+    ['v2',           '40.7106', 0],
+    ['v3 · 0.01%',   '40.8842', 0],
+    ['v3 · 0.05%',   '41.1176', 1],   // the routed figure the site quotes
+    ['v3 · 0.30%',   '40.9528', 0],   // the naive-direct figure the site quotes
+    ['v4 · hooks',   '40.6318', 0]
+  ];
+
+  function fanoutArt() {
+    var sec = document.getElementById('routing');
+    if (!sec || $('#nk-art-fan')) return;
+
+    var rows = '', probes = '', win = '';
+    VENUES.forEach(function (v, i) {
+      var y = 26 + i * 40;
+      // in-path: source out to the venue. pathLength normalises every lane to
+      // 100 so one dash keyframe fits all of them regardless of real length.
+      probes += '<path class="probe lane" pathLength="100" stroke-dasharray="100" ' +
+        'style="animation-delay:' + (i * 0.28).toFixed(2) + 's" ' +
+        'd="M82 105 C 150 105, 160 ' + y + ', 208 ' + y + '"/>';
+      rows +=
+        '<rect class="' + (v[2] ? 'pill' : 'pill') + '" x="208" y="' + (y - 14) +
+          '" width="196" height="28" rx="14"/>' +
+        '<text class="lbl" x="224" y="' + (y + 4) + '">' + v[0] + '</text>' +
+        '<text class="' + (v[2] ? 'num-win' : 'num') + '" x="388" y="' + (y + 4) +
+          '" text-anchor="end" style="animation-delay:' + (i * 0.28).toFixed(2) + 's">' +
+          v[1] + '</text>';
+      if (v[2]) {
+        win =
+          '<rect class="pill-win" x="208" y="' + (y - 14) + '" width="196" height="28" rx="14"/>' +
+          '<path class="win-path" d="M404 ' + y + ' C 470 ' + y + ', 500 105, 566 105"/>';
+      }
+    });
+
+    var svg =
+      '<div class="nk-art nk-rise" id="nk-art-fan">' +
+      '<div class="cap">Fan-out quoting · one block, five venues</div>' +
+      '<svg viewBox="0 0 660 226" fill="none" xmlns="http://www.w3.org/2000/svg" ' +
+        'role="img" aria-label="A quote is requested from five venues at once; the ' +
+        'Uniswap v3 0.05% pool returns the best output, 41.1176 NVDA, and becomes the route.">' +
+        probes + rows + win +
+        '<circle class="node" cx="58" cy="105" r="23"/>' +
+        '<text class="node-t" x="58" y="109" text-anchor="middle">USDG</text>' +
+        '<circle class="node" cx="590" cy="105" r="23"/>' +
+        '<text class="node-t" x="590" y="109" text-anchor="middle">NVDA</text>' +
+        '<text class="foot" x="330" y="212" text-anchor="middle">' +
+          'best net output wins — nothing is cached, every number is quoted at the block</text>' +
+      '</svg></div>';
+
+    sec.appendChild(el(svg));
+  }
+
+  function guardArt() {
+    var sec = document.getElementById('security');
+    if (!sec || $('#nk-art-guard')) return;
+    // track 90..630, floor tick at 270 -> 180/540 = 0.333, quote at 559 -> 0.868
+    var svg =
+      '<div class="nk-art nk-rise" id="nk-art-guard">' +
+      '<div class="cap">Fails closed · minimum-out</div>' +
+      '<svg viewBox="0 0 660 150" fill="none" xmlns="http://www.w3.org/2000/svg" ' +
+        'role="img" aria-label="A fill above the minimum-out settles; a fill below it ' +
+        'reverts and the funds stay in your wallet.">' +
+        '<rect x="90" y="74" width="480" height="7" rx="3.5" fill="#242424"/>' +
+        '<rect class="g-fill" x="90" y="74" width="480" height="7" rx="3.5" fill="#ff37c7"/>' +
+        '<line x1="250" y1="58" x2="250" y2="97" stroke="#ff37c7" stroke-width="1.5" opacity="0.7"/>' +
+        '<text class="foot" x="250" y="48" text-anchor="middle" fill="#9b9b9b">min out 40.9120</text>' +
+        '<line x1="540" y1="62" x2="540" y2="93" stroke="#622a4a" stroke-width="1.5"/>' +
+        '<text class="foot" x="540" y="48" text-anchor="middle">quoted 41.1176</text>' +
+        '<circle class="g-dot" cx="90" cy="77.5" r="7" fill="#ffe9fa"/>' +
+        '<text class="v-ok" x="330" y="126" text-anchor="middle" fill="#fc72ff" font-size="11">' +
+          'above the floor → settles in one signed transaction</text>' +
+        '<text class="v-no" x="330" y="126" text-anchor="middle" fill="#9b9b9b" font-size="11">' +
+          'below the floor → reverts, and the funds never left your wallet</text>' +
+      '</svg></div>';
+    sec.appendChild(el(svg));
+  }
+
+  /* Animation runs only while the diagram is on screen — same rule the
+     mascot loop follows. */
+  var artIO = null;
+  function watchArt() {
+    var arts = $$('.nk-art');
+    if (!arts.length) return;
+    if (!('IntersectionObserver' in window)) {
+      arts.forEach(function (a) { a.classList.add('on'); });
+      return;
+    }
+    if (!artIO) artIO = new IntersectionObserver(function (ents) {
+      ents.forEach(function (en) { en.target.classList.toggle('on', en.isIntersecting); });
+    }, { rootMargin: '80px 0px' });
+    arts.forEach(function (a) { if (!a.__nk) { a.__nk = 1; artIO.observe(a); } });
+  }
+
   /* ---------------- boot ---------------- */
   function boot() {
     if (!document.__nkActDoc) {
@@ -493,9 +703,10 @@
       document.addEventListener('click', dispatch, true);
     }
     T(liveTerminal); T(feeCalculator); T(marketFilter); T(roadmapRail);
+    T(fanoutArt); T(guardArt); T(watchArt);
     // the new cards join the page's own reveal pass
     $$('.nk-rise:not(.nk-in)').forEach(function (n) {
-      if (n.id === 'nk-calc' || n.id === 'nk-mkt') n.classList.add('nk-in');
+      if (/^nk-(calc|mkt|art-)/.test(n.id)) n.classList.add('nk-in');
     });
   }
   if (document.readyState !== 'loading') boot();

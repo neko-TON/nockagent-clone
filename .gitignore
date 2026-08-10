@@ -11,3 +11,5 @@
 *.greenbak2
 # python bytecode from the build scripts
 __pycache__/
+# scratch dir used while rendering og.png
+.og-tmp/
