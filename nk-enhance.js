@@ -166,7 +166,17 @@
     }
     var all = L.concat(R.reverse()), d = 'M' + all[0][0].toFixed(1) + ' ' + all[0][1].toFixed(1);
     for (i = 1; i < all.length; i++) d += 'L' + all[i][0].toFixed(1) + ' ' + all[i][1].toFixed(1);
-    return d + 'Z';
+    d += 'Z';
+    // The joint caps used to be four <circle> elements repositioned every
+    // frame: eight attribute writes for something the limb path can carry as
+    // four sub-paths at no per-frame cost at all. Same colour, same shape.
+    for (i = 0; i < pts.length; i++) {
+      var r = w[i] / 2, cx = pts[i][0], cy = pts[i][1];
+      d += 'M' + (cx - r).toFixed(1) + ' ' + cy.toFixed(1) +
+           'a' + r.toFixed(1) + ' ' + r.toFixed(1) + ' 0 1 0 ' + (r * 2).toFixed(1) + ' 0' +
+           'a' + r.toFixed(1) + ' ' + r.toFixed(1) + ' 0 1 0 ' + (-r * 2).toFixed(1) + ' 0Z';
+    }
+    return d;
   }
   var CYCLE = 2800;                                    // ms per paw
   // every asset that has a real mark; six are dealt per paw
@@ -187,22 +197,7 @@
     leg.__nkStrike = 1;
 
     var shape = svg.querySelector('#nk-leg .nk-leg-shape');
-    var capG  = svg.querySelector('#nk-leg .nk-leg-caps');
-    // Build the joint caps once. Rewriting innerHTML each frame reparsed
-    // markup and rebuilt four nodes sixty times a second for nothing.
-    var caps = [];
-    if (capG) {
-      for (var ci = 0; ci < LEG_W.length; ci++) {
-        var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        c.setAttribute('r', LEG_W[ci] / 2);
-        // The mascot is one flat colour now, so the caps have to be that same
-        // colour — they exist to round the limb's silhouette, not to be seen.
-        // Left on the old violet they read as three grey beads on a pink leg.
-        c.setAttribute('fill', '#ff37c7');
-        capG.appendChild(c);
-        caps.push(c);
-      }
-    }
+
     // scratch buffers, reused so the loop allocates nothing per frame
     var pts = [ELBOW, [0, 0], [0, 0], [0, 0]];
     var prev = {};
@@ -213,6 +208,8 @@
     var flash = svg.querySelector('#nk-impact');
     var coins = svg.querySelectorAll('#nk-coins .nk-coin');
     var halos = svg.querySelectorAll('#nk-halos .nk-halo');
+    var coinG = svg.querySelector('#nk-coins');
+    var haloG = svg.querySelector('#nk-halos');
     var glyphs = svg.querySelectorAll('#nk-coins .nk-glyph');
 
     // Deal from a shuffled deck rather than picking at random each time: random
@@ -272,10 +269,6 @@
       if (key !== prev.leg) {
         prev.leg = key;
         if (shape) shape.setAttribute('d', ribbon(pts, LEG_W));
-        for (var q = 0; q < caps.length; q++) {
-          caps[q].setAttribute('cx', pts[q][0].toFixed(1));
-          caps[q].setAttribute('cy', pts[q][1].toFixed(1));
-        }
         if (hoof) {
           /* The hoof follows the pastern instead of staying bolt upright.
              The shape is authored pointing down, so rotate(0) is already
@@ -344,25 +337,25 @@
       ct = Math.max(0, Math.min(1, ct));
       if (ct === prev.ct) return;          // burst not running — nothing to move
       prev.ct = ct;
+      var sc = Math.min(1, ct * 6), out = easeOut(ct);
+      var op = ct <= 0 ? 0 : Math.min(1, ct * 8) * (ct > 0.80 ? Math.max(0, 1 - (ct - 0.80) / 0.20) : 1);
       for (var i = 0; i < coins.length; i++) {
         var c = COINS[i % COINS.length];
         var rad = c.a * Math.PI / 180;
-        var out = easeOut(ct);                                   // outward travel decelerates
         var x = HOOF_X + Math.cos(rad) * c.d * out;
         var y = HOOF_Y + Math.sin(rad) * c.d * out * 0.5 - c.rise * (4 * ct * (1 - ct));
-        var sc = Math.min(1, ct * 6);
-        var op = ct <= 0 ? 0 : Math.min(1, ct * 8) * (ct > 0.80 ? Math.max(0, 1 - (ct - 0.80) / 0.20) : 1);
         var move = 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') ';
         coins[i].setAttribute('transform',
           move + 'rotate(' + (ct * c.spin).toFixed(0) + ') scale(' + sc.toFixed(3) + ')');
-        coins[i].setAttribute('opacity', op.toFixed(3));
         // The halo tracks the coin but never spins: a round glow rotating is
         // work with nothing to show for it.
-        if (halos[i]) {
-          halos[i].setAttribute('transform', move + 'scale(' + sc.toFixed(3) + ')');
-          halos[i].setAttribute('opacity', (op * 0.55).toFixed(3));
-        }
+        if (halos[i]) halos[i].setAttribute('transform', move + 'scale(' + sc.toFixed(3) + ')');
       }
+      // op depends only on ct, so it is the same number for all six coins.
+      // Writing it twelve times a frame — once per coin, once per halo — was
+      // twelve invalidations to say one thing. It goes on the two groups.
+      coinG.setAttribute('opacity', op.toFixed(3));
+      haloG.setAttribute('opacity', (op * 0.55).toFixed(3));
     }
 
     shuffle(); deal();

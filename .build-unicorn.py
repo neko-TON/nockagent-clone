@@ -34,15 +34,22 @@ def ribbon(pts, widths):
     d += " ".join("L%.1f %.1f" % p for p in pathpts[1:])
     return d + " Z"
 
-def caps(pts, widths, fill):
-    """Same-tone discs at the joints: they round the column, not decorate it."""
-    return "\n      ".join(
-        '<circle cx="%.1f" cy="%.1f" r="%.1f" fill="%s"/>' % (x, y, w / 2, fill)
-        for (x, y), w in zip(pts, widths))
+def caps(pts, widths):
+    """Same-tone discs at the joints: they round the column, not decorate it.
 
-def leg(pts, widths, fill, cap):
-    return ('    <path d="%s" fill="%s"/>\n      %s'
-            % (ribbon(pts, widths), fill, caps(pts, widths, cap)))
+    Written as sub-paths of the limb rather than as <circle> elements. On the
+    static legs that is three fewer nodes each; on the pawing one the runtime
+    was repositioning four circles every frame, which is eight attribute
+    writes for something the path it already rewrites can carry for free."""
+    out = ""
+    for (x, y), w in zip(pts, widths):
+        r = w / 2.0
+        out += ("M%.1f %.1fa%.1f %.1f 0 1 0 %.1f 0a%.1f %.1f 0 1 0 %.1f 0Z"
+                % (x - r, y, r, r, r * 2, r, r, -r * 2))
+    return out
+
+def leg(pts, widths, fill, cap=None):
+    return '    <path d="%s%s" fill="%s"/>' % (ribbon(pts, widths), caps(pts, widths), fill)
 
 def hoof(x, y, w=22, h=19, light=None):
     """One flat shape, held off the cannon by a hair. Uniswap's drawing has no
@@ -108,7 +115,7 @@ RADII = [20, 17, 21, 16, 18, 15]
 # all you get is the weak tail. The area kernel puts the light at the rim,
 # which is where a glowing disc actually shows it.
 halos = "\n".join(
-    '    <circle class="nk-halo" r="%.1f" fill="url(#pool)" opacity="0"\n'
+    '    <circle class="nk-halo" r="%.1f" fill="url(#pool)"\n'
     '            transform="translate(325 410) scale(0)"/>' % (r * 2.3)
     for r in RADII)
 
@@ -118,7 +125,7 @@ halos = "\n".join(
 # On the black background the ring costs nothing — it is the same value as the
 # page. On the horse it is the whole difference between a coin and a wound.
 coins = "\n".join(
-    '    <g class="nk-coin" transform="translate(325 410) scale(0)" opacity="0">\n'
+    '    <g class="nk-coin" transform="translate(325 410) scale(0)">\n'
     '      <circle r="%.1f" fill="none" stroke="#141018" stroke-width="3.6"/>\n'
     '      <circle r="%d" fill="url(#coinFace)" stroke="#ff37c7" stroke-width="2.2"/>\n'
     '      <circle r="%.1f" fill="none" stroke="#fc72ff" stroke-width="1.1" opacity="0.5"/>\n'
@@ -483,7 +490,6 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
          underneath it. The animated one is the near fore; four legs total. -->
     <g id="nk-leg">
       <path class="nk-leg-shape" d="{ribbon(FORE, FORE_W)}" fill="{PINK}"/>
-      <g class="nk-leg-caps"></g>
       <g id="nk-hoof" transform="translate(325 391)">
         <path d="M-11 2.5 h22 l2 19 q0 5 -5 5 h-18 q-5 0 -5 -5 z" fill="{PINK}"/>
       </g>
@@ -504,11 +510,11 @@ SVG = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 -56 470 496" fill=
 
   </g><!-- /nk-idle -->
 
-  <g id="nk-halos" style="mix-blend-mode:screen">
+  <g id="nk-halos" opacity="0" style="mix-blend-mode:screen">
 {halos}
   </g>
 
-  <g id="nk-coins">
+  <g id="nk-coins" opacity="0">
 {coins}
   </g>
 </svg>
